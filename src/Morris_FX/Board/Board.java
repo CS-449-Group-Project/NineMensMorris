@@ -1,11 +1,14 @@
 package Morris_FX.Board;
 
 
+import java.util.List;
+import java.util.Vector;
+import java.util.stream.Collectors;
 
 public class Board {
     public static final int GRID_SIZE = 7;
-    private Turn turn;
-    private Cell grid[][];
+    private final Turn turn;
+    private Cell[][] grid;
 
     public Board() {
         this.turn = new Turn();
@@ -25,7 +28,7 @@ public class Board {
         }
 
         // mark valid ones as empty
-        this.generatePieces(0, 3, 6);
+        this.generatePieces();
     }
 
     private void createGrid() {
@@ -39,11 +42,20 @@ public class Board {
         }
     }
 
-    private void generatePieces(int start, int middle, int end) {
-        generatePieces(start, middle, end, 0);
+    private void generatePieces() {
+        for (int i = 0; i < Board.GRID_SIZE; i++) {
+            List<Integer> validMoves = getValidRowMoves(i);
+            for (int j : validMoves) {
+                if (j >= Board.GRID_SIZE) {
+                    System.out.println(i + "," + j);
+                    continue;
+                }
+                grid[i][j].setState(CellState.EMPTY);
+            }
+        }
     }
 
-    private void generatePieces(int start, int middle, int end, int depth) {
+    /* private void generatePieces(int start, int middle, int end, int depth) {
 
         // special case
         if (depth == middle) {
@@ -72,6 +84,24 @@ public class Board {
                 grid[end][placements[i]].setState(CellState.EMPTY);
             }
         }
-    }
+    }*/
 
+    public List<Integer> getValidRowMoves(int row) {
+        List<Integer> rowMoves = new Vector<>(Board.GRID_SIZE - 1);
+        int middle = (Board.GRID_SIZE - 1)/2;
+        if (row == middle) {
+            for (int i = 0; i < Board.GRID_SIZE; i++) {
+                if (i != middle) {
+                    rowMoves.add(i);
+                }
+            }
+        } else {
+            int dist = Math.abs(row - middle);
+            for(int i = 0; i < 3; i++) {
+                int offset = (i - 1) * dist;
+                rowMoves.add(offset + middle);
+            }
+        }
+        return rowMoves;
+    }
 }
