@@ -1,33 +1,46 @@
 package Morris_FX.Board;
 
-import javafx.scene.layout.Pane;
+public class Cell {
 
-import Morris_FX.Board.Turn;
-import Morris_FX.Board.CellState;
-
-//class to hold cells
-public class Cell extends Pane {
-
-    public CellState playState = CellState.VOID;
+    private CellState playState = CellState.VOID;
     private Turn turn;
 
+
     public Cell(Turn turn) {
-        super();
         this.turn = turn;
-        //setStyle("-fx-border-color: black");
-        this.setPrefSize(2000, 2000);
-        this.setOnMouseClicked(e -> handleMouseClick());
     }
 
+    public CellState getState() {
+        return this.playState;
+    }
 
-    private void handleMouseClick() {
-        if (this.playState == CellState.EMPTY)
-            if (turn.getTurn()) {
-                this.setStyle("-fx-background-color: blue");
-            }else{
-                this.setStyle("-fx-background-color: green");
-            }
-        turn.switchTurn();
+    public boolean isValid() {
+        return this.playState != CellState.VOID;
+    }
+
+    public boolean isEmpty() {
+        return this.playState == CellState.EMPTY;
+    }
+
+    public boolean isBlack() {
+        return this.playState == CellState.BLACK;
+    }
+
+    public boolean isWhite() {
+        return this.playState == CellState.WHITE;
+    }
+
+    public void setState(CellState newState) {
+        playState = newState;
+    }
+
+    public boolean placePiece() {
+        boolean valid = this.isValid() && this.isEmpty();
+        if (valid) {
+            setState(turn.getTurn() ? CellState.BLACK: CellState.WHITE);
+            turn.switchTurn();
+        }
+        return valid;
     }
 
 }
