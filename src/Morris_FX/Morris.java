@@ -1,5 +1,7 @@
 package Morris_FX;
 
+import Morris_FX.Board.Board;
+import Morris_FX.Board.CellUi;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.control.Skin;
@@ -23,31 +25,22 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import Morris_FX.Board.CellState;
-import Morris_FX.Board.Turn;
-import Morris_FX.Board.Cell;
+import Morris_FX.Board.Board;
 
 
 public class Morris extends Application {
 
-    private Turn turn;
-    private Cell grid[][];
 
+    private Board board;
     public Morris() {
         super();
-        turn = new Turn();
-        grid = new Cell[7][7];
-
+        this.board = new Board();
     }
 
-
-    ;
 
     Scene scene1, scene2, scene3;
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+    public static void main(String[] args) {  launch(args); }
 
     @Override
     public void start(Stage primaryStage)  {
@@ -78,12 +71,9 @@ public class Morris extends Application {
 //create grid pane for the game and filling with 7x7 cells
         GridPane pane = new GridPane();
         pane.setBackground(new Background(emptyBoard));
-        for (int i = 0; i < 7; i++)
-            for (int j = 0; j < 7; j++)
-                pane.add(grid[i][j] = new Cell(turn), j, i);
-
-//function to reset the board state
-        setNodes();
+        for (int i = 0; i < Board.GRID_SIZE; i++)
+            for (int j = 0; j < Board.GRID_SIZE; j++)
+                pane.add(new CellUi(board.getCell(i, j)), j, i);
 
 //setting the pane for game in the window
         BorderPane borderPane = new BorderPane();
@@ -117,7 +107,7 @@ public class Morris extends Application {
         Text menuLabel = new Text("Menu");
         Button play = new Button("Play");
         play.setOnAction(e -> {
-            setNodes();
+            board.reset();
             primaryStage.setScene(scene3);
         });
         menuLabel.setFont(Font.font("Tacoma", FontWeight.NORMAL, 20));
@@ -129,7 +119,7 @@ public class Morris extends Application {
 
 //scene 3
         Label label3 = new Label("Game");
-        again.setOnAction(e -> setNodes());
+        again.setOnAction(e -> board.reset());
         menu.setOnAction(e -> primaryStage.setScene(scene2));
         scene3 = new Scene(borderPane, 550, 470);
 
@@ -137,33 +127,6 @@ public class Morris extends Application {
         primaryStage.setScene(scene1);
         primaryStage.show();
     }
-
-//reset playable nodes to beginning empty values
-    public void setNodes() {
-        int p = 6;
-        for (int t = 0; t < 3; t++) {
-            grid[t][t].playState = CellState.EMPTY;
-            grid[t][p].playState = CellState.EMPTY;
-            grid[t][3].playState = CellState.EMPTY;
-
-            grid[p][t].playState = CellState.EMPTY;
-            grid[p][3].playState = CellState.EMPTY;
-            grid[p][p].playState = CellState.EMPTY;
-
-            p--;
-        }
-        for (int t = 0; t < 7; t++) {
-            grid[3][t].playState = CellState.EMPTY;
-            if (t == 2)
-                t++;
-        }
-
-        for (int i = 0; i < 7; i++)
-            for (int j = 0; j < 7; j++)
-                if (grid[i][j].playState == CellState.EMPTY)
-                    grid[i][j].setStyle(null);
-    }
-
 
 }
 
