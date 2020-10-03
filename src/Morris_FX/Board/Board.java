@@ -46,10 +46,6 @@ public class Board {
         for (int i = 0; i < Board.GRID_SIZE; i++) {
             List<Integer> validMoves = getValidRowMoves(i);
             for (int j : validMoves) {
-                if (j >= Board.GRID_SIZE) {
-                    System.out.println(i + "," + j);
-                    continue;
-                }
                 grid[i][j].setState(CellState.EMPTY);
             }
         }
