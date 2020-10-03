@@ -10,7 +10,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.effect.*;
-import javafx.scene.control.Cell;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -24,14 +23,23 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import Morris_FX.Board.CellState;
+import Morris_FX.Board.Turn;
+import Morris_FX.Board.Cell;
 
 
 public class Morris extends Application {
 
-    private boolean turn = true;
-    private Cell grid[][] = new Cell[7][7];
+    private Turn turn;
+    private Cell grid[][];
 
-    enum State {EMPTY, VOID, BLACK, WHITE}
+    public Morris() {
+        super();
+        turn = new Turn();
+        grid = new Cell[7][7];
+
+    }
+
 
     ;
 
@@ -72,7 +80,7 @@ public class Morris extends Application {
         pane.setBackground(new Background(emptyBoard));
         for (int i = 0; i < 7; i++)
             for (int j = 0; j < 7; j++)
-                pane.add(grid[i][j] = new Cell(), j, i);
+                pane.add(grid[i][j] = new Cell(turn), j, i);
 
 //function to reset the board state
         setNodes();
@@ -134,53 +142,29 @@ public class Morris extends Application {
     public void setNodes() {
         int p = 6;
         for (int t = 0; t < 3; t++) {
-            grid[t][t].playState = State.EMPTY;
-            grid[t][p].playState = State.EMPTY;
-            grid[t][3].playState = State.EMPTY;
+            grid[t][t].playState = CellState.EMPTY;
+            grid[t][p].playState = CellState.EMPTY;
+            grid[t][3].playState = CellState.EMPTY;
 
-            grid[p][t].playState = State.EMPTY;
-            grid[p][3].playState = State.EMPTY;
-            grid[p][p].playState = State.EMPTY;
+            grid[p][t].playState = CellState.EMPTY;
+            grid[p][3].playState = CellState.EMPTY;
+            grid[p][p].playState = CellState.EMPTY;
 
             p--;
         }
         for (int t = 0; t < 7; t++) {
-            grid[3][t].playState = State.EMPTY;
+            grid[3][t].playState = CellState.EMPTY;
             if (t == 2)
                 t++;
         }
 
         for (int i = 0; i < 7; i++)
             for (int j = 0; j < 7; j++)
-                if (grid[i][j].playState == State.EMPTY)
+                if (grid[i][j].playState == CellState.EMPTY)
                     grid[i][j].setStyle(null);
     }
 
-//class to hold cells
-    class Cell extends Pane {
 
-        public State playState = State.VOID;
-
-        public Cell() {
-
-            //setStyle("-fx-border-color: black");
-            this.setPrefSize(2000, 2000);
-            this.setOnMouseClicked(e -> handleMouseClick());
-        }
-
-
-
-        private void handleMouseClick() {
-            if (this.playState == State.EMPTY)
-                if (turn) {
-                    this.setStyle("-fx-background-color: blue");
-                }else{
-                    this.setStyle("-fx-background-color: green");
-                }
-            turn = !turn;
-        }
-
-    }
 }
 
 
