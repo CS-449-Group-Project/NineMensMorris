@@ -43,4 +43,7 @@ public class Cell {
         return valid;
     }
 
+    public void reset() {
+        this.playState = CellState.VOID;
+    }
 }

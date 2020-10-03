@@ -17,7 +17,15 @@ public class Board {
     }
 
     public void reset() {
-        this.createGrid();
+        // let i be vertical, j be horizontal
+        for (int i = 0; i < GRID_SIZE; i++) {
+            for(int j = 0; j < GRID_SIZE; j++) {
+                grid[i][j].reset();
+            }
+        }
+
+        // mark valid ones as empty
+        this.generatePieces(0, 3, 6);
     }
 
     private void createGrid() {
@@ -29,10 +37,6 @@ public class Board {
                 grid[i][j] = new Cell(turn);
             }
         }
-
-        // mark valid ones as empty
-        this.generatePieces(0, 3, 6);
-
     }
 
     private void generatePieces(int start, int middle, int end) {

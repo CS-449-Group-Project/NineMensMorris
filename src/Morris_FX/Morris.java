@@ -32,9 +32,11 @@ public class Morris extends Application {
 
 
     private Board board;
+    private CellUi[][] uiGrid;
     public Morris() {
         super();
         this.board = new Board();
+        uiGrid = new CellUi[Board.GRID_SIZE][Board.GRID_SIZE];
     }
 
 
@@ -73,8 +75,8 @@ public class Morris extends Application {
         pane.setBackground(new Background(emptyBoard));
         for (int i = 0; i < Board.GRID_SIZE; i++)
             for (int j = 0; j < Board.GRID_SIZE; j++)
-                pane.add(new CellUi(board.getCell(i, j)), j, i);
-
+                pane.add(uiGrid[i][j] = new CellUi(board.getCell(i, j)), j, i);
+        resetNodes();
 //setting the pane for game in the window
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(pane);
@@ -107,7 +109,7 @@ public class Morris extends Application {
         Text menuLabel = new Text("Menu");
         Button play = new Button("Play");
         play.setOnAction(e -> {
-            board.reset();
+            resetNodes();
             primaryStage.setScene(scene3);
         });
         menuLabel.setFont(Font.font("Tacoma", FontWeight.NORMAL, 20));
@@ -119,7 +121,7 @@ public class Morris extends Application {
 
 //scene 3
         Label label3 = new Label("Game");
-        again.setOnAction(e -> board.reset());
+        again.setOnAction(e -> resetNodes());
         menu.setOnAction(e -> primaryStage.setScene(scene2));
         scene3 = new Scene(borderPane, 550, 470);
 
@@ -128,6 +130,14 @@ public class Morris extends Application {
         primaryStage.show();
     }
 
+    private void resetNodes() {
+        for(int i = 0; i < Board.GRID_SIZE; i++) {
+            for (int j = 0; j < Board.GRID_SIZE; j++) {
+                uiGrid[i][j].reset();
+            }
+        }
+        board.reset();
+    }
 }
 
 

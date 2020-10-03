@@ -8,7 +8,7 @@ public class CellUi extends Pane {
     public CellUi(Cell cell) {
         super();
         this.cell = cell;
-        //setStyle("-fx-border-color: black");
+        //setStyle("-fx-background-color: black");
         this.setPrefSize(2000, 2000);
         this.setOnMouseClicked(e -> handleMouseClick());
     }
@@ -21,5 +21,9 @@ public class CellUi extends Pane {
                 this.setStyle("-fx-background-color: green");
             }
         }
+    }
+
+    public void reset() {
+        setStyle("");
     }
 }
