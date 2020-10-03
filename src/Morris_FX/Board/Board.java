@@ -3,7 +3,6 @@ package Morris_FX.Board;
 
 import java.util.List;
 import java.util.Vector;
-import java.util.stream.Collectors;
 
 public class Board {
     public static final int GRID_SIZE = 7;
