@@ -50,37 +50,6 @@ public class Board {
         }
     }
 
-    /* private void generatePieces(int start, int middle, int end, int depth) {
-
-        // special case
-        if (depth == middle) {
-            for (int i = 0; i < middle; i++) {
-                grid[depth][i].setState(CellState.EMPTY);
-            }
-
-            for (int j = depth + 1; j < (end + start) + 1; j++) {
-                grid[depth][j].setState(CellState.EMPTY);
-            }
-
-        } else if (depth < middle) {
-
-            int placements[] = {
-              start,
-              middle,
-              end
-            };
-
-            for (int i = 0; i < 3; i++) {
-                grid[start][placements[i]].setState(CellState.EMPTY);
-            }
-            generatePieces(start + 1, middle, end - 1, depth + 1);
-
-            for (int i = 0; i < 3; i++) {
-                grid[end][placements[i]].setState(CellState.EMPTY);
-            }
-        }
-    }*/
-
     public List<Integer> getValidRowMoves(int row) {
         List<Integer> rowMoves = new Vector<>(Board.GRID_SIZE - 1);
         int middle = (Board.GRID_SIZE - 1)/2;
