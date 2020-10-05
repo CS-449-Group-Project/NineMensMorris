@@ -1,7 +1,7 @@
-package Morris_FX.Board;
+package Morris_FX.Logic;
 
 public class Turn {
-    private boolean turn = false;
+    private boolean turn = true;
 
     void switchTurn() {
         turn = !turn;
@@ -9,5 +9,9 @@ public class Turn {
 
     boolean getTurn() {
         return turn;
+    }
+
+    public void reset() {:
+        turn = true;
     }
 }

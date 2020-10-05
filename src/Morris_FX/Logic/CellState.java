@@ -1,4 +1,4 @@
-package Morris_FX.Board;
+package Morris_FX.Logic;
 
 public enum CellState {
     EMPTY,

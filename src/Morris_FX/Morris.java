@@ -1,43 +1,21 @@
 package Morris_FX;
 
-import Morris_FX.Board.Board;
-import Morris_FX.Board.CellUi;
+import Morris_FX.Logic.Board;
+import Morris_FX.Ui.BoardPane;
 import javafx.application.Application;
 import javafx.geometry.Insets;
-import javafx.scene.control.Skin;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.scene.effect.*;
-import javafx.scene.control.Label;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Ellipse;
 import javafx.scene.control.Button;
 import javafx.geometry.Pos;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.application.Platform;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 
 public class Morris extends Application {
-
-
-    private Board board;
-    private CellUi[][] uiGrid;
-    public Morris() {
-        super();
-        this.board = new Board();
-        uiGrid = new CellUi[Board.GRID_SIZE][Board.GRID_SIZE];
-    }
-
 
     Scene scene1, scene2, scene3;
 
@@ -52,36 +30,25 @@ public class Morris extends Application {
         Button exit = new Button("Exit");
         Button again = new Button("Play again");
 
-//set exit action for the exit button
-        exit.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                Platform.exit();
-            }
-        });
+        //set exit action for the exit button
+        exit.setOnAction(e -> Platform.exit());
 
-//create the background image from a url. Need changing the basis to the file
-        BackgroundImage emptyBoard= new BackgroundImage(new Image("https://www.iconfinder.com/data/icons/toys-2/512/game-6-512.png",550,450,false,true),
-                BackgroundRepeat.NO_REPEAT.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
-                BackgroundSize.DEFAULT);
 
-//creating a box for scene3 (game scene) to include the 3 above buttons
+        //creating a box for scene3 (game scene) to include the 3 above buttons
         HBox choices = new HBox();
         choices.getChildren().addAll(menu, again, exit);
 
-//create grid pane for the game and filling with 7x7 cells
-        GridPane pane = new GridPane();
-        pane.setBackground(new Background(emptyBoard));
-        for (int i = 0; i < Board.GRID_SIZE; i++)
-            for (int j = 0; j < Board.GRID_SIZE; j++)
-                pane.add(uiGrid[i][j] = new CellUi(board.getCell(i, j)), j, i);
-        resetNodes();
-//setting the pane for game in the window
+        //create grid pane for the game and filling with 7x7 cells
+        BoardPane boardPane = new BoardPane(new Board());
+
+        boardPane.reset();
+
+        //setting the pane for game in the window
         BorderPane borderPane = new BorderPane();
-        borderPane.setCenter(pane);
+        borderPane.setCenter(boardPane);
         borderPane.setBottom(choices);
 
-//Scene 1
+        //Scene 1
         GridPane first = new GridPane();
         first.setAlignment(Pos.CENTER);
         first.setHgap(10);
@@ -98,7 +65,7 @@ public class Morris extends Application {
 
         scene1 = new Scene(first, 300, 275);
 
-//Scene 2
+        //Scene 2
         GridPane second = new GridPane();
         second.setAlignment(Pos.CENTER);
         second.setHgap(10);
@@ -108,7 +75,7 @@ public class Morris extends Application {
         Text menuLabel = new Text("Menu");
         Button play = new Button("Play");
         play.setOnAction(e -> {
-            resetNodes();
+            boardPane.reset();
             primaryStage.setScene(scene3);
         });
         menuLabel.setFont(Font.font("Tacoma", FontWeight.NORMAL, 20));
@@ -118,9 +85,9 @@ public class Morris extends Application {
 
 
 
-//scene 3
-        Label label3 = new Label("Game");
-        again.setOnAction(e -> resetNodes());
+        //scene 3
+        // Label label3 = new Label("Game");
+        again.setOnAction(e -> boardPane.reset());
         menu.setOnAction(e -> primaryStage.setScene(scene2));
         scene3 = new Scene(borderPane, 550, 470);
 
@@ -129,14 +96,6 @@ public class Morris extends Application {
         primaryStage.show();
     }
 
-    private void resetNodes() {
-        for(int i = 0; i < Board.GRID_SIZE; i++) {
-            for (int j = 0; j < Board.GRID_SIZE; j++) {
-                uiGrid[i][j].reset();
-            }
-        }
-        board.reset();
-    }
 }
 
 

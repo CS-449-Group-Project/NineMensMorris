@@ -1,16 +1,10 @@
-package Morris_FX.Board;
+package Morris_FX.Logic;
 
 public class Cell {
 
     private CellState playState = CellState.VOID;
-    private Turn turn;
 
-
-    public Cell(Turn turn) {
-        this.turn = turn;
-    }
-
-
+    public CellState getState() { return this.playState; }
     public boolean isVoid() { return this.playState == CellState.VOID; }
 
     public boolean isEmpty() {
@@ -25,14 +19,7 @@ public class Cell {
         playState = newState;
     }
 
-    public boolean placePiece() {
-        boolean valid = this.isEmpty();
-        if (valid) {
-            setState(turn.getTurn() ? CellState.BLACK: CellState.WHITE);
-            turn.switchTurn();
-        }
-        return valid;
-    }
+
 
     public void reset() {
         this.playState = CellState.VOID;

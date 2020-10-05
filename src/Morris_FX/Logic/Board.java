@@ -1,4 +1,4 @@
-package Morris_FX.Board;
+package Morris_FX.Logic;
 
 
 import java.util.List;
@@ -14,8 +14,18 @@ public class Board {
         this.createGrid();
     }
 
-    public Cell getCell(int x, int y) {
-        return this.grid[y][x];
+    public Cell getCell(int row, int column) {
+        return this.grid[row][column];
+    }
+
+    public boolean makeMove(int row, int column) {
+        Cell cell = this.getCell(row, column);
+        boolean valid = cell.isEmpty();
+        if (valid) {
+            cell.setState(turn.getTurn() ? CellState.BLACK: CellState.WHITE);
+            turn.switchTurn();
+        }
+        return valid;
     }
 
     public void reset() {
@@ -23,7 +33,9 @@ public class Board {
         // which is true since this.createGrid() marks all cells as CellState.VOID.
 
         // mark valid spots as EMPTY
-        this.markValidPosAsEmpty();
+        markValidPosAsEmpty();
+
+        turn.reset();
     }
 
     private void createGrid() {
@@ -32,7 +44,7 @@ public class Board {
         // let i be vertical, j be horizontal
         for (int i = 0; i < GRID_SIZE; i++) {
             for(int j = 0; j < GRID_SIZE; j++) {
-                grid[i][j] = new Cell(turn);
+                grid[i][j] = new Cell();
             }
         }
     }
@@ -46,9 +58,9 @@ public class Board {
         }
     }
 
-    public boolean isValidMove(int row, int column) {
+    /*public boolean isValidMove(int row, int column) {
         return !getCell(row, column).isVoid();
-    }
+    }*/
 
     public List<Integer> getValidRowMoves(int row) {
         List<Integer> rowMoves = new Vector<>(Board.GRID_SIZE - 1);
@@ -68,4 +80,5 @@ public class Board {
         }
         return rowMoves;
     }
+
 }
