@@ -35,7 +35,7 @@ public class Cell {
     }
 
     public boolean placePiece() {
-        boolean valid = this.isValid() && this.isEmpty();
+        boolean valid = this.isEmpty();
         if (valid) {
             setState(turn.getTurn() ? CellState.BLACK: CellState.WHITE);
             turn.switchTurn();
