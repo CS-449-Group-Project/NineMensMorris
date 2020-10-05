@@ -19,15 +19,11 @@ public class Board {
     }
 
     public void reset() {
-        // let i be vertical, j be horizontal
-        for (int i = 0; i < GRID_SIZE; i++) {
-            for(int j = 0; j < GRID_SIZE; j++) {
-                grid[i][j].reset();
-            }
-        }
+        // This assumes that invalid moves are marked as void already
+        // which is true since this.createGrid() marks all cells as VOID.
 
         // mark valid ones as empty
-        this.generatePieces();
+        this.markValidPosAsEmpty();
     }
 
     private void createGrid() {
@@ -41,7 +37,7 @@ public class Board {
         }
     }
 
-    private void generatePieces() {
+    private void markValidPosAsEmpty() {
         for (int i = 0; i < Board.GRID_SIZE; i++) {
             List<Integer> validMoves = getValidRowMoves(i);
             for (int j : validMoves) {
