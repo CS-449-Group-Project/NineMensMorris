@@ -46,6 +46,10 @@ public class Board {
         }
     }
 
+    public boolean isValidMove(int row, int column) {
+        return !getCell(row, column).isVoid();
+    }
+
     public List<Integer> getValidRowMoves(int row) {
         List<Integer> rowMoves = new Vector<>(Board.GRID_SIZE - 1);
         int middle = (Board.GRID_SIZE - 1)/2;

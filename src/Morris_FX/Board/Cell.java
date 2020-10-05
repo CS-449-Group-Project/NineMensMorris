@@ -11,6 +11,8 @@ public class Cell {
     }
 
 
+    public boolean isVoid() { return this.playState == CellState.VOID; }
+
     public boolean isEmpty() {
         return this.playState == CellState.EMPTY;
     }
