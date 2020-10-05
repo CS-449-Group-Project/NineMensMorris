@@ -10,13 +10,6 @@ public class Cell {
         this.turn = turn;
     }
 
-    public CellState getState() {
-        return this.playState;
-    }
-
-    public boolean isValid() {
-        return this.playState != CellState.VOID;
-    }
 
     public boolean isEmpty() {
         return this.playState == CellState.EMPTY;
@@ -24,10 +17,6 @@ public class Cell {
 
     public boolean isBlack() {
         return this.playState == CellState.BLACK;
-    }
-
-    public boolean isWhite() {
-        return this.playState == CellState.WHITE;
     }
 
     public void setState(CellState newState) {
