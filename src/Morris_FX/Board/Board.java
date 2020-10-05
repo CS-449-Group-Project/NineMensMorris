@@ -19,10 +19,10 @@ public class Board {
     }
 
     public void reset() {
-        // This assumes that invalid moves are marked as void already
-        // which is true since this.createGrid() marks all cells as VOID.
+        // This assumes that invalid moves are marked as VOID already
+        // which is true since this.createGrid() marks all cells as CellState.VOID.
 
-        // mark valid ones as empty
+        // mark valid spots as EMPTY
         this.markValidPosAsEmpty();
     }
 
