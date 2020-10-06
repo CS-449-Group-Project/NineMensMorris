@@ -1,6 +1,9 @@
 package Morris_FX;
 
 import Morris_FX.Logic.Board;
+import Morris_FX.Logic.GameState;
+import Morris_FX.Logic.Player;
+import Morris_FX.Logic.Turn;
 import Morris_FX.Ui.BoardPane;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -39,7 +42,10 @@ public class Morris extends Application {
         choices.getChildren().addAll(menu, reset, exit);
 
         //create grid pane for the game and filling with 7x7 cells
-        BoardPane boardPane = new BoardPane(new Board());
+        Turn turn = new Turn(Player.BLACK);
+        GameState gameState = new GameState(turn);
+        Board board = new Board(gameState);
+        BoardPane boardPane = new BoardPane(board);
 
         boardPane.reset();
 
