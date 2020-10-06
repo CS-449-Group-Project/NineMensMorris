@@ -2,7 +2,7 @@ package Morris_FX;
 
 import Morris_FX.Logic.Board;
 import Morris_FX.Logic.GameState;
-import Morris_FX.Logic.Player;
+import Morris_FX.Logic.PlayerColor;
 import Morris_FX.Logic.Turn;
 import Morris_FX.Ui.BoardPane;
 import javafx.application.Application;
@@ -20,7 +20,19 @@ import javafx.application.Platform;
 
 public class Morris extends Application {
 
+    private final Turn turn;
+    private final GameState gameState;
+    private final Board board;
+    private final BoardPane boardPane;
     Scene scene1, scene2, scene3;
+
+    public Morris() {
+        turn = new Turn(PlayerColor.BLACK);
+        gameState = new GameState(turn);
+        board = new Board(gameState);
+        boardPane = new BoardPane(board, gameState);
+    }
+
 
     public static void main(String[] args) {  launch(args); }
 
@@ -41,13 +53,6 @@ public class Morris extends Application {
         HBox choices = new HBox();
         choices.getChildren().addAll(menu, reset, exit);
 
-        //create grid pane for the game and filling with 7x7 cells
-        Turn turn = new Turn(Player.BLACK);
-        GameState gameState = new GameState(turn);
-        Board board = new Board(gameState);
-        BoardPane boardPane = new BoardPane(board);
-
-        boardPane.reset();
 
         //setting the pane for game in the window
         BorderPane borderPane = new BorderPane();
@@ -81,7 +86,7 @@ public class Morris extends Application {
         Text menuLabel = new Text("Menu");
         Button play = new Button("Play");
         play.setOnAction(e -> {
-            boardPane.reset();
+            reset();
             primaryStage.setScene(scene3);
         });
         menuLabel.setFont(Font.font("Tacoma", FontWeight.NORMAL, 20));
@@ -93,13 +98,19 @@ public class Morris extends Application {
 
         //scene 3
         // Label label3 = new Label("Game");
-        reset.setOnAction(e -> boardPane.reset());
+        reset.setOnAction(e -> reset());
         menu.setOnAction(e -> primaryStage.setScene(scene2));
         scene3 = new Scene(borderPane, 550, 470);
 
 
         primaryStage.setScene(scene1);
         primaryStage.show();
+    }
+
+    public void reset() {
+        gameState.reset();
+        board.reset();
+        boardPane.reset();
     }
 
 }
