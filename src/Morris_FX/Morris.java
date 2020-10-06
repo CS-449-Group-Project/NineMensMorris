@@ -28,7 +28,7 @@ public class Morris extends Application {
 
         Button menu = new Button("Menu");
         Button exit = new Button("Exit");
-        Button again = new Button("Play again");
+        Button reset = new Button("Play again");
 
         //set exit action for the exit button
         exit.setOnAction(e -> Platform.exit());
@@ -36,7 +36,7 @@ public class Morris extends Application {
 
         //creating a box for scene3 (game scene) to include the 3 above buttons
         HBox choices = new HBox();
-        choices.getChildren().addAll(menu, again, exit);
+        choices.getChildren().addAll(menu, reset, exit);
 
         //create grid pane for the game and filling with 7x7 cells
         BoardPane boardPane = new BoardPane(new Board());
@@ -87,7 +87,7 @@ public class Morris extends Application {
 
         //scene 3
         // Label label3 = new Label("Game");
-        again.setOnAction(e -> boardPane.reset());
+        reset.setOnAction(e -> boardPane.reset());
         menu.setOnAction(e -> primaryStage.setScene(scene2));
         scene3 = new Scene(borderPane, 550, 470);
 
