@@ -7,79 +7,88 @@ import java.util.Vector;
 public class Board {
     public static final int GRID_SIZE = 7;
 
-    private Cell[][] grid;
+    private final Cell[][] grid;
     private InvalidCellType invalidCellType;
-    private GameState gameState;
+    private final GameState gameState;
 
     public Board(GameState gameState) {
         this.gameState = gameState;
+
+        // move grid initialization here because Java
+        // complains otherwise
+
+        grid = new Cell[GRID_SIZE][GRID_SIZE];
         createGrid();
     }
 
-    public Cell getCell(int row, int column) {
+    public Cell getCell(CellPosition position) {
+        int row = position.getRow(), column = position.getColumn();
         return this.grid[row][column];
     }
 
-    public boolean validateMoveSelection(int row, int column) {
-        Cell cell = getCell(row, column);
-        Turn turn = gameState.getTurn();
-        if (gameState.millFormed()) {
-            switch (turn.getPlayer()) {
-                case BLACK:
-                    return cell.getState() == CellState.WHITE;
-                case WHITE:
-                    return cell.getState() == CellState.BLACK;
-                default:
-                    break;
-            }
-            return false;
-        }
+    public boolean validateMoveSelection(CellPosition position) {
+        Cell cell = getCell(position);
 
+        // always false
         if (cell.isVoid()) {
             invalidCellType = InvalidCellType.VOID;
             return false;
         }
 
+
+        Turn turn = gameState.getTurn();
+        Player player = gameState.getActivePlayer();
+        if (gameState.millFormed()) {
+
+            // always false
+            if (cell.isEmpty()) {
+                invalidCellType = InvalidCellType.EMPTY;
+                return false;
+            }
+
+            if (cell.is(player.getCellState().complement())) {
+                invalidCellType = InvalidCellType.NONE;
+                return true;
+            }
+
+            invalidCellType = InvalidCellType.OWNED;
+            return false;
+        }
+
         if (cell.isOccupied()) {
             invalidCellType = InvalidCellType.OCCUPIED;
-            if (cell.isBlack() == turn.isBlack()) {
+            if (cell.is(player.getCellState())) {
                 invalidCellType = InvalidCellType.OWNED;
             }
             return false;
         }
 
+        invalidCellType = InvalidCellType.NONE;
+
         return true;
     }
 
-    public void performMove(int row, int column) {
-        Cell cell = getCell(row, column);
+
+    public void performMove(CellPosition position) {
+        Cell cell = getCell(position);
+        Player player = gameState.getActivePlayer();
         if (gameState.millFormed()) {
-            switch (cell.getState()) {
-                case BLACK:
-                    gameState.removePiece(Player.BLACK);
-                    break;
-                case WHITE:
-                    gameState.removePiece(Player.WHITE);
-                    break;
-            }
+            gameState.getInactivePlayer().removePiece();
             cell.setState(CellState.EMPTY);
         } else {
-            boolean isBlackTurn = gameState.getTurn().isBlack();
-            cell.setState(isBlackTurn ? CellState.BLACK : CellState.WHITE);
+            cell.setState(player.getCellState());
         }
     }
 
     public void reset() {
-        // This assumes that invalid moves are marked as VOID already
+        // This assumes that invalid moves are marked as CellState.VOID already
         // which is true since this.createGrid() marks all cells as CellState.VOID.
 
-        // mark valid spots as EMPTY
+        // mark valid spots as CellState.EMPTY
         markValidPosAsEmpty();
     }
 
     private void createGrid() {
-        grid = new Cell[GRID_SIZE][GRID_SIZE];
-
         // let i be vertical, j be horizontal
         for (int i = 0; i < GRID_SIZE; i++) {
             for(int j = 0; j < GRID_SIZE; j++) {
