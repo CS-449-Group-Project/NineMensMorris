@@ -1,17 +1,31 @@
 package Morris_FX.Logic;
 
 public class Turn {
-    private boolean turn = true;
+    private Player defaultPlayer;
+    private Player turn;
 
-    void switchTurn() {
-        turn = !turn;
+    public Turn(Player defaultPlayer) {
+        this.defaultPlayer = defaultPlayer;
+        turn = defaultPlayer;
     }
 
-    boolean getTurn() {
+    public Player getPlayer() {
         return turn;
     }
 
+    public void setDefaultPlayer(Player defaultPlayer) {
+        this.defaultPlayer = defaultPlayer;
+    }
+
+    void switchTurn() {
+        turn = turn == Player.BLACK ? Player.WHITE : Player.BLACK;
+    }
+
+    boolean isBlack() { return turn == Player.BLACK; }
+
+    boolean isWhite() { return turn == Player.WHITE; }
+
     public void reset() {
-        turn = true;
+        turn = defaultPlayer;
     }
 }
