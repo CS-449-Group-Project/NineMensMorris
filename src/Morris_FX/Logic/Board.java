@@ -8,7 +8,8 @@ public class Board {
     public static final int GRID_SIZE = 7;
     private final Turn turn;
     private Cell[][] grid;
-    private CellSelectError lastError;
+    private CellSelectError invalidCellType;
+
     public Board() {
         this.turn = new Turn();
         this.createGrid();
@@ -22,14 +23,14 @@ public class Board {
         Cell cell = this.getCell(row, column);
 
         if (cell.isVoid()) {
-            lastError = CellSelectError.VOID;
+            invalidCellType = CellSelectError.VOID;
             return false;
         }
 
         if (cell.isOccupied()) {
-            lastError = CellSelectError.OCCUPIED;
+            invalidCellType = CellSelectError.OCCUPIED;
             if (cell.isBlack() == turn.getTurn()) {
-                lastError = CellSelectError.OWNED;
+                invalidCellType = CellSelectError.OWNED;
             }
             return false;
         }
@@ -93,6 +94,6 @@ public class Board {
     }
 
     public CellSelectError getLastMoveError() {
-        return lastError;
+        return invalidCellType;
     }
 }
