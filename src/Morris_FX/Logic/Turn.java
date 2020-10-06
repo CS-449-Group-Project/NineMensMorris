@@ -11,7 +11,7 @@ public class Turn {
         return turn;
     }
 
-    public void reset() {:
+    public void reset() {
         turn = true;
     }
 }
