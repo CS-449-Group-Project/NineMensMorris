@@ -8,7 +8,7 @@ public class Board {
     public static final int GRID_SIZE = 7;
     private final Turn turn;
     private Cell[][] grid;
-
+    private CellSelectError lastError;
     public Board() {
         this.turn = new Turn();
         this.createGrid();
@@ -20,12 +20,23 @@ public class Board {
 
     public boolean makeMove(int row, int column) {
         Cell cell = this.getCell(row, column);
-        boolean valid = cell.isEmpty();
-        if (valid) {
-            cell.setState(turn.getTurn() ? CellState.BLACK: CellState.WHITE);
-            turn.switchTurn();
+
+        if (cell.isVoid()) {
+            lastError = CellSelectError.VOID;
+            return false;
         }
-        return valid;
+
+        if (cell.isOccupied()) {
+            lastError = CellSelectError.OCCUPIED;
+            if (cell.isBlack() == turn.getTurn()) {
+                lastError = CellSelectError.OWNED;
+            }
+            return false;
+        }
+        cell.setState(turn.getTurn() ? CellState.BLACK: CellState.WHITE);
+        turn.switchTurn();
+
+        return true;
     }
 
     public void reset() {
@@ -81,4 +92,7 @@ public class Board {
         return rowMoves;
     }
 
+    public CellSelectError getLastMoveError() {
+        return lastError;
+    }
 }
