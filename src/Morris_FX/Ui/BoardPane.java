@@ -49,7 +49,7 @@ public class BoardPane extends GridPane {
         if (board.makeMove(row, column)) {
             cell.setState(board.getCell(row, column).getState());
         } else {
-            System.out.println(board.getLastMoveError());
+            System.out.println(board.getInvalidCellType());
         }
     }
 

@@ -1,6 +1,6 @@
 package Morris_FX.Logic;
 
-public enum CellSelectError {
+public enum InvalidCellType {
     NONE,
     OCCUPIED,
     VOID,
