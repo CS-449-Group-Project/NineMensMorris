@@ -1,28 +1,41 @@
 package Morris_FX.Logic;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 public class GameState {
     private final Turn turn;
-    private int blackPieces = 0,
-                whitePieces = 0;
+    private Map<PlayerColor,Player> player;
     private boolean mill = false;
 
     public GameState(Turn turn) {
         this.turn = turn;
+        setup();
+    }
+
+    private void setup() {
+        player = new EnumMap<PlayerColor, Player>(PlayerColor.class);
+        for (PlayerColor playerColor : PlayerColor.values()) {
+
+            player.put(playerColor, new Player(playerColor));
+        }
     }
 
     public Turn getTurn() {
         return turn;
     }
 
-    public void removePiece(Player player) {
-        switch(player) {
-            case BLACK:
-                this.blackPieces -= 1;
-                break;
-            case WHITE:
-                this.whitePieces -= 1;
-                break;
-        }
+    public void removePiece(PlayerColor fromPlayerColor) {
+        player.get(fromPlayerColor).removePiece();
+    }
+
+
+    Player getActivePlayer() {
+        return player.get(turn.getPlayerColor());
+    }
+
+    Player getInactivePlayer() {
+        return player.get(turn.getPlayerColor().complement());
     }
 
     public void setMill(boolean formedMill) {
@@ -44,7 +57,7 @@ public class GameState {
     }
 
     public void reset() {
-        // todo reset entire game state
+        // TODO: reset entire game state
         turn.reset();
     }
 
