@@ -1,25 +1,25 @@
 package Morris_FX.Ui;
 
+import Morris_FX.Logic.CellPosition;
 import Morris_FX.Logic.CellState;
 import javafx.scene.layout.Pane;
 
 public class CellPane extends Pane {
-    private int row = -1,column = -1;
+    private final CellPosition position;
     private final BoardPane parent;
 
-    public CellPane(BoardPane boardPane) {
+    public CellPane(CellPosition position, BoardPane boardPane) {
         super();
         this.parent = boardPane;
-
+        this.position = position;
         this.setPrefSize(2000, 2000);
-        this.setOnMouseClicked(e -> parent.onCellClick(this, row, column));
+        this.setOnMouseClicked(e -> parent.onCellClick(this));
 
         this.setState(CellState.VOID);
     }
-
-    public void setPosition(int row, int column){
-        this.row = row;
-        this.column = column;
+    
+    public CellPosition getPosition() {
+        return position;
     }
 
     public void setState(CellState state) {
