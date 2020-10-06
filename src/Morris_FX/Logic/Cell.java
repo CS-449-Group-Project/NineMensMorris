@@ -15,11 +15,13 @@ public class Cell {
         return this.playState == CellState.BLACK;
     }
 
+    public boolean isWhite() { return this.playState == CellState.WHITE; }
+
+    public boolean isOccupied() { return this.isBlack() || this.isWhite(); }
+
     public void setState(CellState newState) {
         playState = newState;
     }
-
-
 
     public void reset() {
         this.playState = CellState.VOID;
