@@ -75,8 +75,6 @@ public class Board {
 
         // mark valid spots as EMPTY
         markValidPosAsEmpty();
-
-        turn.reset();
     }
 
     private void createGrid() {
