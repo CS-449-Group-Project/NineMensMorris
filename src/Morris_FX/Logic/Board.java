@@ -6,21 +6,34 @@ import java.util.Vector;
 
 public class Board {
     public static final int GRID_SIZE = 7;
-    private final Turn turn;
+
     private Cell[][] grid;
     private InvalidCellType invalidCellType;
+    private GameState gameState;
 
-    public Board() {
-        this.turn = new Turn();
-        this.createGrid();
+    public Board(GameState gameState) {
+        this.gameState = gameState;
+        createGrid();
     }
 
     public Cell getCell(int row, int column) {
         return this.grid[row][column];
     }
 
-    public boolean makeMove(int row, int column) {
-        Cell cell = this.getCell(row, column);
+    public boolean validateMoveSelection(int row, int column) {
+        Cell cell = getCell(row, column);
+        Turn turn = gameState.getTurn();
+        if (gameState.millFormed()) {
+            switch (turn.getPlayer()) {
+                case BLACK:
+                    return cell.getState() == CellState.WHITE;
+                case WHITE:
+                    return cell.getState() == CellState.BLACK;
+                default:
+                    break;
+            }
+            return false;
+        }
 
         if (cell.isVoid()) {
             invalidCellType = InvalidCellType.VOID;
@@ -29,15 +42,31 @@ public class Board {
 
         if (cell.isOccupied()) {
             invalidCellType = InvalidCellType.OCCUPIED;
-            if (cell.isBlack() == turn.getTurn()) {
+            if (cell.isBlack() == turn.isBlack()) {
                 invalidCellType = InvalidCellType.OWNED;
             }
             return false;
         }
-        cell.setState(turn.getTurn() ? CellState.BLACK: CellState.WHITE);
-        turn.switchTurn();
 
         return true;
+    }
+
+    public void performMove(int row, int column) {
+        Cell cell = getCell(row, column);
+        if (gameState.millFormed()) {
+            switch (cell.getState()) {
+                case BLACK:
+                    gameState.removePiece(Player.BLACK);
+                    break;
+                case WHITE:
+                    gameState.removePiece(Player.WHITE);
+                    break;
+            }
+            cell.setState(CellState.EMPTY);
+        } else {
+            boolean isBlackTurn = gameState.getTurn().isBlack();
+            cell.setState(isBlackTurn ? CellState.BLACK : CellState.WHITE);
+        }
     }
 
     public void reset() {
