@@ -42,8 +42,7 @@ public class BoardPane extends GridPane {
         grid = new CellPane[Board.GRID_SIZE][Board.GRID_SIZE];
         for (int row = 0; row < Board.GRID_SIZE; row++)
             for (int column = 0; column < Board.GRID_SIZE; column++) {
-                CellPane cellPane =  new CellPane(this);
-                cellPane.setPosition(new CellPosition(row, column));
+                CellPane cellPane =  new CellPane(new CellPosition(row, column),this);
                 grid[row][column] = cellPane;
                 add(cellPane, column, row);
             }
