@@ -46,7 +46,9 @@ public class BoardPane extends GridPane {
     }
 
     public void onCellClick(CellPane cell, int row, int column) {
-        if (board.makeMove(row, column)) {
+        if (board.validateMoveSelection(row, column)) {
+            board.performMove(row, column);
+
             cell.setState(board.getCell(row, column).getState());
         } else {
             System.out.println(board.getInvalidCellType());
