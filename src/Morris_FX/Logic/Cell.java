@@ -5,6 +5,8 @@ public class Cell {
     private CellState playState = CellState.VOID;
 
     public CellState getState() { return this.playState; }
+    public boolean is(CellState state) { return this.playState == state; }
+
     public boolean isVoid() { return this.playState == CellState.VOID; }
 
     public boolean isEmpty() {
