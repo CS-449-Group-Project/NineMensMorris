@@ -1,6 +1,6 @@
 package Morris_FX.Logic;
 
-public enum Player {
+public enum PlayerColor {
     BLACK,
     WHITE
 }
