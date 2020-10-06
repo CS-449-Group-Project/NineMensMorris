@@ -43,5 +43,10 @@ public class GameState {
         }
     }
 
+    public void reset() {
+        // todo reset entire game state
+        turn.reset();
+    }
+
 
 }
