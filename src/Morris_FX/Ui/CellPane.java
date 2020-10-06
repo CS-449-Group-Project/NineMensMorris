@@ -17,7 +17,7 @@ public class CellPane extends Pane {
 
         this.setState(CellState.VOID);
     }
-    
+
     public CellPosition getPosition() {
         return position;
     }
