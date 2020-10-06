@@ -1,7 +1,9 @@
 package Morris_FX.Ui;
 
 import Morris_FX.Logic.Board;
+import Morris_FX.Logic.CellPosition;
 import Morris_FX.Logic.CellState;
+import Morris_FX.Logic.GameState;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 
@@ -9,10 +11,12 @@ import java.util.List;
 
 public class BoardPane extends GridPane {
     private final Board board;
+    private final GameState gameState;
     private CellPane[][] grid;
-    public BoardPane(Board board) {
+    public BoardPane(Board board, GameState gameState) {
         super();
         this.board = board;
+        this.gameState = gameState;
         setup();
     }
 
@@ -39,17 +43,18 @@ public class BoardPane extends GridPane {
         for (int row = 0; row < Board.GRID_SIZE; row++)
             for (int column = 0; column < Board.GRID_SIZE; column++) {
                 CellPane cellPane =  new CellPane(this);
-                cellPane.setPosition(row, column);
+                cellPane.setPosition(new CellPosition(row, column));
                 grid[row][column] = cellPane;
                 add(cellPane, column, row);
             }
     }
 
-    public void onCellClick(CellPane cell, int row, int column) {
-        if (board.validateMoveSelection(row, column)) {
-            board.performMove(row, column);
-
-            cell.setState(board.getCell(row, column).getState());
+    public void onCellClick(CellPane cell) {
+        CellPosition cellPos = cell.getPosition();
+        if (board.validateMoveSelection(cellPos)) {
+            board.performMove(cellPos);
+            cell.setState(board.getCell(cellPos).getState());
+            gameState.switchTurn();
         } else {
             System.out.println(board.getInvalidCellType());
         }
