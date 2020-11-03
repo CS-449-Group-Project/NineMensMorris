@@ -17,6 +17,9 @@ public class BoardPane extends GridPane {
         super();
         this.board = board;
         this.gameState = gameState;
+        // The code below fixes the resizing issue with the game board and app window. The exact values need to be tweaked which will be done in sprint 2
+        //this.setMaxSize(500,500);
+        //this.setMinSize(500,500);
         setup();
     }
 
