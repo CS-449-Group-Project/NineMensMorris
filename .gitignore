@@ -1,6 +1,9 @@
 # IDE dependent settings
 .idea/*
 
+# Not necessary to have on git
+*.iml
+
 # Compiled class file
 *.class
 
