@@ -72,16 +72,17 @@ public class Board {
     public void performMove(CellPosition position) {
         Cell cell = getCell(position);
         Player player = gameState.getActivePlayer();
-        if (!player.removeDeckMarbles()) {
-            return;
+        if (player.hasMarblesInHand()) {
+            player.removeMarblesFromHand();
+            if (gameState.millFormed()) {
+                // gameState.getInactivePlayer().removeDeckMarbles();
+                cell.setState(CellState.EMPTY);
+            } else {
+                cell.setState(player.getCellState());
+            }
         }
 
-        if (gameState.millFormed()) {
-            // gameState.getInactivePlayer().removeDeckMarbles();
-            cell.setState(CellState.EMPTY);
-        } else {
-            cell.setState(player.getCellState());
-        }
+
     }
 
     public void reset() {

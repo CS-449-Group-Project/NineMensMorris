@@ -3,7 +3,7 @@ package Morris_FX.Logic;
 public class Player {
     private static final int MAX_MARBLES = 9;
     private static final int NO_MARBLES = 0;
-    private int deckMarbles = MAX_MARBLES;
+    private int marblesInHand = MAX_MARBLES;
     private int boardPieces;
     private final PlayerColor color;
 
@@ -23,21 +23,21 @@ public class Player {
         return color;
     }
 
-    public int getDeckMarbles() {
-        return deckMarbles;
+    public int getMarblesInHand() {
+        return marblesInHand;
     }
 
 
-    public boolean removeDeckMarbles() {
-        boolean canRemovePiece = deckMarbles > NO_MARBLES;
-        if (canRemovePiece) {
-            deckMarbles--;
-        }
-        return canRemovePiece;
+    public boolean hasMarblesInHand() {
+        return marblesInHand != NO_MARBLES;
+    }
+
+    public void removeMarblesFromHand() {
+        marblesInHand--;
     }
 
     public void reset() {
-        deckMarbles = MAX_MARBLES;
+        marblesInHand = MAX_MARBLES;
         boardPieces = NO_MARBLES;
     }
 
