@@ -30,10 +30,10 @@ public class TestGameBoardSetup {
         Cell coordinate00 = board.getCell(position0);
 
         CellPosition position1 = new CellPosition(1, 1);
-        Cell coordinate11 = board.getCell(position0);
+        Cell coordinate11 = board.getCell(position1);
 
         CellPosition position2 = new CellPosition(2, 2);
-        Cell coordinate22 = board.getCell(position0);
+        Cell coordinate22 = board.getCell(position2);
 
         assertEquals(CellState.EMPTY, coordinate00.getState());
         assertEquals(CellState.EMPTY, coordinate11.getState());
