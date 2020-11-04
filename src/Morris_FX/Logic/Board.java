@@ -143,4 +143,8 @@ public class Board {
     public InvalidCellType getInvalidCellType() {
         return invalidCellType;
     }
+
+    public GameState getGameState() {
+        return this.gameState;
+    }
 }

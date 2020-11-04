@@ -10,11 +10,13 @@ import static org.junit.Assert.*;
 public class TestGameBoardSetup {
 
     Board board;
+    Turn turn;
+    GameState newGame;
     // Class_GivenScenario_Expectation
     @BeforeEach
     public void setup() {
-        Turn turn = new Turn(PlayerColor.BLACK);
-        GameState newGame = new GameState(turn);
+        turn = new Turn(PlayerColor.BLACK);
+        newGame = new GameState(turn);
         board = new Board(newGame);
         board.reset();
     }
@@ -55,11 +57,9 @@ public class TestGameBoardSetup {
     @Test
     public void Board_GivenNewGame_TurnIsBlack() {
         setup();
-    }
 
-    @Test
-    public void Board_GivenGameReset_TurnIsBlack() {
-        setup();
+        GameState newGameTurn = board.getGameState();
+        assertEquals(PlayerColor.BLACK, newGameTurn.getTurn().getPlayerColor());
+        assertNotEquals(PlayerColor.WHITE, newGameTurn.getTurn().getPlayerColor());
     }
-
 }
