@@ -72,8 +72,12 @@ public class Board {
     public void performMove(CellPosition position) {
         Cell cell = getCell(position);
         Player player = gameState.getActivePlayer();
+        if (!player.removeDeckMarbles()) {
+            return;
+        }
+
         if (gameState.millFormed()) {
-            gameState.getInactivePlayer().removePiece();
+            // gameState.getInactivePlayer().removeDeckMarbles();
             cell.setState(CellState.EMPTY);
         } else {
             cell.setState(player.getCellState());
