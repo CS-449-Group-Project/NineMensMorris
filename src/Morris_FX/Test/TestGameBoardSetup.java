@@ -20,10 +20,8 @@ public class TestGameBoardSetup {
     }
 
     @Test
-    public void Board_GivenNewGame_EmptyBoard() {
-        // test 0,0
-        // test 1,1
-        // test 2,2
+    public void Board_GivenNewGame_EmptyCells() {
+
         setup();
 
         CellPosition position0 = new CellPosition(0, 0);
@@ -38,13 +36,30 @@ public class TestGameBoardSetup {
         assertEquals(CellState.EMPTY, coordinate00.getState());
         assertEquals(CellState.EMPTY, coordinate11.getState());
         assertEquals(CellState.EMPTY, coordinate22.getState());
-
     }
 
     @Test
-    public void Board_GivenNewGame_TurnIsBlack() {}
+    public void Board_GivenNewGame_VoidCells() {
+        setup();
+
+        CellPosition position3 = new CellPosition(3, 3);
+        Cell coordinate33 = board.getCell(position3);
+
+        CellPosition position4 = new CellPosition(1, 2);
+        Cell coordinate12 = board.getCell(position4);
+
+        assertEquals(CellState.VOID, coordinate33.getState());
+        assertEquals(CellState.VOID, coordinate12.getState());
+    }
 
     @Test
-    public void Board_GivenGameReset_TurnIsBlack() {}
+    public void Board_GivenNewGame_TurnIsBlack() {
+        setup();
+    }
+
+    @Test
+    public void Board_GivenGameReset_TurnIsBlack() {
+        setup();
+    }
 
 }
