@@ -110,7 +110,7 @@ public class Board {
         return !getCell(row, column).isVoid();
     }*/
 
-    public List<Integer> getValidRowMoves(int row) {
+    public List<Integer> getValidRowMoves(int row) { // row loops from 0 to 6
         List<Integer> rowMoves = new Vector<>(Board.GRID_SIZE - 1);
         int middle = (Board.GRID_SIZE - 1)/2;
         if (row == middle) {
@@ -124,6 +124,17 @@ public class Board {
             for(int i = 0; i < 3; i++) {
                 int offset = (i - 1) * dist;
                 rowMoves.add(offset + middle);
+                // at row = 0, dist = 3
+                // at i = 0, offset = -3
+                // add (-3 + 3) => row, column (0,0)
+
+                // at i = 1, offset = 0
+                // add (0 + 3) => row, column (0,3)
+
+                // at i = 2, offset = 3
+                // add (3 + 3) => row, column (0,6)
+
+                // at row = 1, dist = 2
             }
         }
         return rowMoves;

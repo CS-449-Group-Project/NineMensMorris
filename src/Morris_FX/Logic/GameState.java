@@ -1,5 +1,6 @@
 package Morris_FX.Logic;
 
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -60,6 +61,5 @@ public class GameState {
         // TODO: reset entire game state
         turn.reset();
     }
-
 
 }
