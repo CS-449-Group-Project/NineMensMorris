@@ -31,11 +31,11 @@ public class GameState {
     }
 
 
-    public Player getActivePlayer() {
+    Player getActivePlayer() {
         return player.get(turn.getPlayerColor());
     }
 
-    public Player getInactivePlayer() {
+    Player getInactivePlayer() {
         return player.get(turn.getPlayerColor().complement());
     }
 

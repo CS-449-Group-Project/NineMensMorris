@@ -57,8 +57,7 @@ public class TestGameBoardSetup {
     public void Board_GivenNewGame_TurnIsBlack() {
         setup();
 
-        GameState newGameTurn = board.getGameState();
-        assertEquals(PlayerColor.BLACK, newGameTurn.getTurn().getPlayerColor());
-        assertNotEquals(PlayerColor.WHITE, newGameTurn.getTurn().getPlayerColor());
+        assertEquals(PlayerColor.BLACK, newGame.getTurn().getPlayerColor());
+        assertNotEquals(PlayerColor.WHITE, newGame.getTurn().getPlayerColor());
     }
 }
