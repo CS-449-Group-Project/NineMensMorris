@@ -11,7 +11,7 @@ public class TestGameBoardSetup {
     private Board board;
     private Turn turn;
     private GameState newGame;
-    // Class_GivenScenario_Expectation
+    // format of test method names: public void Class_GivenScenario_Expectation()
 
     private void setup() {
         turn = new Turn(PlayerColor.BLACK);
