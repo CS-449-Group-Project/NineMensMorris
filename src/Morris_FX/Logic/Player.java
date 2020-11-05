@@ -15,7 +15,7 @@ public class Player {
                 CellState.WHITE;
     }
 
-    PlayerColor getColor() {
+    public PlayerColor getColor() {
         return color;
     }
 

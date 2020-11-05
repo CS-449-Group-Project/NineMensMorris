@@ -8,12 +8,12 @@ import static org.junit.Assert.*;
 
 public class TestGameBoardSetup {
 
-    Board board;
-    Turn turn;
-    GameState newGame;
+    private Board board;
+    private Turn turn;
+    private GameState newGame;
     // Class_GivenScenario_Expectation
 
-    public void setup() {
+    private void setup() {
         turn = new Turn(PlayerColor.BLACK);
         newGame = new GameState(turn);
         board = new Board(newGame);
