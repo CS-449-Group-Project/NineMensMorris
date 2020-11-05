@@ -111,9 +111,63 @@ public class Board {
         }
     }
 
-    /*public boolean isValidMove(int row, int column) {
-        return !getCell(row, column).isVoid();
-    }*/
+
+
+    public List<CellPosition> getValidMoves(CellPosition pos) {
+        Vector<CellPosition> validMoves = new Vector<CellPosition>(4);
+        int midPoint = (Board.GRID_SIZE - 1)/2;
+        CellPosition reference;
+        double angle = 0;
+        if (isCenterPosition(pos)) {
+            // reference point
+            int nonMidPoint = pos.getRow() == midPoint ?
+                                                pos.getColumn() :
+                                                pos.getRow();
+
+            int diff = midPoint - Math.abs(midPoint - nonMidPoint);
+
+            reference = new CellPosition(diff, midPoint);
+
+            int xDiff[] = {-1,1};
+            for (int i = 0; i < xDiff.length;i++) {
+                int multiplier = -1 + 2 * i;
+                int x = reference.getColumn(),
+                    y = midPoint + multiplier * diff;
+                validMoves.add(new CellPosition(x, y));
+            }
+
+            int start = Math.max(0, reference.getColumn() - 1);
+            int end = Math.min(2, reference.getColumn() + 1);
+            for(int i = start; i <= end; i++) {
+                if (i != reference.getColumn()) {
+                    validMoves.add(new CellPosition(i, reference.getRow()));
+                }
+            }
+        } else { // corner position
+            int diff = Math.abs(midPoint - pos.getRow());
+
+            reference = new CellPosition(diff, diff);
+            for (int i = 0; i < 2;i++) {
+                int x = midPoint * Math.abs(i - 1) + diff * i;
+                int y = diff * Math.abs(i - 1) + midPoint * i;
+                validMoves.add(new CellPosition(x, y));
+            }
+        }
+
+
+        angle = reference.angleTo(pos);
+        
+        for(int i = 0; i < validMoves.size(); i++) {
+            validMoves.set(i, validMoves.get(i).rotateCounterClockwise(Math.toRadians(angle)));
+        }
+        return validMoves;
+    }
+
+    private boolean isCenterPosition(CellPosition pos) {
+        int middle = (Board.GRID_SIZE - 1)/2;
+        return pos.getRow() == middle || pos.getColumn() == middle;
+    }
+
 
     public List<Integer> getValidRowMoves(int row) {
         List<Integer> rowMoves = new Vector<>(Board.GRID_SIZE - 1);
