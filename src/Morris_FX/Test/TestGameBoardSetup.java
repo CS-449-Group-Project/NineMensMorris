@@ -2,7 +2,6 @@ package Morris_FX.Test;
 
 import Morris_FX.Logic.*;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import static org.junit.Assert.*;
 
 //jUnit version 5.4+
@@ -13,7 +12,7 @@ public class TestGameBoardSetup {
     Turn turn;
     GameState newGame;
     // Class_GivenScenario_Expectation
-    @BeforeEach
+
     public void setup() {
         turn = new Turn(PlayerColor.BLACK);
         newGame = new GameState(turn);
