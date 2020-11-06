@@ -1,6 +1,7 @@
 package test;
 
 import Morris_FX.Logic.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -8,9 +9,17 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BoardTests {
-    Turn turn = new Turn(PlayerColor.WHITE);
-    GameState gameState = new GameState(turn);
-    Board board = new Board(gameState);
+    private Turn turn;
+    private GameState gameState;
+    private Board board;
+
+
+    @BeforeEach
+    public void setup() {
+        turn = new Turn(PlayerColor.WHITE);
+        gameState = new GameState(turn);
+        board = new Board(gameState);
+    }
 
     @Test
     public void test() {
@@ -30,5 +39,25 @@ public class BoardTests {
             assertTrue(rotatedPos1.getRow() == oraclePos2.getRow());
             assertTrue(rotatedPos1.getColumn() == oraclePos2.getColumn());
         }
+    }
+
+    @Test
+    public void testValidMovesWithNonEmptyBoard() {
+        CellPosition firstMove =  new CellPosition(0,0);
+        CellPosition secondMove = new CellPosition(0,3);
+
+        board.performMove(firstMove);
+        board.performMove(secondMove);
+        List<CellPosition> validMoves = board.getValidMoves(firstMove);
+        System.out.println(validMoves);
+        assertEquals(1, validMoves.size());
+
+        CellPosition onlyValidMove = secondMove.rotateCounterClockwise(Math.toRadians(270));
+
+        CellPosition firstChoice = validMoves.get(0);
+
+
+        assertTrue(onlyValidMove.getColumn() == firstChoice.getColumn());
+        assertTrue(onlyValidMove.getRow() == firstChoice.getRow());
     }
 }
