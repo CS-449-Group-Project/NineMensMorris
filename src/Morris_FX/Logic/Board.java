@@ -159,7 +159,6 @@ public class Board {
         
         for(int i = validMoves.size() - 1; i >=0 ; i--) {
             CellPosition adjustedPos = validMoves.get(i).rotateCounterClockwise(Math.toRadians(angle));
-            System.out.println(validMoves.get(i) + " " + adjustedPos);
             if (getCell(adjustedPos).isOccupied()) {
                 validMoves.remove(i);
             } else {
