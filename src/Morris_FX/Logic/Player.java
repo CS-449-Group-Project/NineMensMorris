@@ -1,12 +1,16 @@
 package Morris_FX.Logic;
 
 public class Player {
-    private static final int MAX_PIECES = 9;
-    private int pieces;
+    private static final int MAX_MARBLES = 9;
+    private static final int NO_MARBLES = 0;
+    private int marblesInHand = MAX_MARBLES;
+    private int boardPieces;
     private final PlayerColor color;
 
     public Player(PlayerColor color) {
+
         this.color = color;
+        this.reset();
     }
 
     CellState getCellState() {
@@ -15,20 +19,26 @@ public class Player {
                 CellState.WHITE;
     }
 
-    public PlayerColor getColor() {
+    PlayerColor getColor() {
         return color;
     }
 
-    int getPieces() {
-        return pieces;
+    public int getMarblesInHand() {
+        return marblesInHand;
     }
 
-    void removePiece() {
-        this.pieces -= 1;
+
+    public boolean hasMarblesInHand() {
+        return marblesInHand != NO_MARBLES;
+    }
+
+    public void removeMarblesFromHand() {
+        marblesInHand--;
     }
 
     public void reset() {
-        this.pieces = Player.MAX_PIECES;
+        marblesInHand = MAX_MARBLES;
+        boardPieces = NO_MARBLES;
     }
 
 }

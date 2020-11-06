@@ -26,11 +26,6 @@ public class GameState {
         return turn;
     }
 
-    public void removePiece(PlayerColor fromPlayerColor) {
-        player.get(fromPlayerColor).removePiece();
-    }
-
-
     Player getActivePlayer() {
         return player.get(turn.getPlayerColor());
     }
