@@ -72,12 +72,17 @@ public class Board {
     public void performMove(CellPosition position) {
         Cell cell = getCell(position);
         Player player = gameState.getActivePlayer();
-        if (gameState.millFormed()) {
-            gameState.getInactivePlayer().removePiece();
-            cell.setState(CellState.EMPTY);
-        } else {
-            cell.setState(player.getCellState());
+        if (player.hasMarblesInHand()) {
+            player.removeMarblesFromHand();
+            if (gameState.millFormed()) {
+                // gameState.getInactivePlayer().removeDeckMarbles();
+                cell.setState(CellState.EMPTY);
+            } else {
+                cell.setState(player.getCellState());
+            }
         }
+
+
     }
 
     public void reset() {
@@ -106,9 +111,6 @@ public class Board {
         }
     }
 
-    /*public boolean isValidMove(int row, int column) {
-        return !getCell(row, column).isVoid();
-    }*/
 
     public List<Integer> getValidRowMoves(int row) {
         List<Integer> rowMoves = new Vector<>(Board.GRID_SIZE - 1);
