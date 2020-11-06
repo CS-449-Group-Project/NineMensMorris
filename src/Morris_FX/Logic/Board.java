@@ -144,7 +144,7 @@ public class Board {
                 }
             }
         } else { // corner position
-            int diff = Math.abs(midPoint - pos.getRow());
+            int diff = midPoint - Math.abs(midPoint - pos.getRow());
 
             reference = new CellPosition(diff, diff);
             for (int i = 0; i < 2;i++) {
@@ -157,8 +157,15 @@ public class Board {
 
         angle = reference.angleTo(pos);
         
-        for(int i = 0; i < validMoves.size(); i++) {
-            validMoves.set(i, validMoves.get(i).rotateCounterClockwise(Math.toRadians(angle)));
+        for(int i = validMoves.size() - 1; i >=0 ; i--) {
+            CellPosition adjustedPos = validMoves.get(i).rotateCounterClockwise(Math.toRadians(angle));
+            System.out.println(validMoves.get(i) + " " + adjustedPos);
+            if (getCell(adjustedPos).isOccupied()) {
+                validMoves.remove(i);
+            } else {
+                validMoves.set(i, adjustedPos);
+            }
+
         }
         return validMoves;
     }
