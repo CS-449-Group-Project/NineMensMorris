@@ -1,8 +1,10 @@
 package Morris_FX.Test;
 
 import Morris_FX.Logic.*;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestTurnTracking {
 
@@ -11,6 +13,7 @@ public class TestTurnTracking {
     private GameState newGame;
     // format of test method names: public void Class_GivenScenario_Expectation()
 
+    @BeforeEach
     private void setup() {
         turn = new Turn(PlayerColor.BLACK);
         newGame = new GameState(turn);
@@ -20,8 +23,6 @@ public class TestTurnTracking {
 
     @Test
     public void Turn_BlackPlacesFirstMarble_TurnIsWhite() {
-        setup();
-
         CellPosition position0 = new CellPosition(0, 0);
 
         board.performMove(position0);
@@ -32,8 +33,6 @@ public class TestTurnTracking {
 
     @Test
     public void Turn_WhitePlacesSecondMarble_TurnIsBlack() {
-        setup();
-
         CellPosition position0 = new CellPosition(0, 0);
         CellPosition position1 = new CellPosition(1, 1);
 

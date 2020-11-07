@@ -1,8 +1,10 @@
 package Morris_FX.Test;
 
 import Morris_FX.Logic.*;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 //jUnit version 5.4+
 
@@ -13,6 +15,7 @@ public class TestGameBoardSetup {
     private GameState newGame;
     // format of test method names: public void Class_GivenScenario_Expectation()
 
+    @BeforeEach
     private void setup() {
         turn = new Turn(PlayerColor.BLACK);
         newGame = new GameState(turn);
@@ -22,9 +25,6 @@ public class TestGameBoardSetup {
 
     @Test
     public void Board_GivenNewGame_EmptyCells() {
-
-        setup();
-
         CellPosition position0 = new CellPosition(0, 0);
         Cell coordinate00 = board.getCell(position0);
 
@@ -41,8 +41,6 @@ public class TestGameBoardSetup {
 
     @Test
     public void Board_GivenNewGame_VoidCells() {
-        setup();
-
         CellPosition position3 = new CellPosition(3, 3);
         Cell coordinate33 = board.getCell(position3);
 
@@ -55,8 +53,6 @@ public class TestGameBoardSetup {
 
     @Test
     public void Board_GivenNewGame_TurnIsBlack() {
-        setup();
-
         assertEquals(PlayerColor.BLACK, newGame.getTurn().getPlayerColor());
         assertNotEquals(PlayerColor.WHITE, newGame.getTurn().getPlayerColor());
     }
