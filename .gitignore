@@ -1,3 +1,6 @@
+# output
+out/*
+
 # IDE dependent settings
 .idea/*
 
@@ -6,6 +9,7 @@
 
 # Compiled class file
 *.class
+
 
 # Log file
 *.log
