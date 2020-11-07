@@ -7,9 +7,12 @@ import Morris_FX.Logic.GameState;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 
+import java.beans.IndexedPropertyChangeEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 
-public class BoardPane extends GridPane {
+public class BoardPane extends GridPane implements PropertyChangeListener {
     private final Board board;
     private final GameState gameState;
     private CellPane[][] grid;
@@ -26,6 +29,7 @@ public class BoardPane extends GridPane {
     public void setup() {
         this.setupBackgroundImage();
         this.setupGrid();
+        this.board.addPropertyChangeListener(this);
     }
 
     private void setupBackgroundImage() {
@@ -55,7 +59,6 @@ public class BoardPane extends GridPane {
         CellPosition cellPos = cell.getPosition();
         if (board.validateMoveSelection(cellPos)) {
             board.performMove(cellPos);
-            cell.setState(board.getCell(cellPos).getState());
             gameState.switchTurn();
         } else {
             System.out.println(board.getInvalidCellType());
@@ -73,4 +76,14 @@ public class BoardPane extends GridPane {
         }
     }
 
+    public void propertyChange(PropertyChangeEvent evt) {
+        String propertyName = evt.getPropertyName();
+        if (propertyName.equals("grid")) {
+            IndexedPropertyChangeEvent indexEvent = (IndexedPropertyChangeEvent)evt;
+            int index = indexEvent.getIndex();
+            CellPosition position = new CellPosition(index);
+            int x = position.getColumn(),y = position.getRow();
+            grid[y][x].setState((CellState)evt.getNewValue());
+        }
+    }
 }
