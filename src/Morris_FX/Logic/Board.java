@@ -8,11 +8,6 @@ import java.util.List;
 import java.util.Vector;
 
 public class Board {
-    private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        pcs.addPropertyChangeListener(listener);
-    }
 
     public static final int GRID_SIZE = 7;
 
@@ -28,11 +23,6 @@ public class Board {
 
         grid = new Cell[GRID_SIZE][GRID_SIZE];
         createGrid();
-    }
-
-    public Cell getCell(CellPosition position) {
-        int row = position.getRow(), column = position.getColumn();
-        return this.grid[row][column];
     }
 
     public boolean validateMoveSelection(CellPosition position) {
@@ -91,9 +81,13 @@ public class Board {
         }
     }
 
-    private void setCell(CellPosition position, CellState newState) {
+    public Cell getCell(CellPosition position) {
+        int row = position.getRow(), column = position.getColumn();
+        return this.grid[row][column];
+    }
+
+    protected void setCell(CellPosition position, CellState newState) {
         Cell cell = getCell(position);
-        pcs.fireIndexedPropertyChange("grid", position.toIndex(), cell.getState(), newState);
         cell.setState(newState);
     }
 
@@ -146,4 +140,5 @@ public class Board {
     public InvalidCellType getInvalidCellType() {
         return invalidCellType;
     }
+
 }

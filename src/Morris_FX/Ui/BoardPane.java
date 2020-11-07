@@ -1,9 +1,6 @@
 package Morris_FX.Ui;
 
-import Morris_FX.Logic.Board;
-import Morris_FX.Logic.CellPosition;
-import Morris_FX.Logic.CellState;
-import Morris_FX.Logic.GameState;
+import Morris_FX.Logic.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 
@@ -13,10 +10,10 @@ import java.beans.PropertyChangeListener;
 import java.util.List;
 
 public class BoardPane extends GridPane implements PropertyChangeListener {
-    private final Board board;
+    private final ObservableBoard board;
     private final GameState gameState;
     private CellPane[][] grid;
-    public BoardPane(Board board, GameState gameState) {
+    public BoardPane(ObservableBoard board, GameState gameState) {
         super();
         this.board = board;
         this.gameState = gameState;
