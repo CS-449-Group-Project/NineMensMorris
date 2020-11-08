@@ -44,4 +44,21 @@ public class TestPiecePlacement {
 
         assertEquals(CellState.WHITE, coordinate11.getState());
     }
+
+    @Test
+    public void Cell_EmptyCellIsClickedAfterAllMarblesArePlaced_NoPieceIsPlaced() {
+        Player player = newGame.getActivePlayer();
+
+        while (player.hasMarblesInHand())
+        {
+            player.removeMarblesFromHand();
+        }
+
+        CellPosition position0 = new CellPosition(0, 0);
+        Cell coordinate00 = board.getCell(position0);
+
+        board.performMove(position0);
+
+        assertEquals(CellState.EMPTY, coordinate00.getState());
+    }
 }
