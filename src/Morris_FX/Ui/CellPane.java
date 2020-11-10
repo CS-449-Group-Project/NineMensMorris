@@ -5,16 +5,18 @@ import Morris_FX.Logic.CellState;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 
+import java.util.ArrayList;
+
 public class CellPane extends Pane {
     private final CellPosition position;
     private final BoardPane parent;
 
-    //private Image blackPieceImage = new Image("https://www.flaticon.com/free-icon/black-circle_14", 50, 50, false, true);
-    //private BackgroundImage blackPiece = new BackgroundImage(blackPieceImage, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+    public CellPane up;
+    public CellPane down;
+    public CellPane left;
+    public CellPane right;
 
-    //private Image whitePieceImage = new Image("https://www.iconspng.com/image/75653/white-circle", 50, 50, false, true);
-    //private BackgroundImage whitePiece = new BackgroundImage(whitePieceImage, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
-
+    public java.util.List<CellPane> moves = new ArrayList<CellPane>();
 
     public CellPane(CellPosition position, BoardPane boardPane) {
         super();
