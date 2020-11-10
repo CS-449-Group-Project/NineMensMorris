@@ -17,6 +17,8 @@ import javafx.scene.control.Button;
 import javafx.geometry.Pos;
 import javafx.application.Platform;
 
+import java.io.FileNotFoundException;
+
 
 public class Morris extends Application {
 
@@ -26,7 +28,7 @@ public class Morris extends Application {
     private final BoardPane boardPane;
     Scene scene1, scene2, scene3;
 
-    public Morris() {
+    public Morris(){
         turn = new Turn(PlayerColor.BLACK);
         gameState = new GameState(turn);
         board = new Board(gameState);

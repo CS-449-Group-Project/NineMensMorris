@@ -36,6 +36,11 @@ public class Player {
         marblesInHand--;
     }
 
+    public int getBoardPieces(){
+
+        return boardPieces;
+    }
+
     public void reset() {
         marblesInHand = MAX_MARBLES;
         boardPieces = NO_MARBLES;

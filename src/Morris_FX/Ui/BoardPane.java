@@ -7,6 +7,9 @@ import Morris_FX.Logic.GameState;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 public class BoardPane extends GridPane {
@@ -30,15 +33,27 @@ public class BoardPane extends GridPane {
 
     private void setupBackgroundImage() {
         //create the background image from a url. Need changing the basis to the file
-        Image image = new Image("https://www.iconfinder.com/data/icons/toys-2/512/game-6-512.png",550,450,false,true);
 
-        BackgroundImage emptyBoard = new BackgroundImage(image,
-                                                        BackgroundRepeat.REPEAT,
-                                                        BackgroundRepeat.NO_REPEAT,
-                                                        BackgroundPosition.DEFAULT,
-                                                        BackgroundSize.DEFAULT);
+        FileInputStream backgroundImage;
+        try{
+            backgroundImage = new FileInputStream("./images/Morris_Board_Wood.png");
+            Image image = new Image(backgroundImage,550,550,false,true);
 
-        this.setBackground(new Background(emptyBoard));
+            BackgroundImage emptyBoard = new BackgroundImage(image,
+                    BackgroundRepeat.REPEAT,
+                    BackgroundRepeat.NO_REPEAT,
+                    BackgroundPosition.DEFAULT,
+                    BackgroundSize.DEFAULT);
+
+            this.setBackground(new Background(emptyBoard));
+        }
+        catch (FileNotFoundException e){
+            System.out.println(e);
+
+            return;
+        }
+
+
     }
 
     private void setupGrid() {
@@ -53,10 +68,10 @@ public class BoardPane extends GridPane {
 
     public void onCellClick(CellPane cell) {
         CellPosition cellPos = cell.getPosition();
-        if (board.validateMoveSelection(cellPos)) {
+        if (board.validateCellSelection(cellPos)) {
             board.performMove(cellPos);
             cell.setState(board.getCell(cellPos).getState());
-            gameState.switchTurn();
+
         } else {
             System.out.println(board.getInvalidCellType());
         }

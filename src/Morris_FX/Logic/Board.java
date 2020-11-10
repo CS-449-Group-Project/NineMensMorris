@@ -26,7 +26,7 @@ public class Board {
         return this.grid[row][column];
     }
 
-    public boolean validateMoveSelection(CellPosition position) {
+    public boolean validateCellSelection(CellPosition position) {
         Cell cell = getCell(position);
 
         // always false
@@ -80,7 +80,13 @@ public class Board {
             } else {
                 cell.setState(player.getCellState());
             }
+        }else if(player.getBoardPieces() > 3){
+            // Marble Movement
+
+        }else{
+            //Fly Rule
         }
+        gameState.switchTurn();
 
 
     }
