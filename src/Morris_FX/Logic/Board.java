@@ -40,7 +40,7 @@ public class Board {
         Player player = gameState.getActivePlayer();
         if (gameState.millFormed()) {
 
-            // always false
+            // always false because the logic has not been added to determine if a mill was formed
             if (cell.isEmpty()) {
                 invalidCellType = InvalidCellType.EMPTY;
                 return false;
@@ -55,6 +55,26 @@ public class Board {
             return false;
         }
 
+        // switch statement here for stages of the game
+        // below is my suggestion for the format of the switch statement
+
+//        switch (GameManager.getGameStage()) {
+//            case Stage1:
+                    // return false if cell is occupied
+                    // break;
+//            case Stage2:
+                    // valid if cell is occupied
+                    // store position if occupied cell is clicked in variable originalPieceLocation
+                    // return false if empty cell is clicked without a value in originalPieceLocation
+                    // return true if value exists in originalPieceLocation and an empty cell was clicked that is "linked"
+                    // to the originally clicked cell
+                    // we should have a method that returns a boolean based on whether or not the cells are linked
+                    // break;
+        //   case Stage3:
+                    // same as Stage2 but condition for linked cells would be removed
+//        }
+
+        // this logic below would go into the first case in the switch statement above
         if (cell.isOccupied()) {
             invalidCellType = InvalidCellType.OCCUPIED;
             if (cell.is(player.getCellState())) {
