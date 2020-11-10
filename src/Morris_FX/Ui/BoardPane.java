@@ -23,8 +23,8 @@ public class BoardPane extends GridPane {
         this.board = board;
         this.gameState = gameState;
         // The code below fixes the resizing issue with the game board and app window. The exact values need to be tweaked which will be done in sprint 2
-        //this.setMaxSize(500,500);
-        //this.setMinSize(500,500);
+//        this.setMaxSize(500,500);
+//        this.setMinSize(500,500);
         setup();
     }
 
@@ -91,14 +91,14 @@ public class BoardPane extends GridPane {
     }
 
     CellPane findRight(CellPosition location){
-        int i = location.x + 1;
-        int j = location.y;
+        int i = location.getRow() + 1;
+        int j = location.getColumn();
         for (; i < 7; i++){
 
             if( i == 3 && j == 3){
                 return null;
             }
-            if(grid[i][j].playState == Morris.State.EMPTY){
+            if(grid[i][j].cellState == CellState.EMPTY){
                 return grid[i][j];
             }
         }
@@ -107,14 +107,14 @@ public class BoardPane extends GridPane {
 
     //same but left
     CellPane findLeft(CellPosition location){
-        int i = location.x - 1;
-        int j = location.y;
+        int i = location.getRow() + 1;
+        int j = location.getColumn();
         for (; i >= 0; i--){
 
             if( i == 3 && j == 3){
                 return null;
             }
-            if(grid[i][j].playState == Morris.State.EMPTY){
+            if(grid[i][j].cellState == CellState.EMPTY){
                 return grid[i][j];
             }
         }
@@ -123,14 +123,14 @@ public class BoardPane extends GridPane {
 
     //same but down
     CellPane findDown(CellPosition location){
-        int i = location.x;
-        int j = location.y + 1;
+        int i = location.getRow() + 1;
+        int j = location.getColumn();
         for (; j < 7; j++){
 
             if( i == 3 && j == 3){
                 return null;
             }
-            if(grid[i][j].playState == Morris.State.EMPTY){
+            if(grid[i][j].cellState == CellState.EMPTY){
                 return grid[i][j];
             }
         }
@@ -139,14 +139,14 @@ public class BoardPane extends GridPane {
 
     //same but up
     CellPane findUp(CellPosition location){
-        int i = location.x;
-        int j = location.y - 1;
+        int i = location.getRow() + 1;
+        int j = location.getColumn();
         for (; j >= 0; j--){
 
             if( i == 3 && j == 3){
                 return null;
             }
-            if(grid[i][j].playState == Morris.State.EMPTY){
+            if(grid[i][j].cellState == CellState.EMPTY){
                 return grid[i][j];
             }
         }
@@ -160,18 +160,18 @@ public class BoardPane extends GridPane {
     public void linkCells(){
         for(int j = 0; j < 7; j++) {
             for (int i = 0; i < 7; i++) {
-                if(grid[i][j].playState == Morris.State.EMPTY) {
+                if(grid[i][j].cellState == CellState.EMPTY) {
 
-                    grid[i][j].up = findUp(grid[i][j].getPoint());
+                    grid[i][j].up = findUp(grid[i][j].getPosition());
                     grid[i][j].moves.add(grid[i][j].up);
 
-                    grid[i][j].right = findRight(grid[i][j].getPoint());
+                    grid[i][j].right = findRight(grid[i][j].getPosition());
                     grid[i][j].moves.add(grid[i][j].right);
 
-                    grid[i][j].down = findDown(grid[i][j].getPoint());
+                    grid[i][j].down = findDown(grid[i][j].getPosition());
                     grid[i][j].moves.add(grid[i][j].down);
 
-                    grid[i][j].left = findLeft(grid[i][j].getPoint());
+                    grid[i][j].left = findLeft(grid[i][j].getPosition());
                     grid[i][j].moves.add(grid[i][j].left);
                 }
             }

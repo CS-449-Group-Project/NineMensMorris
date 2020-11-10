@@ -33,6 +33,7 @@ public class Morris extends Application {
         gameState = new GameState(turn);
         board = new Board(gameState);
         boardPane = new BoardPane(board, gameState);
+        boardPane.linkCells();
     }
 
 

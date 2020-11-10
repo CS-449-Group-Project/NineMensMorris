@@ -2,7 +2,6 @@ package Morris_FX.Ui;
 
 import Morris_FX.Logic.CellPosition;
 import Morris_FX.Logic.CellState;
-import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 
 import java.util.ArrayList;
@@ -15,6 +14,8 @@ public class CellPane extends Pane {
     public CellPane down;
     public CellPane left;
     public CellPane right;
+
+    public CellState cellState;
 
     public java.util.List<CellPane> moves = new ArrayList<CellPane>();
 
@@ -31,19 +32,28 @@ public class CellPane extends Pane {
         return position;
     }
 
+    // This method now sets the style and the cellState variable for CellPane
+    // This now means that cellState exists in two different classes, CellPane and Cell
+    // We need to remove the cellState property from the Cell class
+    // Removing the cellState from the Cell class will involve looking through the code to see where it is used and updating
+    // it to use this classes equivalent property `cellState` instead
     public void setState(CellState state) {
         switch(state) {
             case BLACK:
                 setStyle("-fx-background-color: black; -fx-background-radius: 100");
+                this.cellState = state;
                 break;
             case WHITE:
                 setStyle("-fx-background-color: white; -fx-border-color: black; -fx-border-width: 4; -fx-background-radius: 100; -fx-border-radius: 100;");
+                this.cellState = state;
                 break;
             case VOID:
                 setStyle("-fx-background-color: transparent");
+                this.cellState = state;
                 break;
             case EMPTY:
                 setStyle(null);
+                this.cellState = state;
                 break;
         }
     }
