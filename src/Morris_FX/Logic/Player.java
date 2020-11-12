@@ -8,7 +8,7 @@ public class Player {
     private int marblesInHand = MAX_MARBLES;
     private int boardPieces;
     private final PlayerColor color;
-    CellPane inPlay;
+    CellPane pieceInHand;
 
     public Player(PlayerColor color) {
 
