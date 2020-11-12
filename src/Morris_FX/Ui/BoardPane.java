@@ -68,6 +68,11 @@ public class BoardPane extends GridPane {
             }
     }
 
+    // the follow method will need to be overloaded to handle the 2 cell clicks that will happen in stage 2
+    // because this method calls validateCellSelection and performMove it has the responsibility of both cells that are clicked even though
+    // its name suggests otherwise. We could modify this method to not be overloaded and instead have some internal logic
+    // to this method that would keep track of the state of the game but that would require more refactoring as oppose to maybe renaming
+    // this method to more accurately describe what it will be doing
     public void onCellClick(CellPane cell) {
         CellPosition cellPos = cell.getPosition();
         if (board.validateCellSelection(cellPos)) {

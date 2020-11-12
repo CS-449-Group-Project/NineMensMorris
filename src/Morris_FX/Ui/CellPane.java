@@ -10,7 +10,9 @@ public class CellPane extends Pane {
     private final CellPosition position;
     private final BoardPane parent;
 
+    // could call above instead of up
     public CellPane up;
+    // could call below instead of down
     public CellPane down;
     public CellPane left;
     public CellPane right;
@@ -24,6 +26,7 @@ public class CellPane extends Pane {
         this.parent = boardPane;
         this.position = position;
         this.setPrefSize(2000, 2000);
+        // put conditional logic here that gets the stage of the game and place the following line within the stage 1 condition
         this.setOnMouseClicked(e -> parent.onCellClick(this));
         this.setState(CellState.VOID);
     }

@@ -26,6 +26,9 @@ public class Board {
         return this.grid[row][column];
     }
 
+    // also may want to rename to validateMoveSelection since will be having 2 cell positions
+    // overload method? maybe not how will it call the other one on cell click in CellPane? conditional logic before oncellclick is defined to check
+    // stage of the game
     public boolean validateCellSelection(CellPosition position) {
         Cell cell = getCell(position);
 
