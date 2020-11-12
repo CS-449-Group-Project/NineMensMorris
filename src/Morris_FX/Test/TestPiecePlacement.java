@@ -47,9 +47,9 @@ public class TestPiecePlacement {
     public void Cell_EmptyCellIsClickedAfterAllMarblesArePlaced_NoPieceIsPlaced() {
         Player player = gameManager.getActivePlayer();
 
-        while (player.hasMarblesInHand())
+        while (player.hasPiecesInHand())
         {
-            player.removeMarblesFromHand();
+            player.removePiecesFromHand();
         }
 
         CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
