@@ -12,6 +12,11 @@ public class GameManager {
     private boolean mill = false;
     private PlayerColor defaultPlayer = PlayerColor.BLACK;
     private PlayerColor currentPlayer;
+    Phase currentPhase = Phase.PIECE_PLACEMENT;
+
+    public enum Phase {
+        PIECE_PLACEMENT, PIECE_MOVEMENT, FLY_RULE, END_GAME
+    }
 
     public GameManager() {
         this.currentPlayer = defaultPlayer;
@@ -26,11 +31,15 @@ public class GameManager {
         }
     }
 
+    public void setGamePhase(Phase phase) {
+        this.currentPhase = phase;
+    }
+
     public PlayerColor getCurrentPlayerColor() {
         return this.currentPlayer;
     }
 
-    Player getActivePlayer() {
+    public Player getActivePlayer() {
         return player.get(this.currentPlayer);
     }
 

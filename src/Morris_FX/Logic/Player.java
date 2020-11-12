@@ -1,11 +1,14 @@
 package Morris_FX.Logic;
 
+import Morris_FX.Ui.CellPane;
+
 public class Player {
     private static final int MAX_MARBLES = 9;
     private static final int NO_MARBLES = 0;
     private int marblesInHand = MAX_MARBLES;
     private int boardPieces;
     private final PlayerColor color;
+    CellPane inPlay;
 
     public Player(PlayerColor color) {
 

@@ -96,6 +96,7 @@ public class Board {
         Cell cell = getCell(position);
         Player player = gameManager.getActivePlayer();
         if (player.hasMarblesInHand()) {
+            gameManager.setGamePhase(GameManager.Phase.PIECE_PLACEMENT);
             player.removeMarblesFromHand();
             if (gameManager.millFormed()) {
                 // gameState.getInactivePlayer().removeDeckMarbles();
@@ -103,15 +104,15 @@ public class Board {
             } else {
                 cell.setState(player.getCellState());
             }
-        }else if(player.getBoardPieces() > 3){
+        } else {
             // Marble Movement
-
-        }else{
-            //Fly Rule
+            gameManager.setGamePhase(GameManager.Phase.PIECE_MOVEMENT);
+            if (player.getBoardPieces() == 3) {
+                // fly rule
+                // run special method
+            }
         }
         gameManager.switchTurn();
-
-
     }
 
     public void reset() {

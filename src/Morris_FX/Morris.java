@@ -17,7 +17,7 @@ import javafx.application.Platform;
 
 
 public class Morris extends Application {
-    
+
     private final GameManager gameManager;
     private final Board board;
     private final BoardPane boardPane;

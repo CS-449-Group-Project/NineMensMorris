@@ -41,7 +41,7 @@ public class CellPane extends Pane {
     // Removing the cellState from the Cell class will involve looking through the code to see where it is used and updating
     // it to use this classes equivalent property `cellState` instead
     public void setState(CellState state) {
-        switch(state) {
+        switch (state) {
             case BLACK:
                 setStyle("-fx-background-color: black; -fx-background-radius: 100");
                 this.cellState = state;
@@ -60,5 +60,5 @@ public class CellPane extends Pane {
                 break;
         }
     }
-
 }
+
