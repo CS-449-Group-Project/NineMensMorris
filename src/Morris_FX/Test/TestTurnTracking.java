@@ -30,7 +30,7 @@ public class TestTurnTracking {
 
         gameManager.performMove(coordinate00, board);
 
-        assertEquals(PlayerColor.WHITE, gameManager.getActivePlayer());
+        assertEquals(PlayerColor.WHITE, gameManager.getCurrentPlayerColor());
     }
 
     @Test
@@ -44,6 +44,6 @@ public class TestTurnTracking {
         gameManager.performMove(coordinate00, board);
         gameManager.performMove(coordinate11, board);
 
-        assertEquals(PlayerColor.BLACK, gameManager.getActivePlayer());
+        assertEquals(PlayerColor.BLACK, gameManager.getCurrentPlayerColor());
     }
 }
