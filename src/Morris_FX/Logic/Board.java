@@ -96,6 +96,11 @@ public class Board {
         Cell cell = getCell(position);
         Player player = gameManager.getActivePlayer();
         if (player.hasMarblesInHand()) {
+            // sets the game state every time performMove is called
+            // this is so that if a player reaches the Fly rule before their opponent, the opponent doesnt also enter
+            // that game phase
+            // One way we may be able to update this is to move the game phase enumerated list to the Player class so that
+            // each player has an independent game phase
             gameManager.setGamePhase(GameManager.Phase.PIECE_PLACEMENT);
             player.removeMarblesFromHand();
             if (gameManager.millFormed()) {
