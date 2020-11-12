@@ -25,11 +25,11 @@ public class GameState {
         return turn;
     }
 
-    Player getActivePlayer() {
+    public Player getActivePlayer() {
         return player.get(turn.getPlayerColor());
     }
 
-    Player getInactivePlayer() {
+    public Player getInactivePlayer() {
         return player.get(turn.getPlayerColor().complement());
     }
 
@@ -55,6 +55,5 @@ public class GameState {
         // TODO: reset entire game state
         turn.reset();
     }
-
 
 }
