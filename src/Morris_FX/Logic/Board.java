@@ -9,10 +9,10 @@ public class Board {
 
     private final Cell[][] grid;
     private InvalidCellType invalidCellType;
-    private final GameState gameState;
+    private final GameManager gameManager;
 
-    public Board(GameState gameState) {
-        this.gameState = gameState;
+    public Board(GameManager gameManager) {
+        this.gameManager = gameManager;
 
         // move grid initialization here because Java
         // complains otherwise
@@ -39,9 +39,9 @@ public class Board {
         }
 
 
-        Turn turn = gameState.getTurn();
-        Player player = gameState.getActivePlayer();
-        if (gameState.millFormed()) {
+        PlayerColor turn = gameManager.getCurrentPlayerColor();
+        Player player = gameManager.getActivePlayer();
+        if (gameManager.millFormed()) {
 
             // always false because the logic has not been added to determine if a mill was formed
             if (cell.isEmpty()) {
@@ -94,10 +94,10 @@ public class Board {
 
     public void performMove(CellPosition position) {
         Cell cell = getCell(position);
-        Player player = gameState.getActivePlayer();
+        Player player = gameManager.getActivePlayer();
         if (player.hasMarblesInHand()) {
             player.removeMarblesFromHand();
-            if (gameState.millFormed()) {
+            if (gameManager.millFormed()) {
                 // gameState.getInactivePlayer().removeDeckMarbles();
                 cell.setState(CellState.EMPTY);
             } else {
@@ -109,7 +109,7 @@ public class Board {
         }else{
             //Fly Rule
         }
-        gameState.switchTurn();
+        gameManager.switchTurn();
 
 
     }

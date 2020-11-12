@@ -1,9 +1,7 @@
 package Morris_FX;
 
 import Morris_FX.Logic.Board;
-import Morris_FX.Logic.GameState;
-import Morris_FX.Logic.PlayerColor;
-import Morris_FX.Logic.Turn;
+import Morris_FX.Logic.GameManager;
 import Morris_FX.Ui.BoardPane;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -17,22 +15,18 @@ import javafx.scene.control.Button;
 import javafx.geometry.Pos;
 import javafx.application.Platform;
 
-import java.io.FileNotFoundException;
-
 
 public class Morris extends Application {
-
-    private final Turn turn;
-    private final GameState gameState;
+    
+    private final GameManager gameManager;
     private final Board board;
     private final BoardPane boardPane;
     Scene scene1, scene2, scene3;
 
     public Morris(){
-        turn = new Turn(PlayerColor.BLACK);
-        gameState = new GameState(turn);
-        board = new Board(gameState);
-        boardPane = new BoardPane(board, gameState);
+        gameManager = new GameManager();
+        board = new Board(gameManager);
+        boardPane = new BoardPane(board, gameManager);
         boardPane.linkCells();
     }
 
@@ -103,7 +97,7 @@ public class Morris extends Application {
         // Label label3 = new Label("Game");
         reset.setOnAction(e -> reset());
         menu.setOnAction(e -> primaryStage.setScene(scene2));
-        scene3 = new Scene(borderPane, 550, 470);
+        scene3 = new Scene(borderPane, 550, 600);
 
 
         primaryStage.setScene(scene1);
@@ -111,7 +105,7 @@ public class Morris extends Application {
     }
 
     public void reset() {
-        gameState.reset();
+        gameManager.reset();
         board.reset();
         boardPane.reset();
     }

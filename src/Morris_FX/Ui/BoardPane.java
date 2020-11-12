@@ -3,25 +3,22 @@ package Morris_FX.Ui;
 import Morris_FX.Logic.Board;
 import Morris_FX.Logic.CellPosition;
 import Morris_FX.Logic.CellState;
-import Morris_FX.Logic.GameState;
-import Morris_FX.Morris;
+import Morris_FX.Logic.GameManager;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 
-import java.awt.*;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
 
 public class BoardPane extends GridPane {
     private final Board board;
-    private final GameState gameState;
+    private final GameManager gameManager;
     private CellPane[][] grid;
-    public BoardPane(Board board, GameState gameState) {
+    public BoardPane(Board board, GameManager gameManager) {
         super();
         this.board = board;
-        this.gameState = gameState;
+        this.gameManager = gameManager;
         // The code below fixes the resizing issue with the game board and app window. The exact values need to be tweaked which will be done in sprint 2
 //        this.setMaxSize(500,500);
 //        this.setMinSize(500,500);
