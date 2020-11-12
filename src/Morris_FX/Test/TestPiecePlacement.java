@@ -26,8 +26,7 @@ public class TestPiecePlacement {
 
     @Test
     public void Cell_EmptyCellIsClicked_CellStateIsBlack() {
-        CellPosition position0 = new CellPosition(0, 0);
-        CellPane coordinate00 = board.getCell(position0);
+        CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
 
         gameManager.performMove(coordinate00, board);
         assertEquals(CellState.BLACK, coordinate00.getCellState());
@@ -35,11 +34,8 @@ public class TestPiecePlacement {
 
     @Test
     public void Cell_EmptyCellIsClickedAfterBlackMarbleIsPlaced_CellStateIsWhite() {
-        CellPosition position0 = new CellPosition(0, 0);
-        CellPane coordinate00 = board.getCell(position0);
-
-        CellPosition position1 = new CellPosition(1, 1);
-        CellPane coordinate11 = board.getCell(position1);
+        CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
+        CellPane coordinate11 = board.getCell(new CellPosition(1, 1));
 
         gameManager.performMove(coordinate00, board);
         gameManager.performMove(coordinate11, board);
@@ -56,8 +52,7 @@ public class TestPiecePlacement {
             player.removeMarblesFromHand();
         }
 
-        CellPosition position0 = new CellPosition(0, 0);
-        CellPane coordinate00 = board.getCell(position0);
+        CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
 
         gameManager.performMove(coordinate00, board);
 

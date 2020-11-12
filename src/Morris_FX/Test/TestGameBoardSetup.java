@@ -27,14 +27,9 @@ public class TestGameBoardSetup {
 
     @Test
     public void Board_GivenNewGame_EmptyCells() {
-        CellPosition position0 = new CellPosition(0, 0);
-        CellPane coordinate00 = board.getCell(position0);
-
-        CellPosition position1 = new CellPosition(1, 1);
-        CellPane coordinate11 = board.getCell(position1);
-
-        CellPosition position2 = new CellPosition(2, 2);
-        CellPane coordinate22 = board.getCell(position2);
+        CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
+        CellPane coordinate11 = board.getCell(new CellPosition(1, 1));
+        CellPane coordinate22 = board.getCell(new CellPosition(2, 2));
 
         assertEquals(CellState.EMPTY, coordinate00.getCellState());
         assertEquals(CellState.EMPTY, coordinate11.getCellState());
@@ -43,11 +38,8 @@ public class TestGameBoardSetup {
 
     @Test
     public void Board_GivenNewGame_VoidCells() {
-        CellPosition position3 = new CellPosition(3, 3);
-        CellPane coordinate33 = board.getCell(position3);
-
-        CellPosition position4 = new CellPosition(1, 2);
-        CellPane coordinate12 = board.getCell(position4);
+        CellPane coordinate33 = board.getCell(new CellPosition(3, 3));
+        CellPane coordinate12 = board.getCell(new CellPosition(1, 2));
 
         assertEquals(CellState.VOID, coordinate33.getCellState());
         assertEquals(CellState.VOID, coordinate12.getCellState());
