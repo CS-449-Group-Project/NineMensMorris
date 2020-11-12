@@ -80,8 +80,10 @@ public class BoardPane extends GridPane {
     }
 
     public void reset() {
+        // resets grid local to Board class
         board.reset();
 
+        // resets grid local to BoardPane class; necessary for play again button
         for (int i = 0; i < Board.GRID_SIZE; i++) {
             List<Integer> validMoves = board.getValidRowMoves(i);
             for (int j : validMoves) {
