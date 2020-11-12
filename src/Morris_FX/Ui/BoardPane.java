@@ -69,11 +69,11 @@ public class BoardPane extends GridPane {
     // different actions based on the phase instead of overloading this method
     public void onCellClick(CellPane cell) {
         CellPosition cellPos = cell.getPosition();
-        if (board.validateCellSelection(cellPos)) {
-            gameManager.getActivePlayer();
-            gameManager.performMove(cellPos, board);
-            cell.setState(board.getCell(cellPos).getState());
-
+        //if (board.validateCellSelection(cellPos)) {
+        if (board.validateCellSelection(cell)) {
+            //gameManager.getActivePlayer();
+            gameManager.performMove(cell, board);
+            //cell.setState(board.getCell(cellPos).getState());
         } else {
             System.out.println(board.getInvalidCellType());
         }

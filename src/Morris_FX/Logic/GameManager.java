@@ -1,5 +1,7 @@
 package Morris_FX.Logic;
 
+import Morris_FX.Ui.CellPane;
+
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -14,8 +16,8 @@ public class GameManager {
     private PlayerColor currentPlayer;
     Phase currentPhase = Phase.PIECE_PLACEMENT;
 
-    public void performMove(CellPosition position, Board board) {
-        Cell cell = board.getCell(position);
+    // we will definitely use board later in this methdd
+    public void performMove(CellPane cellPane, Board board) {
         Player player = getActivePlayer();
         if (player.hasMarblesInHand()) {
             // sets the game state every time performMove is called
@@ -27,9 +29,9 @@ public class GameManager {
             player.removeMarblesFromHand();
             if (millFormed()) {
                 // gameState.getInactivePlayer().removeDeckMarbles();
-                cell.setState(CellState.EMPTY);
+                cellPane.setState(CellState.EMPTY);
             } else {
-                cell.setState(player.getCellState());
+                cellPane.setState(player.getCellState());
             }
         } else {
             // Marble Movement

@@ -31,8 +31,19 @@ public class CellPane extends Pane {
         this.setState(CellState.VOID);
     }
 
+    // this is only exists to satisfy what is going on in the board class, I personally don't see a reason for it
+    public CellPane() {
+        this.cellState = CellState.VOID;
+        this.position = null;
+        this.parent = null;
+    }
+
     public CellPosition getPosition() {
         return position;
+    }
+
+    public CellState getCellState() {
+        return this.cellState;
     }
 
     // This method now sets the style and the cellState variable for CellPane
@@ -60,5 +71,22 @@ public class CellPane extends Pane {
                 break;
         }
     }
+
+    // this is for the validateCellSelection method in the Board class
+    public boolean is(CellState state) { return this.cellState == state; }
+
+    public boolean isVoid() { return this.cellState == CellState.VOID; }
+
+    public boolean isEmpty() {
+        return this.cellState == CellState.EMPTY;
+    }
+
+    public boolean isBlack() {
+        return this.cellState == CellState.BLACK;
+    }
+
+    public boolean isWhite() { return this.cellState == CellState.WHITE; }
+
+    public boolean isOccupied() { return this.isBlack() || this.isWhite(); }
 }
 
