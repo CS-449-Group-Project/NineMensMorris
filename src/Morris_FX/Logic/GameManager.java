@@ -14,6 +14,34 @@ public class GameManager {
     private PlayerColor currentPlayer;
     Phase currentPhase = Phase.PIECE_PLACEMENT;
 
+    public void performMove(CellPosition position, Board board) {
+        Cell cell = board.getCell(position);
+        Player player = getActivePlayer();
+        if (player.hasMarblesInHand()) {
+            // sets the game state every time performMove is called
+            // this is so that if a player reaches the Fly rule before their opponent, the opponent doesnt also enter
+            // that game phase
+            // One way we may be able to update this is to move the game phase enumerated list to the Player class so that
+            // each player has an independent game phase
+            setGamePhase(Phase.PIECE_PLACEMENT);
+            player.removeMarblesFromHand();
+            if (millFormed()) {
+                // gameState.getInactivePlayer().removeDeckMarbles();
+                cell.setState(CellState.EMPTY);
+            } else {
+                cell.setState(player.getCellState());
+            }
+        } else {
+            // Marble Movement
+            setGamePhase(Phase.PIECE_MOVEMENT);
+            if (player.getBoardPieces() == 3) {
+                // fly rule
+                // run special method
+            }
+        }
+        switchTurn();
+    }
+
     public enum Phase {
         PIECE_PLACEMENT, PIECE_MOVEMENT, FLY_RULE, END_GAME
     }

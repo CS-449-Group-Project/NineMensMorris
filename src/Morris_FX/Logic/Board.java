@@ -92,34 +92,6 @@ public class Board {
     }
 
 
-    public void performMove(CellPosition position) {
-        Cell cell = getCell(position);
-        Player player = gameManager.getActivePlayer();
-        if (player.hasMarblesInHand()) {
-            // sets the game state every time performMove is called
-            // this is so that if a player reaches the Fly rule before their opponent, the opponent doesnt also enter
-            // that game phase
-            // One way we may be able to update this is to move the game phase enumerated list to the Player class so that
-            // each player has an independent game phase
-            gameManager.setGamePhase(GameManager.Phase.PIECE_PLACEMENT);
-            player.removeMarblesFromHand();
-            if (gameManager.millFormed()) {
-                // gameState.getInactivePlayer().removeDeckMarbles();
-                cell.setState(CellState.EMPTY);
-            } else {
-                cell.setState(player.getCellState());
-            }
-        } else {
-            // Marble Movement
-            gameManager.setGamePhase(GameManager.Phase.PIECE_MOVEMENT);
-            if (player.getBoardPieces() == 3) {
-                // fly rule
-                // run special method
-            }
-        }
-        gameManager.switchTurn();
-    }
-
     public void reset() {
         // This assumes that invalid moves are marked as CellState.VOID already
         // which is true since this.createGrid() marks all cells as CellState.VOID.

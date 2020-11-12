@@ -1,7 +1,9 @@
 package Morris_FX.Ui;
 
-import Morris_FX.Logic.*;
-import Morris_FX.Morris;
+import Morris_FX.Logic.Board;
+import Morris_FX.Logic.CellPosition;
+import Morris_FX.Logic.CellState;
+import Morris_FX.Logic.GameManager;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 
@@ -63,17 +65,13 @@ public class BoardPane extends GridPane {
             }
     }
 
-    // the follow method will need to be overloaded to handle the 2 cell clicks that will happen in stage 2
-    // because this method calls validateCellSelection and performMove it has the responsibility of both cells that are clicked even though
-    // its name suggests otherwise. We could modify this method to not be overloaded and instead have some internal logic
-    // to this method that would keep track of the state of the game but that would require more refactoring as oppose to maybe renaming
-    // this method to more accurately describe what it will be doing
+    // We should have this method call a different method that will have access to each players current game phase and perform
+    // different actions based on the phase instead of overloading this method
     public void onCellClick(CellPane cell) {
         CellPosition cellPos = cell.getPosition();
         if (board.validateCellSelection(cellPos)) {
             gameManager.getActivePlayer();
-
-            board.performMove(cellPos);
+            gameManager.performMove(cellPos, board);
             cell.setState(board.getCell(cellPos).getState());
 
         } else {

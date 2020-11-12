@@ -8,7 +8,7 @@ public class Player {
     private int marblesInHand = MAX_MARBLES;
     private int boardPieces;
     private final PlayerColor color;
-    // this is the piece a player has picked up from the board during the Piece_Movement phase
+    // this is the piece a player has picked up from the board during the PIECE_MOVEMENT phase
     CellPane pieceInHand;
 
     public Player(PlayerColor color) {
