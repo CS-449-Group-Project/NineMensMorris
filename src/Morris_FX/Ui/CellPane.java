@@ -26,7 +26,6 @@ public class CellPane extends Pane {
         this.parent = boardPane;
         this.position = position;
         this.setPrefSize(2000, 2000);
-        // put conditional logic here that gets the stage of the game and place the following line within the stage 1 condition
         this.setOnMouseClicked(e -> parent.onCellClick(this));
         this.setState(CellState.VOID);
     }
