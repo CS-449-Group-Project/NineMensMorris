@@ -1,14 +1,15 @@
 package Morris_FX.Ui;
 
-import Morris_FX.Logic.CellPosition;
 import Morris_FX.Logic.CellState;
+import Morris_FX.Logic.Player;
+import Morris_FX.Logic.CellPosition;
 import javafx.scene.layout.*;
 
 import java.util.ArrayList;
 
 public class CellPane extends Pane {
-    private final CellPosition position;
     private final BoardPane parent;
+    private CellPosition position;
 
     // could call above instead of up
     public CellPane up;
@@ -87,5 +88,45 @@ public class CellPane extends Pane {
     public boolean isWhite() { return this.cellState == CellState.WHITE; }
 
     public boolean isOccupied() { return this.isBlack() || this.isWhite(); }
+
+    //this checks if a piece can be moved. Checks the cell you're picking the marble up from
+    //if the cell above is empty, the move counter increases. checks up, down, left, right
+    //if no valid moves, returns false and says no possible moves
+    public boolean canChoose(){
+        int counter = 0;
+        if(this.up != null && this.up.cellState == CellState.EMPTY) {
+            counter++;
+        }
+        if(this.down != null && this.down.cellState == CellState.EMPTY) {
+            counter++;
+        }
+        if(this.left != null && this.left.cellState == CellState.EMPTY) {
+            counter++;
+        }
+        if(this.right != null && this.right.cellState == CellState.EMPTY) {
+            counter++;
+        }
+        if(counter > 0) {
+            System.out.println("you may move");
+            return true;
+        }
+        else {
+            System.out.println("no possible moves");
+            return false;
+        }
+    }
+
+    //check if you can pick up a marble from a cell
+    //first check if you're picking up a marble from a cell that has the same playState as the player (ex BLACK == BLACK)
+    //AND call moveCheck to see if there are available moves to make
+    public boolean canPickup(Player currentPlayer){
+        if(this.cellState == currentPlayer.getPlayerColorAsCellState() && canChoose()){
+            if(!currentPlayer.hasPieceToMove()){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
 

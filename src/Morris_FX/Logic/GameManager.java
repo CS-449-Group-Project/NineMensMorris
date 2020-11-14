@@ -36,6 +36,10 @@ public class GameManager {
                     player.setPieceToMove(cellPane);
                     return;
                 }
+                cellPane.setState(player.getPlayerColorAsCellState());
+                player.pieceToMove.setState(CellState.EMPTY);
+                player.removePieceToMove();
+                break;
         }
         switchTurn();
     }

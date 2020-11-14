@@ -10,7 +10,7 @@ public class Player {
     private final PlayerColor color;
     Phase currentPhase = Phase.PIECE_PLACEMENT;
     // this is the piece a player has picked up from the board during the PIECE_MOVEMENT phase
-    CellPane pieceInPlay;
+    CellPane pieceToMove;
 
     public Player(PlayerColor color) {
 
@@ -26,7 +26,7 @@ public class Player {
         this.currentPhase = phase;
     }
 
-    CellState getPlayerColorAsCellState() {
+    public CellState getPlayerColorAsCellState() {
         return color == PlayerColor.BLACK ?
                 CellState.BLACK :
                 CellState.WHITE;
@@ -45,11 +45,15 @@ public class Player {
     }
 
     public void setPieceToMove(CellPane cell) {
-        pieceInPlay = cell;
+        pieceToMove = cell;
     }
 
     public boolean hasPieceToMove() {
-        return pieceInPlay != null;
+        return pieceToMove != null;
+    }
+
+    public void removePieceToMove() {
+        pieceToMove = null;
     }
 
     public void removePiecesFromHand() {

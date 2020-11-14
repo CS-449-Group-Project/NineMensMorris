@@ -80,37 +80,25 @@ public class Board {
 
                 return true;
             case PIECE_MOVEMENT:
-                if (player.hasPieceToMove()) {
+                if (!player.hasPieceToMove()) {
                     // cell color is equal to player color
-                    if (cell.cellState == player.getPlayerColorAsCellState()) {
-                        // take that piece and put it in their hand
-                        return true;
-                        //System.out.println(player.pieceInHand.toString());
+                    if (cell.isEmpty()) {
+                        return false;
+                    }
+                    if (cell.canPickup(player)) {
+                        if (cell.cellState == player.getPlayerColorAsCellState()) {
+                            // take that piece and put it in their hand
+                            return true;
+                            //System.out.println(player.pieceInHand.toString());
+                        }
                     }
                 }
-
+                if (cell.isEmpty() && player.pieceToMove.moves.contains(cell)) {
+                    return true;
+                }
             default:
                 return false;
         }
-
-//        switch (GameManager.getGameStage()) {
-//            case Stage1:
-                    // return false if cell is occupied
-                    // break;
-//            case Stage2:
-                    // valid if cell is occupied
-                    // store position if occupied cell is clicked in variable originalPieceLocation
-                    // return false if empty cell is clicked without a value in originalPieceLocation
-                    // return true if value exists in originalPieceLocation and an empty cell was clicked that is "linked"
-                    // to the originally clicked cell
-                    // we should have a method that returns a boolean based on whether or not the cells are linked
-                    // break;
-        //   case Stage3:
-                    // same as Stage2 but condition for linked cells would be removed
-//        }
-
-        // this logic below would go into the first case in the switch statement above
-
     }
 
 

@@ -27,7 +27,6 @@ public class Morris extends Application {
         gameManager = new GameManager();
         board = new Board(gameManager);
         boardPane = new BoardPane(board, gameManager);
-        boardPane.linkCells();
     }
 
 
@@ -84,6 +83,7 @@ public class Morris extends Application {
         Button play = new Button("Play");
         play.setOnAction(e -> {
             reset();
+            boardPane.linkCells();
             primaryStage.setScene(scene3);
         });
         menuLabel.setFont(Font.font("Tacoma", FontWeight.NORMAL, 20));
