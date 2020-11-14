@@ -107,7 +107,7 @@ public class BoardPane extends GridPane {
 
     //same but left
     CellPane findLeft(CellPosition location){
-        int i = location.getRow() + 1;
+        int i = location.getRow() - 1;
         int j = location.getColumn();
         for (; i >= 0; i--){
 
@@ -123,8 +123,8 @@ public class BoardPane extends GridPane {
 
     //same but down
     CellPane findDown(CellPosition location){
-        int i = location.getRow() + 1;
-        int j = location.getColumn();
+        int i = location.getRow();
+        int j = location.getColumn() + 1;
         for (; j < 7; j++){
 
             if( i == 3 && j == 3){
@@ -139,8 +139,8 @@ public class BoardPane extends GridPane {
 
     //same but up
     CellPane findUp(CellPosition location){
-        int i = location.getRow() + 1;
-        int j = location.getColumn();
+        int i = location.getRow();
+        int j = location.getColumn() - 1;
         for (; j >= 0; j--){
 
             if( i == 3 && j == 3){
