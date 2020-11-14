@@ -14,9 +14,8 @@ public class GameManager {
     private boolean mill = false;
     private PlayerColor defaultPlayer = PlayerColor.BLACK;
     private PlayerColor currentPlayer;
-    Phase currentPhase = Phase.PIECE_PLACEMENT;
 
-    // we will definitely use board later in this methdd
+    // we will definitely use board later in this method
     public void performMove(CellPane cellPane, Board board) {
         Player player = getActivePlayer();
         if (player.hasPiecesInHand()) {
@@ -25,27 +24,24 @@ public class GameManager {
             // that game phase
             // One way we may be able to update this is to move the game phase enumerated list to the Player class so that
             // each player has an independent game phase
-            setGamePhase(Phase.PIECE_PLACEMENT);
             player.removePiecesFromHand();
+            cellPane.setState(player.getCellState());
             if (millFormed()) {
                 // gameState.getInactivePlayer().removeDeckPieces();
                 cellPane.setState(CellState.EMPTY);
             } else {
-                cellPane.setState(player.getCellState());
+            }
+            if (!player.hasPiecesInHand()) {
+                player.setGamePhase(Player.Phase.PIECE_MOVEMENT);
             }
         } else {
             // Piece Movement
-            setGamePhase(Phase.PIECE_MOVEMENT);
             if (player.getBoardPieces() == 3) {
                 // fly rule
                 // run special method
             }
         }
         switchTurn();
-    }
-
-    public enum Phase {
-        PIECE_PLACEMENT, PIECE_MOVEMENT, FLY_RULE, END_GAME
     }
 
     public GameManager() {
@@ -59,10 +55,6 @@ public class GameManager {
 
             player.put(playerColor, new Player(playerColor));
         }
-    }
-
-    public void setGamePhase(Phase phase) {
-        this.currentPhase = phase;
     }
 
     public PlayerColor getCurrentPlayerColor() {

@@ -8,6 +8,7 @@ public class Player {
     private int piecesInHand = MAX_PIECES;
     private int boardPieces;
     private final PlayerColor color;
+    Phase currentPhase = Phase.PIECE_PLACEMENT;
     // this is the piece a player has picked up from the board during the PIECE_MOVEMENT phase
     CellPane pieceInHand;
 
@@ -15,6 +16,14 @@ public class Player {
 
         this.color = color;
         this.reset();
+    }
+
+    public enum Phase {
+        PIECE_PLACEMENT, PIECE_MOVEMENT, FLY_RULE, END_GAME
+    }
+
+    public void setGamePhase(Phase phase) {
+        this.currentPhase = phase;
     }
 
     CellState getCellState() {
