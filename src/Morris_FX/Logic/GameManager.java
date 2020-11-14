@@ -18,28 +18,24 @@ public class GameManager {
     // we will definitely use board later in this method
     public void performMove(CellPane cellPane, Board board) {
         Player player = getActivePlayer();
-        if (player.hasPiecesInHand()) {
-            // sets the game state every time performMove is called
-            // this is so that if a player reaches the Fly rule before their opponent, the opponent doesnt also enter
-            // that game phase
-            // One way we may be able to update this is to move the game phase enumerated list to the Player class so that
-            // each player has an independent game phase
-            player.removePiecesFromHand();
-            cellPane.setState(player.getCellState());
-            if (millFormed()) {
-                // gameState.getInactivePlayer().removeDeckPieces();
-                cellPane.setState(CellState.EMPTY);
-            } else {
-            }
-            if (!player.hasPiecesInHand()) {
-                player.setGamePhase(Player.Phase.PIECE_MOVEMENT);
-            }
-        } else {
-            // Piece Movement
-            if (player.getBoardPieces() == 3) {
-                // fly rule
-                // run special method
-            }
+        // place the putting piece in hand in the piece movement section of performMove
+        switch (player.currentPhase) {
+            case PIECE_PLACEMENT:
+                player.removePiecesFromHand();
+                cellPane.setState(player.getPlayerColorAsCellState());
+                if (millFormed()) {
+                    // gameState.getInactivePlayer().removeDeckPieces();
+                    cellPane.setState(CellState.EMPTY);
+                }
+                if (!player.hasPiecesInHand()) {
+                    player.setGamePhase(Player.Phase.PIECE_MOVEMENT);
+                }
+                break;
+            case PIECE_MOVEMENT:
+                if (!player.hasPieceToMove()) {
+                    player.setPieceToMove(cellPane);
+                    return;
+                }
         }
         switchTurn();
     }

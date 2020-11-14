@@ -54,7 +54,7 @@ public class Board {
                 return false;
             }
 
-            if (cell.is(player.getCellState().complement())) {
+            if (cell.is(player.getPlayerColorAsCellState().complement())) {
                 invalidCellType = InvalidCellType.NONE;
                 return true;
             }
@@ -65,6 +65,33 @@ public class Board {
 
         // switch statement here for stages of the game
         // below is my suggestion for the format of the switch statement
+
+        switch (player.currentPhase) {
+            case PIECE_PLACEMENT:
+                if (cell.isOccupied()) {
+                    invalidCellType = InvalidCellType.OCCUPIED;
+                    if (cell.is(player.getPlayerColorAsCellState())) {
+                        invalidCellType = InvalidCellType.OWNED;
+                    }
+                    return false;
+                }
+
+                invalidCellType = InvalidCellType.NONE;
+
+                return true;
+            case PIECE_MOVEMENT:
+                if (player.hasPieceToMove()) {
+                    // cell color is equal to player color
+                    if (cell.cellState == player.getPlayerColorAsCellState()) {
+                        // take that piece and put it in their hand
+                        return true;
+                        //System.out.println(player.pieceInHand.toString());
+                    }
+                }
+
+            default:
+                return false;
+        }
 
 //        switch (GameManager.getGameStage()) {
 //            case Stage1:
@@ -83,17 +110,7 @@ public class Board {
 //        }
 
         // this logic below would go into the first case in the switch statement above
-        if (cell.isOccupied()) {
-            invalidCellType = InvalidCellType.OCCUPIED;
-            if (cell.is(player.getCellState())) {
-                invalidCellType = InvalidCellType.OWNED;
-            }
-            return false;
-        }
 
-        invalidCellType = InvalidCellType.NONE;
-
-        return true;
     }
 
 

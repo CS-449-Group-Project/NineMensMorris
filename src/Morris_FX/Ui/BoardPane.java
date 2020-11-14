@@ -1,9 +1,6 @@
 package Morris_FX.Ui;
 
-import Morris_FX.Logic.Board;
-import Morris_FX.Logic.CellPosition;
-import Morris_FX.Logic.CellState;
-import Morris_FX.Logic.GameManager;
+import Morris_FX.Logic.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 
@@ -69,9 +66,10 @@ public class BoardPane extends GridPane {
     // different actions based on the phase instead of overloading this method
     public void onCellClick(CellPane cell) {
         CellPosition cellPos = cell.getPosition();
+        System.out.println(gameManager.getActivePlayer().getColor().toString());
         //if (board.validateCellSelection(cellPos)) {
         if (board.validateCellSelection(cell)) {
-            //gameManager.getActivePlayer();
+            //
             gameManager.performMove(cell, board);
             //cell.setState(board.getCell(cellPos).getState());
         } else {
