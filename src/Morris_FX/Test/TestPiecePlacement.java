@@ -28,7 +28,7 @@ public class TestPiecePlacement {
     public void Cell_EmptyCellIsClicked_CellStateIsBlack() {
         CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
 
-        gameManager.performMove(coordinate00, board);
+        gameManager.performMove(coordinate00);
         assertEquals(CellState.BLACK, coordinate00.getCellState());
     }
 
@@ -37,8 +37,8 @@ public class TestPiecePlacement {
         CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
         CellPane coordinate11 = board.getCell(new CellPosition(1, 1));
 
-        gameManager.performMove(coordinate00, board);
-        gameManager.performMove(coordinate11, board);
+        gameManager.performMove(coordinate00);
+        gameManager.performMove(coordinate11);
 
         assertEquals(CellState.WHITE, coordinate11.getCellState());
     }
@@ -54,7 +54,7 @@ public class TestPiecePlacement {
 
         CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
 
-        gameManager.performMove(coordinate00, board);
+        gameManager.performMove(coordinate00);
 
         assertEquals(CellState.EMPTY, coordinate00.getCellState());
     }

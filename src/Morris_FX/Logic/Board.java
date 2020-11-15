@@ -9,19 +9,12 @@ import java.util.Vector;
 public class Board {
     public static final int GRID_SIZE = 7;
 
-    //private final Cell[][] grid;
     private final CellPane[][] grid;
     private InvalidCellType invalidCellType;
     private final GameManager gameManager;
 
     public Board(GameManager gameManager) {
         this.gameManager = gameManager;
-
-        // move grid initialization here because Java
-        // complains otherwise
-
-
-
         grid = new CellPane[GRID_SIZE][GRID_SIZE];
         createGrid();
     }
@@ -31,24 +24,18 @@ public class Board {
         return this.grid[row][column];
     }
 
-    // also may want to rename to validateMoveSelection since will be having 2 cell positions
-    // overload method? maybe not how will it call the other one on cell click in CellPane? conditional logic before oncellclick is defined to check
-    // stage of the game
+    // Checks whether the current cell click is a valid move given the phase of the game and pieces on the board
     public boolean validateCellSelection(CellPane cell) {
-        //Cell cell = getCell(position);
-
-        // always false
         if (cell.isVoid()) {
             invalidCellType = InvalidCellType.VOID;
             return false;
         }
 
-
         PlayerColor turn = gameManager.getCurrentPlayerColor();
         Player player = gameManager.getActivePlayer();
-        if (gameManager.millFormed()) {
+        if (gameManager.millFormed()) { // always false because the logic has not been added to determine if a mill was formed
 
-            // always false because the logic has not been added to determine if a mill was formed
+
             if (cell.isEmpty()) {
                 invalidCellType = InvalidCellType.EMPTY;
                 return false;
@@ -62,9 +49,6 @@ public class Board {
             invalidCellType = InvalidCellType.OWNED;
             return false;
         }
-
-        // switch statement here for stages of the game
-        // below is my suggestion for the format of the switch statement
 
         switch (player.currentPhase) {
             case PIECE_PLACEMENT:
@@ -81,19 +65,17 @@ public class Board {
                 return true;
             case PIECE_MOVEMENT:
                 if (!player.hasPieceToMove()) {
-                    // cell color is equal to player color
                     if (cell.isEmpty()) {
                         return false;
                     }
                     if (cell.canPickup(player)) {
                         if (cell.cellState == player.getPlayerColorAsCellState()) {
-                            // take that piece and put it in their hand
                             return true;
-                            //System.out.println(player.pieceInHand.toString());
                         }
                     }
                 }
-                if (cell.isEmpty() && player.pieceToMove.moves.contains(cell)) {
+                // the second condition here checks the list of moves list which is populated by the linkCells method
+                if (cell.isEmpty() && player.pieceToMove.adjacentCells.contains(cell)) {
                     return true;
                 }
             default:

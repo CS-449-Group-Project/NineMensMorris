@@ -16,9 +16,6 @@ public class BoardPane extends GridPane {
         super();
         this.board = board;
         this.gameManager = gameManager;
-        // The code below fixes the resizing issue with the game board and app window. The exact values need to be tweaked which will be done in sprint 2
-//        this.setMaxSize(500,500);
-//        this.setMinSize(500,500);
         setup();
     }
 
@@ -28,8 +25,6 @@ public class BoardPane extends GridPane {
     }
 
     private void setupBackgroundImage() {
-        //create the background image from a url. Need changing the basis to the file
-
         FileInputStream backgroundImage;
         try{
             backgroundImage = new FileInputStream("./images/Morris_Board_Wood.png");
@@ -45,11 +40,8 @@ public class BoardPane extends GridPane {
         }
         catch (FileNotFoundException e){
             System.out.println(e);
-
             return;
         }
-
-
     }
 
     private void setupGrid() {
@@ -62,16 +54,9 @@ public class BoardPane extends GridPane {
             }
     }
 
-    // We should have this method call a different method that will have access to each players current game phase and perform
-    // different actions based on the phase instead of overloading this method
     public void onCellClick(CellPane cell) {
-        CellPosition cellPos = cell.getPosition();
-        System.out.println(gameManager.getActivePlayer().getColor().toString());
-        //if (board.validateCellSelection(cellPos)) {
         if (board.validateCellSelection(cell)) {
-            //
-            gameManager.performMove(cell, board);
-            //cell.setState(board.getCell(cellPos).getState());
+            gameManager.performMove(cell);
         } else {
             System.out.println(board.getInvalidCellType());
         }
@@ -163,16 +148,16 @@ public class BoardPane extends GridPane {
                 if(grid[i][j].cellState == CellState.EMPTY) {
 
                     grid[i][j].up = findUp(grid[i][j].getPosition());
-                    grid[i][j].moves.add(grid[i][j].up);
+                    grid[i][j].adjacentCells.add(grid[i][j].up);
 
                     grid[i][j].right = findRight(grid[i][j].getPosition());
-                    grid[i][j].moves.add(grid[i][j].right);
+                    grid[i][j].adjacentCells.add(grid[i][j].right);
 
                     grid[i][j].down = findDown(grid[i][j].getPosition());
-                    grid[i][j].moves.add(grid[i][j].down);
+                    grid[i][j].adjacentCells.add(grid[i][j].down);
 
                     grid[i][j].left = findLeft(grid[i][j].getPosition());
-                    grid[i][j].moves.add(grid[i][j].left);
+                    grid[i][j].adjacentCells.add(grid[i][j].left);
                 }
             }
         }

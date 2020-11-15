@@ -7,38 +7,39 @@ import java.util.Map;
 
 public class GameManager {
 
-    // game stages enumerated list for piece placement stage, etc..
-    // getGameStage method
-    //private final Turn turn;
     private Map<PlayerColor,Player> player;
     private boolean mill = false;
     private PlayerColor defaultPlayer = PlayerColor.BLACK;
     private PlayerColor currentPlayer;
 
-    // we will definitely use board later in this method
-    public void performMove(CellPane cellPane, Board board) {
-        Player player = getActivePlayer();
-        // place the putting piece in hand in the piece movement section of performMove
-        switch (player.currentPhase) {
+    // for PIECE_PLACEMENT phase this method sets the state of the clicked cell equal to the player color; "Places current
+    // player piece on the board"
+    // for PIECE_MOVEMENT phase this method sets the pieceToMove variable of the current player to the clicked cell if they
+    // dont have one to move already; "Selects a piece"
+    // if they do have a piece to move already then it sets the state of the clicked cell to the player color, sets the
+    // previously occupied cell to empty, and set pieceToMove to null in the current player object; "Places pieceToMove in new position"
+    public void performMove(CellPane cellPane) {
+        Player currentPlayer = getActivePlayer();
+        switch (currentPlayer.currentPhase) {
             case PIECE_PLACEMENT:
-                player.removePiecesFromHand();
-                cellPane.setState(player.getPlayerColorAsCellState());
-                if (millFormed()) {
-                    // gameState.getInactivePlayer().removeDeckPieces();
-                    cellPane.setState(CellState.EMPTY);
-                }
-                if (!player.hasPiecesInHand()) {
-                    player.setGamePhase(Player.Phase.PIECE_MOVEMENT);
+                currentPlayer.removePiecesFromHand();
+                cellPane.setState(currentPlayer.getPlayerColorAsCellState());
+//                if (millFormed()) {
+//                    // gameState.getInactivePlayer().removeBoardPieces();
+//                    cellPane.setState(CellState.EMPTY);
+//                }
+                if (!currentPlayer.hasPiecesInHand()) {
+                    currentPlayer.setGamePhase(Player.Phase.PIECE_MOVEMENT);
                 }
                 break;
             case PIECE_MOVEMENT:
-                if (!player.hasPieceToMove()) {
-                    player.setPieceToMove(cellPane);
+                if (!currentPlayer.hasPieceToMove()) {
+                    currentPlayer.setPieceToMove(cellPane);
                     return;
                 }
-                cellPane.setState(player.getPlayerColorAsCellState());
-                player.pieceToMove.setState(CellState.EMPTY);
-                player.removePieceToMove();
+                cellPane.setState(currentPlayer.getPlayerColorAsCellState());
+                currentPlayer.pieceToMove.setState(CellState.EMPTY);
+                currentPlayer.removePieceToMove();
                 break;
         }
         switchTurn();

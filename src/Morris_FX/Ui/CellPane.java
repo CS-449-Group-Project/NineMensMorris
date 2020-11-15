@@ -6,6 +6,7 @@ import Morris_FX.Logic.CellPosition;
 import javafx.scene.layout.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CellPane extends Pane {
     private final BoardPane parent;
@@ -20,7 +21,7 @@ public class CellPane extends Pane {
 
     public CellState cellState;
 
-    public java.util.List<CellPane> moves = new ArrayList<CellPane>();
+    public List<CellPane> adjacentCells = new ArrayList<>();
 
     public CellPane(CellPosition position, BoardPane boardPane) {
         super();
@@ -46,11 +47,6 @@ public class CellPane extends Pane {
         return this.cellState;
     }
 
-    // This method now sets the style and the cellState variable for CellPane
-    // This now means that cellState exists in two different classes, CellPane and Cell
-    // We need to remove the cellState property from the Cell class
-    // Removing the cellState from the Cell class will involve looking through the code to see where it is used and updating
-    // it to use this classes equivalent property `cellState` instead
     public void setState(CellState state) {
         switch (state) {
             case BLACK:
@@ -72,7 +68,6 @@ public class CellPane extends Pane {
         }
     }
 
-    // this is for the validateCellSelection method in the Board class
     public boolean is(CellState state) { return this.cellState == state; }
 
     public boolean isVoid() { return this.cellState == CellState.VOID; }

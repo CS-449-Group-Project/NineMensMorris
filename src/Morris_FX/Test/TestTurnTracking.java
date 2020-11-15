@@ -27,7 +27,7 @@ public class TestTurnTracking {
     public void Turn_BlackPlacesFirstMarble_TurnIsWhite() {
         CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
 
-        gameManager.performMove(coordinate00, board);
+        gameManager.performMove(coordinate00);
 
         assertEquals(PlayerColor.WHITE, gameManager.getCurrentPlayerColor());
     }
@@ -37,8 +37,8 @@ public class TestTurnTracking {
         CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
         CellPane coordinate11 = board.getCell(new CellPosition(1, 1));
 
-        gameManager.performMove(coordinate00, board);
-        gameManager.performMove(coordinate11, board);
+        gameManager.performMove(coordinate00);
+        gameManager.performMove(coordinate11);
 
         assertEquals(PlayerColor.BLACK, gameManager.getCurrentPlayerColor());
     }

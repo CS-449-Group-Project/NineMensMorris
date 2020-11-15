@@ -9,8 +9,7 @@ public class Player {
     private int boardPieces;
     private final PlayerColor color;
     Phase currentPhase = Phase.PIECE_PLACEMENT;
-    // this is the piece a player has picked up from the board during the PIECE_MOVEMENT phase
-    CellPane pieceToMove;
+    CellPane pieceToMove;// this is the piece a player has selected from the board during the PIECE_MOVEMENT phase that they want to move
 
     public Player(PlayerColor color) {
 
