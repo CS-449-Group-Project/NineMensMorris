@@ -75,6 +75,7 @@ public class Player {
     public void reset() {
         piecesInHand = MAX_PIECES;
         boardPieces = NO_PIECES;
+        this.setGamePhase(Phase.PIECE_PLACEMENT);
+        this.removePieceToMove();
     }
-
 }

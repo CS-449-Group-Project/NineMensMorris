@@ -17,7 +17,7 @@ public class TestPieceMovement {
     private void setup() {
         gameManager = new GameManager();
         board = new Board(gameManager);
-        player = gameManager.getActivePlayer();
+        player = gameManager.getCurrentPlayer();
         player.setGamePhase(Player.Phase.PIECE_MOVEMENT);
         boardPane = new BoardPane(board, gameManager);
         board.reset();

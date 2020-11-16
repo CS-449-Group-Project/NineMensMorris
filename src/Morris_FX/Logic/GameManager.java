@@ -26,12 +26,12 @@ public class GameManager {
             switchTurn();
             return;
         }
-        Player currentPlayer = getActivePlayer();
+        Player currentPlayer = getCurrentPlayer();
         switch (currentPlayer.currentPhase) {
             case PIECE_PLACEMENT:
                 currentPlayer.removePiecesFromHand();
                 cellPane.setState(currentPlayer.getPlayerColorAsCellState());
-                getActivePlayer().increaseBoardPieces();
+                getCurrentPlayer().increaseBoardPieces();
 
                 if (!currentPlayer.hasPiecesInHand()) {
                     currentPlayer.setGamePhase(Player.Phase.PIECE_MOVEMENT);
@@ -74,11 +74,11 @@ public class GameManager {
         return this.currentPlayer;
     }
 
-    public Player getActivePlayer() {
+    public Player getCurrentPlayer() {
         return player.get(this.currentPlayer);
     }
 
-    Player getInactivePlayer() {
+    public Player getInactivePlayer() {
         return player.get(this.currentPlayer.complement());
     }
 

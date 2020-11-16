@@ -108,6 +108,8 @@ public class Morris extends Application {
         gameManager.resetGameManager();
         board.reset();
         boardPane.reset();
+        gameManager.getCurrentPlayer().reset();
+        gameManager.getInactivePlayer().reset();
     }
 
 }

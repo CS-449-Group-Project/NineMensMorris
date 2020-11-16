@@ -39,7 +39,7 @@ public class Board {
             return false;
         }
 
-        Player player = gameManager.getActivePlayer();
+        Player player = gameManager.getCurrentPlayer();
         if (gameManager.isMillFormed()) {
 
 
