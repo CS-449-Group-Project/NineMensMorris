@@ -28,9 +28,10 @@ public class Board {
     public boolean validateCellSelection(CellPane cell) {
         Player currentPlayer = gameManager.getCurrentPlayer();
         CellState currentPlayerCellState = currentPlayer.getPlayerColorAsCellState();
+        CellState opponentCellState = gameManager.getOpponentCellState();
 
         if(gameManager.isMillFormed()){
-            if( cell.matches(gameManager.getOpponentCellState()) && !gameManager.millFormed(cell)) {
+            if( cell.matches(opponentCellState) && !gameManager.millFormed(cell)) {
                 return true;
             }else{
                 invalidCellType = InvalidCellType.EMPTY;
