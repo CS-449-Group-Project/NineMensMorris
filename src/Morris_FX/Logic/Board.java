@@ -26,7 +26,8 @@ public class Board {
 
     // Checks whether the current cell click is a valid move given the phase of the game and pieces on the board
     public boolean validateCellSelection(CellPane cell) {
-        Player player = gameManager.getCurrentPlayer();
+        Player currentPlayer = gameManager.getCurrentPlayer();
+        CellState currentPlayerCellState = currentPlayer.getPlayerColorAsCellState();
 
         if(gameManager.isMillFormed()){
             if( cell.matches(gameManager.getOpponentCellState()) && !gameManager.millFormed(cell)) {
@@ -42,11 +43,11 @@ public class Board {
             return false;
         }
 
-        switch (player.currentPhase) {
+        switch (currentPlayer.currentPhase) {
             case PIECE_PLACEMENT:
                 if (cell.isOccupied()) {
                     invalidCellType = InvalidCellType.OCCUPIED;
-                    if (cell.matches(player.getPlayerColorAsCellState())) {
+                    if (cell.matches(currentPlayerCellState)) {
                         invalidCellType = InvalidCellType.OWNED;
                     }
                     return false;
@@ -56,18 +57,18 @@ public class Board {
 
                 return true;
             case PIECE_MOVEMENT:
-                if (!player.hasPieceToMove()) {
+                if (!currentPlayer.hasPieceToMove()) {
                     if (cell.isEmpty()) {
                         return false;
                     }
-                    if (cell.canPickup(player)) {
-                        if (cell.matches(player.getPlayerColorAsCellState())) {
+                    if (cell.canPickup(currentPlayer)) {
+                        if (cell.matches(currentPlayerCellState)) {
                             return true;
                         }
                     }
                 }
                 // the second condition here checks the list of moves list which is populated by the linkCells method
-                if (cell.isEmpty() && player.pieceToMove.adjacentCells.contains(cell)) {
+                if (cell.isEmpty() && currentPlayer.pieceToMove.adjacentCells.contains(cell)) {
                     return true;
                 }
             default:
