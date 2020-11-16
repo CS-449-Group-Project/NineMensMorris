@@ -121,5 +121,9 @@ public class CellPane extends Pane {
         return false;
     }
 
+    public boolean matches(CellState cellState) {
+        return this.cellState.equals(cellState);
+    }
+
 }
 

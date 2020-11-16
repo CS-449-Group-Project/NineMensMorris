@@ -82,7 +82,7 @@ public class GameManager {
         return player.get(this.currentPlayer.complement());
     }
 
-    public CellState getInactivePlayerAsCellState() {return player.get(this.currentPlayer.complement()).getPlayerColorAsCellState();}
+    public CellState getOpponentCellState() {return player.get(this.currentPlayer.complement()).getPlayerColorAsCellState();}
 
     public void resetMill(){
         this.millIsFormed = false;
