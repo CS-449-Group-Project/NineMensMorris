@@ -82,8 +82,12 @@ public class Board {
         // This assumes that invalid moves are marked as CellState.VOID already
         // which is true since this.createGrid() marks all cells as CellState.VOID.
 
-        // mark valid spots as CellState.EMPTY
-        markValidPosAsEmpty();
+        for (int i = 0; i < Board.GRID_SIZE; i++) {
+            List<Integer> validMoves = getValidRowMoves(i);
+            for (int j : validMoves) {
+                grid[i][j].reset();
+            }
+        }
     }
 
 
@@ -94,10 +98,11 @@ public class Board {
                 CellPosition pos = new CellPosition(i,j);
                 CellPane cellPane;
 
-
+                // valid spots should always store adjacent cell positions spots
                 if (isValidCellSpot(pos)) {
                     cellPane = new CellPane(pos, getAdjacentSpots(pos));
                 } else {
+                    // invalid should not
                     cellPane = new CellPane(pos);
                 }
                 grid[i][j] = cellPane;
@@ -120,12 +125,15 @@ public class Board {
                     continue;
                 }
 
+                // this assumes that all cells will update their own
+                // record for adjacent cells so no need to worry about
+                // linking the current cell to the other one
                 Vector<CellPane> adjacentCells = new Vector<>();
                 for (CellPosition adjacentPos : cellPane.adjacentCellPositions) {
                     CellPane adjacentCellPane = getCell(adjacentPos);
-                    adjacentCells.add(adjacentCellPane);
                     String targetPositionDirection = pos.directionOf(adjacentPos);
                     cellPane.setDirectionalCellPane(targetPositionDirection, adjacentCellPane);
+                    adjacentCells.add(adjacentCellPane);
                 }
                 cellPane.adjacentCells = adjacentCells;
             }
@@ -142,17 +150,9 @@ public class Board {
         } else if (y == midpoint) {
             return true;
         }
-
+        // x and y can not be midpoints so the checks can be skipped
+        // negativeSlopeDiagonal || positiveSlopeDiagonal
         return x == y || (x + y == max);
-    }
-
-    private void markValidPosAsEmpty() {
-        for (int i = 0; i < Board.GRID_SIZE; i++) {
-            List<Integer> validMoves = getValidRowMoves(i);
-            for (int j : validMoves) {
-                grid[i][j].reset();
-            }
-        }
     }
 
 
@@ -179,6 +179,7 @@ public class Board {
         return invalidCellType;
     }
 
+    // I copied this from my NMM implementation with some modifications
     public Vector<CellPosition> getAdjacentSpots(CellPosition from) {
         int x = from.getColumn(),y=from.getRow();
 

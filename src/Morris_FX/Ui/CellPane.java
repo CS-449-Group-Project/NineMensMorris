@@ -10,6 +10,7 @@ import java.util.List;
 
 public class CellPane extends Pane {
     private BoardPane parent;
+    // initialState won't change if the cell position does not change
     private CellState initialState = CellState.VOID;
     private CellPosition position;
 
@@ -197,6 +198,7 @@ public class CellPane extends Pane {
 
 
     public void reset() {
+        // directional fields are automatically update when this is called
         setState(initialState);
     }
 }
