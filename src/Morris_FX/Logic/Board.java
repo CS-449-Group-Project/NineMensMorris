@@ -21,7 +21,7 @@ public class Board {
 
     public CellPane getCell(CellPosition position) {
         int row = position.getRow(), column = position.getColumn();
-        return this.grid[row][column];
+        return this.grid[column][row];
     }
 
     // Checks whether the current cell click is a valid move given the phase of the game and pieces on the board

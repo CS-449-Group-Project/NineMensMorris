@@ -29,7 +29,7 @@ public class CellPane extends Pane {
     public CellPane(CellPosition position) {
         this.cellState = CellState.VOID;
         this.position = position;
-        cellState = initialState;
+        setState(initialState);
     }
 
     public CellPane(CellPosition position, List<CellPosition> adjacentCellPositions) {
@@ -39,7 +39,7 @@ public class CellPane extends Pane {
         this.setPrefSize(2000, 2000);
         this.setOnMouseClicked(e -> parent.onCellClick(this));
         this.initialState = CellState.EMPTY;
-        cellState = initialState;
+        setState(initialState);
     }
 
     public void setParentPane(BoardPane boardPane) {
@@ -77,25 +77,34 @@ public class CellPane extends Pane {
     }
 
     private void updateAdjacentCells() {
-        // assume there was none set to begin with
-        if (cellState == CellState.VOID) {
-            return;
-        }
+        if (adjacentCells == null) {
+            String[] dirs = {
+                    "LEFT",
+                    "RIGHT",
+                    "UP",
+                    "DOWN"
+            };
+            for(String dir: dirs) {
+                setDirectionalCellPane(dir, null);
+            }
+        } else {
+            boolean isEmpty = cellState == CellState.EMPTY;
 
-        boolean isEmpty = cellState == CellState.EMPTY;
-
-        for(CellPane adjacentCell : adjacentCells) {
-            CellPosition adjacentCellPosition = adjacentCell.getPosition();
-            String direction = position.directionOf(adjacentCellPosition);
-            String oppositeDirection = adjacentCellPosition.directionOf(position);
-            if (isEmpty) {
-                adjacentCell.setDirectionalCellPane(oppositeDirection, null);
-                setDirectionalCellPane(direction, null);
-            } else {
-                adjacentCell.setDirectionalCellPane(oppositeDirection, this);
-                setDirectionalCellPane(direction, adjacentCell);
+            for(CellPane adjacentCell : adjacentCells) {
+                CellPosition adjacentCellPosition = adjacentCell.getPosition();
+                String direction = position.directionOf(adjacentCellPosition);
+                String oppositeDirection = adjacentCellPosition.directionOf(position);
+                if (isEmpty) {
+                    adjacentCell.setDirectionalCellPane(oppositeDirection, null);
+                    setDirectionalCellPane(direction, null);
+                } else {
+                    adjacentCell.setDirectionalCellPane(oppositeDirection, this);
+                    setDirectionalCellPane(direction, adjacentCell);
+                }
             }
         }
+
+
     }
 
     public void setDirectionalCellPane(String targetPositionDirection, CellPane adjacentCellPane) {
