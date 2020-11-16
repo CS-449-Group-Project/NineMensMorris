@@ -29,7 +29,7 @@ public class Board {
         Player player = gameManager.getCurrentPlayer();
 
         if(gameManager.isMillFormed()){
-            if( cell.cellState == gameManager.getInactivePlayer().getPlayerColorAsCellState() && !gameManager.millFormed(cell)) {
+            if( cell.cellState.equals(gameManager.getInactivePlayerAsCellState()) && !gameManager.millFormed(cell)) {
                 return true;
             }else{
                 invalidCellType = InvalidCellType.EMPTY;
@@ -61,7 +61,7 @@ public class Board {
                         return false;
                     }
                     if (cell.canPickup(player)) {
-                        if (cell.cellState == player.getPlayerColorAsCellState()) {
+                        if (cell.cellState.equals(player.getPlayerColorAsCellState())) {
                             return true;
                         }
                     }
