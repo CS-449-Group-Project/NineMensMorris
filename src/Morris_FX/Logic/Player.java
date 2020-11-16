@@ -59,6 +59,14 @@ public class Player {
         piecesInHand--;
     }
 
+    public void increaseBoardPieces(){
+        boardPieces++;
+    }
+
+    public void decreaseBoardPieces(){
+        boardPieces--;
+    }
+
     public int getBoardPieces(){
 
         return boardPieces;

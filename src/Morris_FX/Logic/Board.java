@@ -26,6 +26,14 @@ public class Board {
 
     // Checks whether the current cell click is a valid move given the phase of the game and pieces on the board
     public boolean validateCellSelection(CellPane cell) {
+        if(gameManager.isMillFormed()){
+            if( cell.cellState == gameManager.getInactivePlayer().getPlayerColorAsCellState() && !gameManager.millFormed(cell)) {
+                return true;
+            }else{
+                invalidCellType = InvalidCellType.EMPTY;
+                return false;
+            }
+        }
         if (cell.isVoid()) {
             invalidCellType = InvalidCellType.VOID;
             return false;
@@ -33,7 +41,7 @@ public class Board {
 
         PlayerColor turn = gameManager.getCurrentPlayerColor();
         Player player = gameManager.getActivePlayer();
-        if (gameManager.millFormed()) { // always false because the logic has not been added to determine if a mill was formed
+        if (gameManager.isMillFormed()) { // always false because the logic has not been added to determine if a mill was formed
 
 
             if (cell.isEmpty()) {

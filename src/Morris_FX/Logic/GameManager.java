@@ -8,7 +8,7 @@ import java.util.Map;
 public class GameManager {
 
     private Map<PlayerColor,Player> player;
-    private boolean mill = false;
+    private boolean millIsFormed = false;
     private PlayerColor defaultPlayer = PlayerColor.BLACK;
     private PlayerColor currentPlayer;
 
@@ -19,17 +19,26 @@ public class GameManager {
     // if they do have a piece to move already then it sets the state of the clicked cell to the player color, sets the
     // previously occupied cell to empty, and set pieceToMove to null in the current player object; "Places pieceToMove in new position"
     public void performMove(CellPane cellPane) {
+        if (isMillFormed()) {
+            cellPane.setState(CellState.EMPTY);
+            getInactivePlayer().decreaseBoardPieces();
+            resetMill();
+            switchTurn();
+            return;
+        }
         Player currentPlayer = getActivePlayer();
         switch (currentPlayer.currentPhase) {
             case PIECE_PLACEMENT:
                 currentPlayer.removePiecesFromHand();
                 cellPane.setState(currentPlayer.getPlayerColorAsCellState());
-//                if (millFormed()) {
-//                    // gameState.getInactivePlayer().removeBoardPieces();
-//                    cellPane.setState(CellState.EMPTY);
-//                }
+                getActivePlayer().increaseBoardPieces();
+
                 if (!currentPlayer.hasPiecesInHand()) {
                     currentPlayer.setGamePhase(Player.Phase.PIECE_MOVEMENT);
+                }
+
+                if(millFormed(cellPane)){
+                     return;
                 }
                 break;
             case PIECE_MOVEMENT:
@@ -40,6 +49,9 @@ public class GameManager {
                 cellPane.setState(currentPlayer.getPlayerColorAsCellState());
                 currentPlayer.pieceToMove.setState(CellState.EMPTY);
                 currentPlayer.removePieceToMove();
+                if(millFormed(cellPane)){
+                    return;
+                }
                 break;
         }
         switchTurn();
@@ -70,12 +82,55 @@ public class GameManager {
         return player.get(this.currentPlayer.complement());
     }
 
-    public void setMill(boolean formedMill) {
-        this.mill = formedMill;
+    public void resetMill(){
+        this.millIsFormed = false;
     }
 
-    public boolean millFormed() {
-        return this.mill;
+    public void setMillIsFormed() {
+        this.millIsFormed = true;
+    }
+
+    public boolean isMillFormed() {
+        return this.millIsFormed;
+    }
+
+    public boolean millFormed (CellPane cell){
+        CellPane recursiveCell = cell;
+        int vertical = 1;
+        int horizontal = 1;
+
+        //check vertical first, check up pointer until either the reference is null or the playstate is not the 'color' of the given cell
+        while(recursiveCell.up != null && recursiveCell.up.cellState == cell.cellState) {
+            recursiveCell = recursiveCell.up;
+            vertical++;
+        }
+        recursiveCell = cell;
+        while(recursiveCell.down != null && recursiveCell.down.cellState == cell.cellState) {
+            recursiveCell = recursiveCell.down;
+            vertical++;
+        }
+        if (vertical == 3) {
+            setMillIsFormed();
+            return true;
+        }
+        recursiveCell = cell;
+
+        //now check horizontal
+        while(recursiveCell.left != null && recursiveCell.left.cellState == cell.cellState) {
+            recursiveCell = recursiveCell.left;
+            horizontal++;
+        }
+        recursiveCell = cell;
+        while(recursiveCell.right != null && recursiveCell.right.cellState == cell.cellState) {
+            recursiveCell = recursiveCell.right;
+            horizontal++;
+        }
+        if (horizontal == 3) {
+            setMillIsFormed();
+            return true;
+        }
+
+        return false;
     }
 
     public boolean isOver() {
@@ -83,9 +138,7 @@ public class GameManager {
     }
 
     public void switchTurn() {
-        if (!millFormed()) {
             currentPlayer = currentPlayer.complement();
-        }
     }
 
     public void reset() {
