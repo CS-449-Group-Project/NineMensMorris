@@ -68,8 +68,6 @@ public class CellPane extends Pane {
         }
     }
 
-    public boolean is(CellState state) { return this.cellState == state; }
-
     public boolean isVoid() { return this.cellState == CellState.VOID; }
 
     public boolean isEmpty() {

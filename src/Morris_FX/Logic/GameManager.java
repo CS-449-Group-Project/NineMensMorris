@@ -86,7 +86,7 @@ public class GameManager {
         this.millIsFormed = false;
     }
 
-    public void setMillIsFormed() {
+    public void setMillIsFormedToTrue() {
         this.millIsFormed = true;
     }
 
@@ -110,7 +110,7 @@ public class GameManager {
             vertical++;
         }
         if (vertical == 3) {
-            setMillIsFormed();
+            setMillIsFormedToTrue();
             return true;
         }
         recursiveCell = cell;
@@ -126,7 +126,7 @@ public class GameManager {
             horizontal++;
         }
         if (horizontal == 3) {
-            setMillIsFormed();
+            setMillIsFormedToTrue();
             return true;
         }
 
@@ -141,8 +141,9 @@ public class GameManager {
             currentPlayer = currentPlayer.complement();
     }
 
-    public void reset() {
+    public void resetGameManager() {
         currentPlayer = defaultPlayer;
+        millIsFormed = false;
     }
 
 

@@ -39,9 +39,8 @@ public class Board {
             return false;
         }
 
-        PlayerColor turn = gameManager.getCurrentPlayerColor();
         Player player = gameManager.getActivePlayer();
-        if (gameManager.isMillFormed()) { // always false because the logic has not been added to determine if a mill was formed
+        if (gameManager.isMillFormed()) {
 
 
             if (cell.isEmpty()) {
@@ -49,7 +48,7 @@ public class Board {
                 return false;
             }
 
-            if (cell.is(player.getPlayerColorAsCellState().complement())) {
+            if (cell.cellState.equals(player.getPlayerColorAsCellState().complement())) {
                 invalidCellType = InvalidCellType.NONE;
                 return true;
             }
@@ -62,7 +61,7 @@ public class Board {
             case PIECE_PLACEMENT:
                 if (cell.isOccupied()) {
                     invalidCellType = InvalidCellType.OCCUPIED;
-                    if (cell.is(player.getPlayerColorAsCellState())) {
+                    if (cell.cellState.equals(player.getPlayerColorAsCellState())) {
                         invalidCellType = InvalidCellType.OWNED;
                     }
                     return false;
