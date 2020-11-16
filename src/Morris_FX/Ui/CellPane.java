@@ -3,13 +3,14 @@ package Morris_FX.Ui;
 import Morris_FX.Logic.CellState;
 import Morris_FX.Logic.Player;
 import Morris_FX.Logic.CellPosition;
+import javafx.scene.control.Cell;
 import javafx.scene.layout.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CellPane extends Pane {
-    private final BoardPane parent;
+    private BoardPane parent;
+    private CellState initialState = CellState.VOID;
     private CellPosition position;
 
     // could call above instead of up
@@ -21,22 +22,27 @@ public class CellPane extends Pane {
 
     public CellState cellState;
 
-    public List<CellPane> adjacentCells = new ArrayList<>();
+    public List<CellPosition> adjacentCellPositions = null;
+    public List<CellPane> adjacentCells = null;
 
-    public CellPane(CellPosition position, BoardPane boardPane) {
-        super();
-        this.parent = boardPane;
+    public CellPane(CellPosition position) {
+        this.cellState = CellState.VOID;
         this.position = position;
-        this.setPrefSize(2000, 2000);
-        this.setOnMouseClicked(e -> parent.onCellClick(this));
-        this.setState(CellState.VOID);
+        this.setState(initialState);
     }
 
-    // this is only exists to satisfy what is going on in the board class, I personally don't see a reason for it
-    public CellPane() {
-        this.cellState = CellState.VOID;
-        this.position = null;
+    public CellPane(CellPosition position, List<CellPosition> adjacentCellPositions) {
+        this.position = position;
+        this.adjacentCellPositions = adjacentCellPositions;
         this.parent = null;
+        this.setPrefSize(2000, 2000);
+        this.setOnMouseClicked(e -> parent.onCellClick(this));
+        this.initialState = CellState.EMPTY;
+        this.setState(initialState);
+    }
+
+    public void setParentPane(BoardPane boardPane) {
+        this.parent = boardPane;
     }
 
     public CellPosition getPosition() {
@@ -65,6 +71,18 @@ public class CellPane extends Pane {
                 setStyle(null);
                 this.cellState = state;
                 break;
+        }
+        updateAdjacentCells();
+    }
+
+    private void updateAdjacentCells() {
+        // assume there was none set to begin with
+        if (cellState == CellState.VOID) {
+            return;
+        }
+
+        if (cellState == CellState.EMPTY) {
+
         }
     }
 
@@ -125,5 +143,28 @@ public class CellPane extends Pane {
         return this.cellState.equals(cellState);
     }
 
+
+    public void reset() {
+        setState(initialState);
+    }
+
+    public void setAdjacentCellDirection(String targetPositionDirection, CellPane adjacentCellPane) {
+        switch (targetPositionDirection) {
+            case "LEFT":
+                left = adjacentCellPane;
+                break;
+            case "RIGHT":
+                right = adjacentCellPane;
+                break;
+            case "UP":
+                up = adjacentCellPane;
+                break;
+            case "DOWN":
+                down = adjacentCellPane;
+                break;
+            default:
+                break;
+        }
+    }
 }
 

@@ -91,16 +91,66 @@ public class Board {
         // let i be vertical, j be horizontal
         for (int i = 0; i < GRID_SIZE; i++) {
             for(int j = 0; j < GRID_SIZE; j++) {
-                grid[i][j] = new CellPane();
+                CellPosition pos = new CellPosition(i,j);
+                CellPane cellPane;
+
+
+                if (isValidCellSpot(pos)) {
+                    cellPane = new CellPane(pos, getAdjacentSpots(pos));
+                } else {
+                    cellPane = new CellPane(pos);
+                }
+                grid[i][j] = cellPane;
             }
         }
+        linkCells();
+    }
+
+    //takes all the find functions and iterates over the entire board
+    //for each playable cell make a pointer to the cell up, right, down, and left of that cell
+    //also add that linked cell to the list of playable cells for each cell
+    //this list is used to check to find a place to move
+    public void linkCells(){
+        for (int i = 0; i < GRID_SIZE; i++) {
+            for(int j = 0; j < GRID_SIZE; j++) {
+                CellPosition pos = new CellPosition(i,j);
+                CellPane cellPane = getCell(pos);
+                // Is a void cell
+                if (cellPane.adjacentCellPositions == null) {
+                    continue;
+                }
+
+                Vector<CellPane> adjacentCells = new Vector<>();
+                for (CellPosition adjacentPos : cellPane.adjacentCellPositions) {
+                    CellPane adjacentCellPane = getCell(adjacentPos);
+                    adjacentCells.add(adjacentCellPane);
+                    String targetPositionDirection = pos.directionOf(adjacentPos);
+                    cellPane.setAdjacentCellDirection(targetPositionDirection, adjacentCellPane);
+                }
+                cellPane.adjacentCells = adjacentCells;
+            }
+        }
+    }
+
+    private boolean isValidCellSpot(CellPosition pos) {
+        int x = pos.getRow(),y = pos.getColumn();
+        int midpoint = GRID_SIZE/2;
+        int max = GRID_SIZE - 1;
+
+        if (x == midpoint) {
+            return y != midpoint;
+        } else if (y == midpoint) {
+            return true;
+        }
+
+        return x == y || (x + y == max);
     }
 
     private void markValidPosAsEmpty() {
         for (int i = 0; i < Board.GRID_SIZE; i++) {
             List<Integer> validMoves = getValidRowMoves(i);
             for (int j : validMoves) {
-                grid[i][j].setState(CellState.EMPTY);
+                grid[i][j].reset();
             }
         }
     }
@@ -128,4 +178,60 @@ public class Board {
     public InvalidCellType getInvalidCellType() {
         return invalidCellType;
     }
+
+    public Vector<CellPosition> getAdjacentSpots(CellPosition from) {
+        int x = from.getColumn(),y=from.getRow();
+
+        int midpoint = GRID_SIZE/2;
+        int max = midpoint * 2;
+        Vector<CellPosition> validMoves = new Vector<>(4);
+
+        if (x == midpoint) {
+            int xStepSize = Math.abs(midpoint - y);
+            int leftAdjacentX = x - xStepSize;
+            int rightAdjacentX = x + xStepSize;
+            if (leftAdjacentX >= 0) {
+                validMoves.add(new CellPosition(leftAdjacentX, y));
+            }
+            if (rightAdjacentX <= max) {
+                validMoves.add(new CellPosition(rightAdjacentX, y));
+            }
+
+            int offsetY = y < midpoint ? 0 : midpoint;
+            int refY = y < midpoint ? y : Math.abs(midpoint - y);
+
+            for(int i = Math.max(0, refY - 1); i <= Math.min(refY + 1, midpoint); i++) {
+                if(refY != i) {
+                    validMoves.add(new CellPosition(x, i + offsetY));
+                }
+            }
+
+        } else {
+            validMoves.add(new CellPosition(midpoint, y));
+        }
+
+        if (y == midpoint) {
+            int yStepSize = Math.abs(midpoint - x);
+            int upAdjacentY = y - yStepSize;
+            int downAdjacentY = y + yStepSize;
+            if (upAdjacentY >= 0) {
+                validMoves.add(new CellPosition(x, upAdjacentY));
+            }
+            if (downAdjacentY <= max) {
+                validMoves.add(new CellPosition(x, downAdjacentY));
+            }
+
+            int offsetX = x < midpoint ? 0 : midpoint;
+            int refX = x < midpoint ? x : Math.abs(midpoint - x);
+            for(int i = Math.max(0, refX - 1); i <= Math.min(refX + 1,midpoint); i++) {
+                if(refX != i) {
+                    validMoves.add(new CellPosition(i + offsetX, y));
+                }
+            }
+        } else {
+            validMoves.add(new CellPosition(x, midpoint));
+        }
+        return validMoves;
+    }
+
 }
