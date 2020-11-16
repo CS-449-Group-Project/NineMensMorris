@@ -25,7 +25,6 @@ public class TestPieceMovement {
 
     // Class_GivenScenario_Expectation()
 
-    // test piece pick up method (hasPieceInHand)
     @Test
     public void Player_UserSelectsOwnPieceOnBoard_PieceIsPickedUp()
     {
@@ -36,8 +35,6 @@ public class TestPieceMovement {
 
         assertTrue(player.hasPieceToMove());
     }
-
-    // test piece placement following piece pick up
 
     @Test
     public void Player_UserSelectsEmptyCellAfterPickup_PieceIsPlaced()

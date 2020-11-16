@@ -24,7 +24,7 @@ public class TestTurnTracking {
     }
 
     @Test
-    public void Turn_BlackPlacesFirstMarble_TurnIsWhite() {
+    public void Turn_BlackPlacesFirstPiece_TurnIsWhite() {
         CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
 
         gameManager.performMove(coordinate00);
@@ -33,7 +33,7 @@ public class TestTurnTracking {
     }
 
     @Test
-    public void Turn_WhitePlacesSecondMarble_TurnIsBlack() {
+    public void Turn_WhitePlacesSecondPiece_TurnIsBlack() {
         CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
         CellPane coordinate11 = board.getCell(new CellPosition(1, 1));
 
