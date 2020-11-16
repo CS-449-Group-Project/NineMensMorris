@@ -1,6 +1,5 @@
 package Morris_FX.Logic;
 
-;
 import Morris_FX.Ui.CellPane;
 
 import java.util.EnumMap;
