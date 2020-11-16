@@ -26,6 +26,8 @@ public class Board {
 
     // Checks whether the current cell click is a valid move given the phase of the game and pieces on the board
     public boolean validateCellSelection(CellPane cell) {
+        Player player = gameManager.getCurrentPlayer();
+
         if(gameManager.isMillFormed()){
             if( cell.cellState == gameManager.getInactivePlayer().getPlayerColorAsCellState() && !gameManager.millFormed(cell)) {
                 return true;
@@ -34,26 +36,9 @@ public class Board {
                 return false;
             }
         }
+
         if (cell.isVoid()) {
             invalidCellType = InvalidCellType.VOID;
-            return false;
-        }
-
-        Player player = gameManager.getCurrentPlayer();
-        if (gameManager.isMillFormed()) {
-
-
-            if (cell.isEmpty()) {
-                invalidCellType = InvalidCellType.EMPTY;
-                return false;
-            }
-
-            if (cell.cellState.equals(player.getPlayerColorAsCellState().complement())) {
-                invalidCellType = InvalidCellType.NONE;
-                return true;
-            }
-
-            invalidCellType = InvalidCellType.OWNED;
             return false;
         }
 
