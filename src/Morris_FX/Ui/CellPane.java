@@ -29,7 +29,7 @@ public class CellPane extends Pane {
     public CellPane(CellPosition position) {
         this.cellState = CellState.VOID;
         this.position = position;
-        this.setState(initialState);
+        cellState = initialState;
     }
 
     public CellPane(CellPosition position, List<CellPosition> adjacentCellPositions) {
@@ -39,7 +39,7 @@ public class CellPane extends Pane {
         this.setPrefSize(2000, 2000);
         this.setOnMouseClicked(e -> parent.onCellClick(this));
         this.initialState = CellState.EMPTY;
-        this.setState(initialState);
+        cellState = initialState;
     }
 
     public void setParentPane(BoardPane boardPane) {
