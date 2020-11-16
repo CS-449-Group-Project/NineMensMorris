@@ -81,9 +81,61 @@ public class CellPane extends Pane {
             return;
         }
 
-        if (cellState == CellState.EMPTY) {
+        boolean isEmpty = cellState == CellState.EMPTY;
 
+        for(CellPane adjacentCell : adjacentCells) {
+            CellPosition adjacentCellPosition = adjacentCell.getPosition();
+            String direction = position.directionOf(adjacentCellPosition);
+            String oppositeDirection = adjacentCellPosition.directionOf(position);
+            if (isEmpty) {
+                adjacentCell.setDirectionalCellPane(oppositeDirection, null);
+                setDirectionalCellPane(direction, null);
+            } else {
+                adjacentCell.setDirectionalCellPane(oppositeDirection, this);
+                setDirectionalCellPane(direction, adjacentCell);
+            }
         }
+    }
+
+    public void setDirectionalCellPane(String targetPositionDirection, CellPane adjacentCellPane) {
+        switch (targetPositionDirection) {
+            case "LEFT":
+                left = adjacentCellPane;
+                break;
+            case "RIGHT":
+                right = adjacentCellPane;
+                break;
+            case "UP":
+                up = adjacentCellPane;
+                break;
+            case "DOWN":
+                down = adjacentCellPane;
+                break;
+            default:
+                break;
+        }
+    }
+
+    public CellPane getDirectionalCellPane(String direction) {
+        CellPane targetCellPane;
+        switch (direction) {
+            case "LEFT":
+                targetCellPane = left;
+                break;
+            case "RIGHT":
+                targetCellPane = right;
+                break;
+            case "UP":
+                targetCellPane = up ;
+                break;
+            case "DOWN":
+                targetCellPane = down;
+                break;
+            default:
+                targetCellPane = null;
+                break;
+        }
+        return targetCellPane;
     }
 
     public boolean isVoid() { return this.cellState == CellState.VOID; }
@@ -146,25 +198,6 @@ public class CellPane extends Pane {
 
     public void reset() {
         setState(initialState);
-    }
-
-    public void setAdjacentCellDirection(String targetPositionDirection, CellPane adjacentCellPane) {
-        switch (targetPositionDirection) {
-            case "LEFT":
-                left = adjacentCellPane;
-                break;
-            case "RIGHT":
-                right = adjacentCellPane;
-                break;
-            case "UP":
-                up = adjacentCellPane;
-                break;
-            case "DOWN":
-                down = adjacentCellPane;
-                break;
-            default:
-                break;
-        }
     }
 }
 

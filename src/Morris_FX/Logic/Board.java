@@ -125,7 +125,7 @@ public class Board {
                     CellPane adjacentCellPane = getCell(adjacentPos);
                     adjacentCells.add(adjacentCellPane);
                     String targetPositionDirection = pos.directionOf(adjacentPos);
-                    cellPane.setAdjacentCellDirection(targetPositionDirection, adjacentCellPane);
+                    cellPane.setDirectionalCellPane(targetPositionDirection, adjacentCellPane);
                 }
                 cellPane.adjacentCells = adjacentCells;
             }
