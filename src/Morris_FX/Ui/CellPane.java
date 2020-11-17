@@ -4,12 +4,58 @@ import Morris_FX.Logic.CellState;
 import Morris_FX.Logic.Player;
 import Morris_FX.Logic.CellPosition;
 import javafx.scene.control.Cell;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 import java.util.List;
 
 public class CellPane extends Pane {
+
+    public void setBlackPieceImage() {
+        FileInputStream Piece;
+        try { // "D:/UMKC_Stuff/Projects/NMM_ChooseMe/NineMensMorris/images/Morris_Board_Wood.png" -atp
+            Piece = new FileInputStream("./images/BlackMarble.png");
+            Image image = new Image(Piece, 40, 40, false, true);
+
+        BackgroundImage blackPiece = new BackgroundImage(image,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.DEFAULT,
+                BackgroundSize.DEFAULT);
+
+        this.setBackground(new Background(blackPiece));
+        }
+        catch (FileNotFoundException e){
+            e.printStackTrace();
+            System.exit(-1);
+        }
+    }
+
+    public void setWhitePieceImage() {
+        FileInputStream Piece;
+        try { // "D:/UMKC_Stuff/Projects/NMM_ChooseMe/NineMensMorris/images/Morris_Board_Wood.png" -atp
+            Piece = new FileInputStream("./images/WhiteMarble.png");
+            Image image = new Image(Piece, 40, 40, false, true);
+
+            BackgroundImage whitePiece = new BackgroundImage(image,
+                    BackgroundRepeat.NO_REPEAT,
+                    BackgroundRepeat.NO_REPEAT,
+                    BackgroundPosition.DEFAULT,
+                    BackgroundSize.DEFAULT);
+
+            this.setBackground(new Background(whitePiece));
+        }
+        catch (FileNotFoundException e){
+            e.printStackTrace();
+            System.exit(-1);
+        }
+    }
+
+
+
     private BoardPane parent;
     // initialState won't change if the cell position does not change
     private CellState initialState = CellState.VOID;
@@ -69,19 +115,19 @@ public class CellPane extends Pane {
     public void setState(CellState state) {
         switch (state) {
             case BLACK:
-                setStyle("-fx-background-color: black; -fx-background-radius: 100");
+                setBlackPieceImage();
                 this.cellState = state;
                 break;
             case WHITE:
-                setStyle("-fx-background-color: white; -fx-border-color: black; -fx-border-width: 4; -fx-background-radius: 100; -fx-border-radius: 100;");
+                setWhitePieceImage();
                 this.cellState = state;
                 break;
             case VOID:
-                setStyle("-fx-background-color: transparent");
+                //setStyle("-fx-background-color: transparent");
                 this.cellState = state;
                 break;
             case EMPTY:
-                setStyle(null);
+                setBackground(null);
                 this.cellState = state;
                 break;
         }

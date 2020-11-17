@@ -27,6 +27,7 @@ public class Morris extends Application {
         gameManager = new GameManager();
         board = new Board(gameManager);
         boardPane = new BoardPane(board, gameManager);
+        boardPane.setPadding(new Insets((30), 0, 20, 35));
     }
 
 
@@ -51,9 +52,9 @@ public class Morris extends Application {
 
 
         //setting the pane for game in the window
-        BorderPane borderPane = new BorderPane();
-        borderPane.setCenter(boardPane);
-        borderPane.setBottom(choices);
+        BorderPane gameWindow = new BorderPane();
+        gameWindow.setCenter(boardPane);
+        gameWindow.setBottom(choices);
 
         //Scene 1
         GridPane first = new GridPane();
@@ -96,7 +97,7 @@ public class Morris extends Application {
         // Label label3 = new Label("Game");
         reset.setOnAction(e -> reset());
         menu.setOnAction(e -> primaryStage.setScene(scene2));
-        scene3 = new Scene(borderPane, 550, 600);
+        scene3 = new Scene(gameWindow, 550, 600);
 
 
         primaryStage.setScene(scene1);
