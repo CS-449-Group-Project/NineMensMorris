@@ -9,7 +9,7 @@ public class Player {
     private int piecesInHand = MAX_PIECES;
     private int boardPieces;
     private final PlayerColor color;
-    Phase currentPhase = Phase.PIECE_PLACEMENT;
+    public Phase currentPhase = Phase.PIECE_PLACEMENT;
 
     public int validMovesCounter = 0;
     CellPane pieceToMove;// this is the piece a player has selected from the board during the PIECE_MOVEMENT phase that they want to move
@@ -26,6 +26,10 @@ public class Player {
 
     public void setGamePhase(Phase phase) {
         this.currentPhase = phase;
+    }
+
+    public Phase getGamePhase() {
+        return this.currentPhase;
     }
 
     public CellState getPlayerColorAsCellState() {

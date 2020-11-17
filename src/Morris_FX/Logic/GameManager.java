@@ -63,6 +63,23 @@ public class GameManager {
                 if(millFormed(cellPane)){
                     return;
                 }
+                if (getInactivePlayer().getBoardPieces() == 3) {
+                    getInactivePlayer().setGamePhase(Player.Phase.FLY_RULE);
+                }
+                break;
+            case FLY_RULE:
+                if (!currentPlayer.hasPieceToMove()) {
+                    currentPlayer.setPieceToMove(cellPane);
+
+                    return;
+                }
+                cellPane.setState(currentPlayer.getPlayerColorAsCellState());
+                removeMoves(cellPane);
+                currentPlayer.pieceToMove.setState(CellState.EMPTY);
+                addMoves(currentPlayer.pieceToMove);
+                removePieceMoves(currentPlayer.pieceToMove);
+                currentPlayer.removePieceToMove();
+                System.out.println(getActivePlayer().validMovesCounter);
                 break;
         }
         switchTurn();

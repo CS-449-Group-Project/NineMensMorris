@@ -26,6 +26,19 @@ public class Board {
 
     // Checks whether the current cell click is a valid move given the phase of the game and pieces on the board
     public boolean validateCellSelection(CellPane cell) {
+        Player currentPlayer = gameManager.getActivePlayer();
+        CellState currentPlayerCellState = currentPlayer.getPlayerColorAsCellState();
+        CellState opponentCellState = gameManager.getInactivePlayer().getPlayerColorAsCellState();
+
+        if (currentPlayer.validMovesCounter == 0 && currentPlayer.getGamePhase() != Player.Phase.PIECE_PLACEMENT) {
+            System.out.println("Game Over");
+            return false;
+        }
+
+        if (currentPlayer.getBoardPieces() == 2 && currentPlayer.getGamePhase() != Player.Phase.PIECE_PLACEMENT) {
+            System.out.println("Game Over");
+            return false;
+        }
         if(gameManager.isMillFormed()){
             if( cell.cellState == gameManager.getInactivePlayer().getPlayerColorAsCellState() && !gameManager.millFormed(cell)) {
                 return true;
@@ -85,6 +98,20 @@ public class Board {
                 // the second condition here checks the list of moves list which is populated by the linkCells method
                 if (cell.isEmpty() && player.pieceToMove.adjacentCells.contains(cell)) {
                     return true;
+                }
+            case FLY_RULE:
+                if (!currentPlayer.hasPieceToMove()) {
+                    if (cell.isEmpty()) {
+                        return false;
+                    }
+                    if (cell.cellState.equals(currentPlayerCellState)) {
+                        return true;
+                    }
+                }
+                else {
+                    if (cell.isEmpty()) {
+                        return true;
+                    }
                 }
             default:
                 return false;
