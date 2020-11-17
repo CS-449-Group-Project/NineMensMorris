@@ -25,7 +25,7 @@ public class BoardPane extends GridPane {
 
     private void setupBackgroundImage() {
         FileInputStream backgroundImage;
-        try{
+        try{ // "D:/UMKC_Stuff/Projects/NMM_ChooseMe/NineMensMorris/images/Morris_Board_Wood.png" -atp
             backgroundImage = new FileInputStream("./images/Morris_Board_Wood.png");
             Image image = new Image(backgroundImage,550,550,false,true);
 
