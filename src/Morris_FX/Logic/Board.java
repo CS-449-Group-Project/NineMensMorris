@@ -32,11 +32,13 @@ public class Board {
         CellState opponentCellState = gameManager.getOpponentCellState(); // this function needs to be created
 
         if (currentPlayer.validMovesCounter == 0 && currentPlayer.getGamePhase() != Player.Phase.PIECE_PLACEMENT) {
+            currentPlayer.setGamePhase(Player.Phase.GAME_OVER);
             System.out.println("Game Over");
             return false;
         }
 
         if (currentPlayer.getBoardPieces() == 2 && currentPlayer.getGamePhase() != Player.Phase.PIECE_PLACEMENT) {
+            currentPlayer.setGamePhase(Player.Phase.GAME_OVER);
             System.out.println("Game Over");
             return false;
         }

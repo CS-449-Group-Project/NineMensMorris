@@ -24,7 +24,7 @@ public class Player {
     PIECE_PLACEMENT,
     PIECE_MOVEMENT,
     FLY_RULE,
-    END_GAME
+    GAME_OVER
   }
 
   public void setGamePhase(Phase phase) {

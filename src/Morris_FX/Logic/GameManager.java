@@ -27,10 +27,18 @@ public class GameManager {
             if (getInactivePlayer().getBoardPieces() == 3 && getActivePlayer().currentPhase == Player.Phase.PIECE_MOVEMENT) {
                 getInactivePlayer().setGamePhase(Player.Phase.FLY_RULE);
             }
+            if (getInactivePlayer().validMovesCounter == 0) {
+                getInactivePlayer().setGamePhase(Player.Phase.GAME_OVER);
+            }
             resetMill();
             switchTurn();
             return;
         }
+
+        if (getActivePlayer().getBoardPieces() == 2 && getActivePlayer().getGamePhase() != Player.Phase.PIECE_PLACEMENT) {
+            getActivePlayer().setGamePhase(Player.Phase.GAME_OVER);
+        }
+
         Player currentPlayer = getCurrentPlayer();
         switch (currentPlayer.currentPhase) {
             case PIECE_PLACEMENT:
