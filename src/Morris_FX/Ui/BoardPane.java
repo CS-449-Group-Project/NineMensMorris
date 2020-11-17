@@ -84,6 +84,7 @@ public class BoardPane extends GridPane {
                 return null;
             }
             if(grid[i][j].cellState == CellState.EMPTY){
+                System.out.println("Found cell");
                 return grid[i][j];
             }
         }
