@@ -12,10 +12,19 @@ public class Board {
     private final CellPane[][] grid;
     private InvalidCellType invalidCellType;
     private final GameManager gameManager;
+    private boolean enableToolTip = false;
+
+    public Board(GameManager gameManager, boolean enableToolTip) {
+        this.gameManager = gameManager;
+        grid = new CellPane[GRID_SIZE][GRID_SIZE];
+        this.enableToolTip = enableToolTip;
+        createGrid();
+    }
 
     public Board(GameManager gameManager) {
         this.gameManager = gameManager;
         grid = new CellPane[GRID_SIZE][GRID_SIZE];
+        this.enableToolTip = false;
         createGrid();
     }
 
@@ -144,13 +153,13 @@ public class Board {
 
                 // valid spots should always store adjacent cell positions spots
                 if (isValidCellSpot(pos)) {
-                    cellPane = new CellPane(pos, getAdjacentSpots(pos));
+                    cellPane = new CellPane(pos, getAdjacentSpots(pos), enableToolTip);
                 } else {
                     // invalid should not
                     cellPane = new CellPane(pos);
                 }
-                cellPane.setMaxSize(74,74);
-                cellPane.setMinSize(74,74);
+                // cellPane.setMaxSize(74,74);
+                // cellPane.setMinSize(74,74);
                 grid[i][j] = cellPane;
             }
         }

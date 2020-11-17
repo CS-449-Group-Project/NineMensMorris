@@ -52,7 +52,7 @@ public class Morris extends Application {
             errorMessage.setText(errorMsg);
         });
 
-        board = new Board(gameManager);
+        board = new Board(gameManager, true);
         boardPane = new BoardPane(board, gameManager);
         boardPane.setPadding(new Insets((30), 0, 20, 35));
 

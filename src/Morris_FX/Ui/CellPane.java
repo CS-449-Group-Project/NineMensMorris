@@ -16,7 +16,7 @@ import java.io.FileNotFoundException;
 import javax.tools.Tool;
 import java.util.List;
 
-public class CellPane extends Button {
+public class CellPane extends Pane {
     public void setBlackPieceImage() {
         FileInputStream Piece;
         try { // "D:/UMKC_Stuff/Projects/NMM_ChooseMe/NineMensMorris/images/Morris_Board_Wood.png" -atp
@@ -39,6 +39,7 @@ public class CellPane extends Button {
 
     public void setWhitePieceImage() {
         FileInputStream Piece;
+
         try { // "D:/UMKC_Stuff/Projects/NMM_ChooseMe/NineMensMorris/images/Morris_Board_Wood.png" -atp
             Piece = new FileInputStream("./images/WhiteMarble.png");
             Image image = new Image(Piece, 40, 40, false, true);
@@ -84,29 +85,30 @@ public class CellPane extends Button {
         setState(initialState);
     }
 
-    public CellPane(CellPosition position, List<CellPosition> adjacentCellPositions) {
+    public CellPane(CellPosition position, List<CellPosition> adjacentCellPositions, boolean enableToolTip) {
         this.position = position;
         this.adjacentCellPositions = adjacentCellPositions;
         this.parent = null;
         this.setPrefSize(2000, 2000);
+        Tooltip toolTip;
+        if (enableToolTip) {
+            toolTip = new Tooltip(position.toString());
+            this.setOnMouseMoved(mouseEvent -> {
+                double x = mouseEvent.getScreenX() + 15;
+                double y = mouseEvent.getScreenY() + 0;
+                toolTip.show((Node)mouseEvent.getSource(),x,y);
+            });
 
-        Tooltip toolTip = new Tooltip(position.toString());
+            this.setOnMouseExited(e -> {
+                toolTip.hide();
+            });
+        }
         this.setOnMouseClicked(e -> {
             boolean secondary = false;
             if (e.getButton() == MouseButton.SECONDARY) {
                 secondary = true;
             }
             parent.onCellClick(this);
-        });
-
-       this.setOnMouseMoved(mouseEvent -> {
-           double x = mouseEvent.getScreenX() + 15;
-           double y = mouseEvent.getScreenY() + 0;
-           toolTip.show((Node)mouseEvent.getSource(),x,y);
-       });
-
-        this.setOnMouseExited(e -> {
-            toolTip.hide();
         });
 
         this.initialState = CellState.EMPTY;
@@ -128,6 +130,7 @@ public class CellPane extends Button {
     public void setState(CellState state) {
         switch (state) {
             case BLACK:
+
                 setBlackPieceImage();
                 this.cellState = state;
                 break;
@@ -137,7 +140,7 @@ public class CellPane extends Button {
                 break;
             case VOID:
             case EMPTY:
-                setStyle("-fx-background-color: transparent");
+                setBackground(null);
                 this.cellState = state;
                 break;
         }
