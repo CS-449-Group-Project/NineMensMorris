@@ -45,7 +45,7 @@ public class Board {
             if( cell.matches(opponentCellState) && !gameManager.millFormed(cell)) {
                 return true;
             }else{
-                gameManager.setError("Cannot remove empty space.");
+                gameManager.setError("Select a " + opponentCellState + " marble.");
                 invalidCellType = InvalidCellType.EMPTY;
                 return false;
             }
@@ -76,11 +76,10 @@ public class Board {
             case PIECE_MOVEMENT:
                 if (!currentPlayer.hasPieceToMove()) {
                     if (cell.isEmpty()) {
-                        gameManager.setError("Must select a piece to move.");
+                        gameManager.setError("Select a " + currentPlayerCellState + " marble.");
                         return false;
                     }
                     if (cell.canPickup(currentPlayer)) {
-                        gameManager.setError("Selected marble at " + cell.getPosition());
                         return true;
                     } else if (cell.matches(currentPlayerCellState)) {
                         String errorMessage = "Marble at " + cell.getPosition() + " is stuck";

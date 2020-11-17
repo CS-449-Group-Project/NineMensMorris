@@ -24,7 +24,31 @@ public class Player {
     PIECE_PLACEMENT,
     PIECE_MOVEMENT,
     FLY_RULE,
-    END_GAME
+    MILL_FORMED,
+    END_GAME;
+
+    @Override
+    public String toString() {
+      String phaseName;
+      switch(this) {
+        case PIECE_PLACEMENT:
+          phaseName = "Marble Placement";
+          break;
+        case PIECE_MOVEMENT:
+          phaseName = "Marble Move";
+          break;
+        case FLY_RULE:
+          phaseName = "Marble Fly";
+          break;
+        case MILL_FORMED:
+          phaseName = "Mill formed";
+          break;
+        default:
+          phaseName = "End Game";
+          break;
+      }
+      return phaseName;
+    }
   }
 
   public void setGamePhase(Phase phase) {

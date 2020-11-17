@@ -47,6 +47,7 @@ public class GameManager {
                 break;
             case PIECE_MOVEMENT:
                 if (!currentPlayer.hasPieceToMove()) {
+                    setCellSelect(cellPane);
                     currentPlayer.setPieceToMove(cellPane);
 
                     return;
@@ -59,8 +60,7 @@ public class GameManager {
                 addMoves(currentPlayer.pieceToMove);
                 removePieceMoves(currentPlayer.pieceToMove);
                 currentPlayer.removePieceToMove();
-                System.out.println(getActivePlayer().validMovesCounter);
-                System.out.println(getInactivePlayer().validMovesCounter);
+                setCellSelect(null);
                 if(millFormed(cellPane)){
                     return;
                 }
@@ -70,17 +70,18 @@ public class GameManager {
                 break;
             case FLY_RULE:
                 if (!currentPlayer.hasPieceToMove()) {
+                    setCellSelect(cellPane);
                     currentPlayer.setPieceToMove(cellPane);
-
                     return;
                 }
+                setCellSelect(null);
+
                 cellPane.setState(currentPlayer.getPlayerColorAsCellState());
                 removeMoves(cellPane);
                 currentPlayer.pieceToMove.setState(CellState.EMPTY);
                 addMoves(currentPlayer.pieceToMove);
                 removePieceMoves(currentPlayer.pieceToMove);
                 currentPlayer.removePieceToMove();
-                System.out.println(getActivePlayer().validMovesCounter);
                 break;
         }
         switchTurn();
@@ -122,6 +123,7 @@ public class GameManager {
 
     public void setMillIsFormedToTrue() {
         this.millIsFormed = true;
+        announcePhaseChange();
     }
 
     public boolean isMillFormed() {
@@ -171,15 +173,59 @@ public class GameManager {
         return false;
     }
 
+    public interface OnPhaseChangeListener {
+        void onPhaseChange(Player.Phase phase);
+    }
 
-    public interface OnErrorListener {
+    private OnPhaseChangeListener phaseListener = null;
+    public void onPhaseChange(OnPhaseChangeListener listener) {
+        phaseListener = listener;
+        announcePhaseChange();
+    }
+
+    public void announcePhaseChange() {
+        if (phaseListener != null) {
+            if (isMillFormed()) {
+                phaseListener.onPhaseChange(Player.Phase.MILL_FORMED);
+            } else {
+                phaseListener.onPhaseChange(getCurrentPlayer().getGamePhase());
+            }
+
+        }
+    }
+
+
+    public interface CellSelectListener {
+        void onCellSelect(CellPane cell);
+    }
+
+    private CellSelectListener cellSelectListener = null;
+
+    public void onCellSelected(CellSelectListener cellSelectListener) {
+        this.cellSelectListener = cellSelectListener;
+        announceCellSelectionUpdate();
+    }
+
+    CellPane selectedCell = null;
+    public void setCellSelect(CellPane cellPane) {
+        selectedCell = cellPane;
+        announceCellSelectionUpdate();
+    }
+
+    public void announceCellSelectionUpdate() {
+        if (cellSelectListener != null) {
+            cellSelectListener.onCellSelect(selectedCell);
+        }
+    }
+
+    public interface ErrorListener {
         void onError(String errorMsg);
     }
 
-    private OnErrorListener errorListener = null;
+    private ErrorListener errorListener = null;
     private String errorMsg = "";
 
-    public void onError(OnErrorListener errorListener) {
+    public void onError(ErrorListener errorListener) {
         this.errorListener = errorListener;
     }
 
@@ -209,13 +255,14 @@ public class GameManager {
 
     private void turnChanged() {
         if (turnChangeListener != null) {
-            turnChangeListener.onTurnSwitch(currentPlayer);
+            turnChangeListener.onTurnSwitch(getCurrentPlayerColor());
         }
     }
 
     public void switchTurn() {
         currentPlayer = currentPlayer.complement();
         turnChanged();
+        announcePhaseChange();
     }
 
 
