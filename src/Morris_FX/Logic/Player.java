@@ -11,8 +11,7 @@ public class Player {
   public Phase currentPhase = Phase.PIECE_PLACEMENT;
 
   public int validMovesCounter = 0;
-  CellPane
-      pieceToMove; // this is the piece a player has selected from the board during the
+  public CellPane pieceToMove; // this is the piece a player has selected from the board during the
                    // PIECE_MOVEMENT phase that they want to move
 
   public Player(PlayerColor color) {

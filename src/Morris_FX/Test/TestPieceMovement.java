@@ -18,9 +18,10 @@ public class TestPieceMovement {
         gameManager = new GameManager();
         board = new Board(gameManager);
         player = gameManager.getCurrentPlayer();
-        player.setGamePhase(Player.Phase.PIECE_MOVEMENT);
         boardPane = new BoardPane(board, gameManager);
         board.reset();
+        player.reset();
+        player.setGamePhase(Player.Phase.PIECE_MOVEMENT);
     }
 
     // Class_GivenScenario_Expectation()
@@ -57,14 +58,18 @@ public class TestPieceMovement {
         CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
         coordinate00.setState(CellState.BLACK);
 
+        board.validateCellSelection(coordinate00);
         gameManager.performMove(coordinate00);
+        gameManager.addMoves(player.pieceToMove);
+        gameManager.addPlacedPieceMoves(coordinate00);
 
-        CellPane coordinate30 = board.getCell(new CellPosition(6, 0));
-        
-        board.validateCellSelection(coordinate30);
-        gameManager.performMove(coordinate30);
+        CellPane coordinate60 = board.getCell(new CellPosition(6, 0));
+
+        if (board.validateCellSelection(coordinate60)) {
+            gameManager.performMove(coordinate60);
+        }
 
         assertEquals(CellState.BLACK, coordinate00.getCellState());
-        assertEquals(CellState.EMPTY, coordinate30.getCellState());
+        assertEquals(CellState.EMPTY, coordinate60.getCellState());
     }
 }

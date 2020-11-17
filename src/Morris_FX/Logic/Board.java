@@ -83,6 +83,7 @@ public class Board {
                 if (cell.isEmpty() && currentPlayer.pieceToMove.adjacentCells.contains(cell)) {
                     return true;
                 }
+                return false;
             case FLY_RULE:
                 if (!currentPlayer.hasPieceToMove()) {
                     if (cell.isEmpty()) {
