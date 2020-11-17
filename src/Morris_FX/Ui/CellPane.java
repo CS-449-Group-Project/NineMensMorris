@@ -4,6 +4,7 @@ import Morris_FX.Logic.CellState;
 import Morris_FX.Logic.Player;
 import Morris_FX.Logic.CellPosition;
 import javafx.scene.control.Cell;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 
 import java.util.List;
@@ -29,6 +30,10 @@ public class CellPane extends Pane {
     public CellPane(CellPosition position) {
         this.cellState = CellState.VOID;
         this.position = position;
+        this.setOnMouseClicked(e -> {
+            // alert error invalid cell
+            System.out.println("Clicked void cell");
+        });
         setState(initialState);
     }
 
@@ -37,7 +42,14 @@ public class CellPane extends Pane {
         this.adjacentCellPositions = adjacentCellPositions;
         this.parent = null;
         this.setPrefSize(2000, 2000);
-        this.setOnMouseClicked(e -> parent.onCellClick(this));
+
+        this.setOnMouseClicked(e -> {
+            boolean secondary = false;
+            if (e.getButton() == MouseButton.SECONDARY) {
+                secondary = true;
+            }
+            parent.onCellClick(this);
+        });
         this.initialState = CellState.EMPTY;
         setState(initialState);
     }
@@ -73,10 +85,9 @@ public class CellPane extends Pane {
                 this.cellState = state;
                 break;
         }
-        updateAdjacentCells();
     }
 
-    private void updateAdjacentCells() {
+    /*public void updateAdjacentCells() {
         if (adjacentCells == null) {
             String[] dirs = {
                     "LEFT",
@@ -88,6 +99,7 @@ public class CellPane extends Pane {
                 setDirectionalCellPane(dir, null);
             }
         } else {
+
             boolean isEmpty = cellState == CellState.EMPTY;
 
             for(CellPane adjacentCell : adjacentCells) {
@@ -103,9 +115,7 @@ public class CellPane extends Pane {
                 }
             }
         }
-
-
-    }
+    } */
 
     public void setDirectionalCellPane(String targetPositionDirection, CellPane adjacentCellPane) {
         switch (targetPositionDirection) {
@@ -179,6 +189,7 @@ public class CellPane extends Pane {
         if(this.right != null && this.right.cellState == CellState.EMPTY) {
             counter++;
         }
+
         if(counter > 0) {
             System.out.println("you may move");
             return true;

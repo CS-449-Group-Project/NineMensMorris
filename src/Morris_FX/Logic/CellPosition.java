@@ -16,6 +16,10 @@ public class CellPosition {
         return column;
     }
 
+    public boolean matches(CellPosition other) {
+        return row == other.getRow() && column == other.getColumn();
+    }
+
     public String directionOf(CellPosition adjacentPos) {
 
         int x1 = column, x2= adjacentPos.getColumn();

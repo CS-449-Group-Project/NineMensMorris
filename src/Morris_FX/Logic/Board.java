@@ -187,6 +187,7 @@ public class Board {
         int max = midpoint * 2;
         Vector<CellPosition> validMoves = new Vector<>(4);
 
+        // center has 3 or 4 valid moves
         if (x == midpoint) {
             int xStepSize = Math.abs(midpoint - y);
             int leftAdjacentX = x - xStepSize;
@@ -198,39 +199,39 @@ public class Board {
                 validMoves.add(new CellPosition(rightAdjacentX, y));
             }
 
-            int offsetY = y < midpoint ? 0 : midpoint;
-            int refY = y < midpoint ? y : Math.abs(midpoint - y);
+            int offsetY = y < midpoint ? 0 : (midpoint + 1);
+            int refY = y < midpoint ? y : y - (midpoint + 1);
 
-            for(int i = Math.max(0, refY - 1); i <= Math.min(refY + 1, midpoint); i++) {
+            for(int i = Math.max(0, refY - 1); i <= Math.min(refY + 1, midpoint - 1); i++) {
                 if(refY != i) {
                     validMoves.add(new CellPosition(x, i + offsetY));
                 }
             }
 
-        } else {
-            validMoves.add(new CellPosition(midpoint, y));
-        }
-
-        if (y == midpoint) {
+        } else if (y == midpoint) {
+            // this difference between each step is midpoint - x
             int yStepSize = Math.abs(midpoint - x);
             int upAdjacentY = y - yStepSize;
             int downAdjacentY = y + yStepSize;
-            if (upAdjacentY >= 0) {
+            if (upAdjacentY >= 0) { // up
                 validMoves.add(new CellPosition(x, upAdjacentY));
             }
-            if (downAdjacentY <= max) {
+            if (downAdjacentY <= max) { // down
                 validMoves.add(new CellPosition(x, downAdjacentY));
             }
-
-            int offsetX = x < midpoint ? 0 : midpoint;
-            int refX = x < midpoint ? x : Math.abs(midpoint - x);
-            for(int i = Math.max(0, refX - 1); i <= Math.min(refX + 1,midpoint); i++) {
+            // 4
+            int offsetX = x < midpoint ? 0 : (midpoint + 1);
+            // 6 => 2
+            int refX = x < midpoint ? x : x - (midpoint + 1);
+            for(int i = Math.max(0, refX - 1); i <= Math.min(refX + 1,midpoint - 1); i++) {
                 if(refX != i) {
                     validMoves.add(new CellPosition(i + offsetX, y));
                 }
             }
         } else {
+            // a corner only has two
             validMoves.add(new CellPosition(x, midpoint));
+            validMoves.add(new CellPosition(midpoint, y));
         }
         return validMoves;
     }

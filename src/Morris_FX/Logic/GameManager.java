@@ -46,8 +46,8 @@ public class GameManager {
                     currentPlayer.setPieceToMove(cellPane);
                     return;
                 }
-                cellPane.setState(currentPlayer.getPlayerColorAsCellState());
                 currentPlayer.pieceToMove.setState(CellState.EMPTY);
+                cellPane.setState(currentPlayer.getPlayerColorAsCellState());
                 currentPlayer.removePieceToMove();
                 if(millFormed(cellPane)){
                     return;
