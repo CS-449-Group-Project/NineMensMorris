@@ -5,6 +5,7 @@ import Morris_FX.Logic.GameManager;
 import Morris_FX.Ui.BoardPane;
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.scene.control.Cell;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
@@ -25,24 +26,31 @@ public class Morris extends Application {
     Scene scene1, scene2, scene3;
 
     private TextField turnText = new TextField();
-    private TextField cellHoverText = new TextField();
+    private TextField errorMessage = new TextField();
+    private TextField cellSelectedText = new TextField();
 
     public Morris(){
         gameManager = new GameManager();
         gameManager.onTurnSwitch(currentPlayerColor -> {
             turnText.setText("Turn: " + currentPlayerColor);
         });
-        board = new Board(gameManager);
-        boardPane = new BoardPane(board, gameManager);
-        boardPane.onCellHover(cellPane -> {
-            if (cellPane != null) cellHoverText.setText(cellPane.getPosition().toString());
-            else {
-                cellHoverText.setText("");
-            }
+
+        gameManager.onError(errorMsg -> {
+            errorMessage.setText(errorMsg);
         });
 
+        board = new Board(gameManager);
+        boardPane = new BoardPane(board, gameManager);
+
         turnText.setMaxWidth(100);
-        cellHoverText.setMaxWidth(60);
+        turnText.setDisable(true);
+        turnText.setStyle("-fx-opacity: 1;");
+        errorMessage.setMaxWidth(200);
+        errorMessage.setDisable(true);
+        errorMessage.setStyle("-fx-opacity: 1;");
+        cellSelectedText.setMaxWidth(100);
+        cellSelectedText.setDisable(true);
+        cellSelectedText.setStyle("-fx-opacity: 1;");
     }
 
 
@@ -63,11 +71,14 @@ public class Morris extends Application {
 
         //creating a box for scene3 (game scene) to include the 3 above buttons
         HBox choices = new HBox();
-        choices.getChildren().addAll(menu, reset, exit, turnText, cellHoverText);
+        choices.getChildren().addAll(menu, reset, exit);
 
+        HBox infoBox = new HBox();
+        infoBox.getChildren().addAll(turnText, errorMessage);
 
         //setting the pane for game in the window
         BorderPane borderPane = new BorderPane();
+        borderPane.setTop(infoBox);
         borderPane.setCenter(boardPane);
         borderPane.setBottom(choices);
 

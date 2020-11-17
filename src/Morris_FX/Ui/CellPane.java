@@ -3,13 +3,17 @@ package Morris_FX.Ui;
 import Morris_FX.Logic.CellState;
 import Morris_FX.Logic.Player;
 import Morris_FX.Logic.CellPosition;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Cell;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 
+import javax.tools.Tool;
 import java.util.List;
 
-public class CellPane extends Pane {
+public class CellPane extends Button {
     private BoardPane parent;
     // initialState won't change if the cell position does not change
     private CellState initialState = CellState.VOID;
@@ -32,11 +36,7 @@ public class CellPane extends Pane {
         this.position = position;
         this.setOnMouseClicked(e -> {
             // alert error invalid cell
-            System.out.println("Clicked void cell");
-        });
-
-        this.setOnMouseEntered(e -> {
-            parent.onCellEntered(null);
+            parent.onVoidCellClicked();
         });
         setState(initialState);
     }
@@ -47,6 +47,7 @@ public class CellPane extends Pane {
         this.parent = null;
         this.setPrefSize(2000, 2000);
 
+        Tooltip toolTip = new Tooltip(position.toString());
         this.setOnMouseClicked(e -> {
             boolean secondary = false;
             if (e.getButton() == MouseButton.SECONDARY) {
@@ -55,9 +56,16 @@ public class CellPane extends Pane {
             parent.onCellClick(this);
         });
 
-        this.setOnMouseEntered(e -> {
-            parent.onCellEntered(this);
+       this.setOnMouseMoved(mouseEvent -> {
+           double x = mouseEvent.getScreenX() + 15;
+           double y = mouseEvent.getScreenY() + 0;
+           toolTip.show((Node)mouseEvent.getSource(),x,y);
+       });
+
+        this.setOnMouseExited(e -> {
+            toolTip.hide();
         });
+
         this.initialState = CellState.EMPTY;
         setState(initialState);
     }
@@ -85,11 +93,8 @@ public class CellPane extends Pane {
                 this.cellState = state;
                 break;
             case VOID:
-                setStyle("-fx-background-color: transparent");
-                this.cellState = state;
-                break;
             case EMPTY:
-                setStyle(null);
+                setStyle("-fx-background-color: transparent");
                 this.cellState = state;
                 break;
         }

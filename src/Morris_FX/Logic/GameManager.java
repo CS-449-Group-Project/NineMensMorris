@@ -171,6 +171,29 @@ public class GameManager {
         return false;
     }
 
+
+    public interface OnErrorListener {
+        void onError(String errorMsg);
+    }
+
+    private OnErrorListener errorListener = null;
+    private String errorMsg = "";
+
+    public void onError(OnErrorListener errorListener) {
+        this.errorListener = errorListener;
+    }
+
+    public void setError(String msg) {
+        errorMsg = msg;
+        announceError();
+    }
+
+    public void announceError() {
+        if (errorListener != null) {
+            errorListener.onError(errorMsg);
+        }
+    }
+
     public interface TurnChangeListener {
         void onTurnSwitch(PlayerColor color);
     }
@@ -199,6 +222,8 @@ public class GameManager {
     public void resetGameManager() {
         currentPlayer = defaultPlayer;
         millIsFormed = false;
+        setError("");
+        turnChanged();
     }
 
     public void addPlacedPieceMoves(CellPane cell){
