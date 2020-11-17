@@ -59,4 +59,29 @@ public class BoardPane extends GridPane {
             System.out.println("Invalid cell type: " + board.getInvalidCellType());
         }
     }
+
+    private CellPane targetCellPane = null;
+    public void onCellEntered(CellPane cellPane) {
+        if (targetCellPane != cellPane) {
+            targetCellPane = cellPane;
+            onFocusCellChanged();
+        }
+
+    }
+
+    private void onFocusCellChanged() {
+        if (cellHoverListener != null) {
+            cellHoverListener.onCellPaneHover(targetCellPane);
+        }
+    }
+
+    public interface CellHoverListener {
+        void onCellPaneHover(CellPane cell);
+    }
+
+    private CellHoverListener cellHoverListener = null;
+
+    public void onCellHover(CellHoverListener listener) {
+        cellHoverListener = listener;
+    }
 }

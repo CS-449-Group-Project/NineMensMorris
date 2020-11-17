@@ -86,6 +86,12 @@ public class GameManager {
         switchTurn();
     }
 
+    public GameManager(TurnChangeListener turnChangeListener) {
+        this.currentPlayer = defaultPlayer;
+        onTurnSwitch(turnChangeListener);
+        setup();
+    }
+
     public GameManager() {
         this.currentPlayer = defaultPlayer;
         setup();
@@ -94,9 +100,9 @@ public class GameManager {
     private void setup() {
         player = new EnumMap<PlayerColor, Player>(PlayerColor.class);
         for (PlayerColor playerColor : PlayerColor.values()) {
-
             player.put(playerColor, new Player(playerColor));
         }
+        turnChanged();
     }
 
     public PlayerColor getCurrentPlayerColor() {
@@ -172,9 +178,27 @@ public class GameManager {
         return false;
     }
 
-    public void switchTurn() {
-            currentPlayer = currentPlayer.complement();
+    public interface TurnChangeListener {
+        void onTurnSwitch(PlayerColor color);
     }
+
+    private TurnChangeListener turnChangeListener = null;
+
+    public void onTurnSwitch(TurnChangeListener turnChangeListener) {
+        this.turnChangeListener = turnChangeListener;
+    }
+
+    private void turnChanged() {
+        if (turnChangeListener != null) {
+            turnChangeListener.onTurnSwitch(currentPlayer);
+        }
+    }
+
+    public void switchTurn() {
+        currentPlayer = currentPlayer.complement();
+        turnChanged();
+    }
+
 
     public void resetGameManager() {
         currentPlayer = defaultPlayer;
@@ -273,6 +297,4 @@ public class GameManager {
             getInactivePlayer().validMovesCounter--;
         }
     }
-
-
 }

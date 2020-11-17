@@ -5,6 +5,7 @@ import Morris_FX.Logic.GameManager;
 import Morris_FX.Ui.BoardPane;
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -23,10 +24,24 @@ public class Morris extends Application {
     private final BoardPane boardPane;
     Scene scene1, scene2, scene3;
 
+    private TextField turnText = new TextField();
+    private TextField cellHoverText = new TextField();
+
     public Morris(){
-        gameManager = new GameManager();
+        gameManager = new GameManager(currentPlayerColor -> {
+            turnText.setText("Turn: " + currentPlayerColor);
+        });
         board = new Board(gameManager);
         boardPane = new BoardPane(board, gameManager);
+        boardPane.onCellHover(cellPane -> {
+            if (cellPane != null) cellHoverText.setText(cellPane.getPosition().toString());
+            else {
+                cellHoverText.setText("");
+            }
+        });
+
+        turnText.setMaxWidth(100);
+        cellHoverText.setMaxWidth(60);
     }
 
 
@@ -41,13 +56,13 @@ public class Morris extends Application {
         Button exit = new Button("Exit");
         Button reset = new Button("Play again");
 
+
         //set exit action for the exit button
         exit.setOnAction(e -> Platform.exit());
 
-
         //creating a box for scene3 (game scene) to include the 3 above buttons
         HBox choices = new HBox();
-        choices.getChildren().addAll(menu, reset, exit);
+        choices.getChildren().addAll(menu, reset, exit, turnText, cellHoverText);
 
 
         //setting the pane for game in the window

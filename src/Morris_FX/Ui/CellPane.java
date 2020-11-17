@@ -34,6 +34,10 @@ public class CellPane extends Pane {
             // alert error invalid cell
             System.out.println("Clicked void cell");
         });
+
+        this.setOnMouseEntered(e -> {
+            parent.onCellEntered(null);
+        });
         setState(initialState);
     }
 
@@ -49,6 +53,10 @@ public class CellPane extends Pane {
                 secondary = true;
             }
             parent.onCellClick(this);
+        });
+
+        this.setOnMouseEntered(e -> {
+            parent.onCellEntered(this);
         });
         this.initialState = CellState.EMPTY;
         setState(initialState);
