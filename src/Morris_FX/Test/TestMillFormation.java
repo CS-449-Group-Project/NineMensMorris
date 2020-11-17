@@ -3,6 +3,7 @@ package Morris_FX.Test;
 import Morris_FX.Logic.*;
 import Morris_FX.Ui.BoardPane;
 import Morris_FX.Ui.CellPane;
+import javafx.geometry.Pos;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -25,6 +26,37 @@ public class TestMillFormation {
         boardPane = new BoardPane(board, gameManager);
         board.reset();
         player = gameManager.getCurrentPlayer();
+    }
+
+    private CellPane createCellPane(CellPosition pos, CellState state) {
+        CellPane pane = new CellPane(pos);
+        if (state != null) pane.setState(state);
+        return pane;
+    }
+    @Test
+    public void GameManager_GivenAllPlayersHaveOnlyMillsFormed_AnOpponentsPieceCanBeRemoved() {
+        CellPosition[] positions = {
+                new CellPosition(0,0),
+                new CellPosition(5,5),
+                new CellPosition(0,3),
+                new CellPosition(3,5),
+                new CellPosition(0,6),
+                new CellPosition(3,5),
+                new CellPosition(3,5),
+                new CellPosition(3,0),
+                new CellPosition(1,3),
+                new CellPosition(6,0),
+                new CellPosition(1,3),
+                new CellPosition(1,5),
+        };
+        for (CellPosition pos: positions) {
+            gameManager.performMove(board.getCell(pos));
+        }
+
+        assertTrue(gameManager.isMillFormed());
+
+        assertEquals(PlayerColor.WHITE, gameManager.getCurrentPlayerColor());
+        assertTrue(board.validateCellSelection(board.getCell(positions[0])));
     }
 
     // Class_GivenScenario_Expectation()

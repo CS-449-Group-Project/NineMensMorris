@@ -7,6 +7,7 @@ public class Player {
   private static final int NO_PIECES = 0;
   private int piecesInHand = MAX_PIECES;
   private int boardPieces;
+  private int removedPieces = 0;
   private final PlayerColor color;
   public Phase currentPhase = Phase.PIECE_PLACEMENT;
 
@@ -100,10 +101,10 @@ public class Player {
 
   public void decreaseBoardPieces() {
     boardPieces--;
+    removedPieces++;
   }
 
   public int getBoardPieces() {
-
     return boardPieces;
   }
 
@@ -112,5 +113,6 @@ public class Player {
     boardPieces = NO_PIECES;
     this.setGamePhase(Phase.PIECE_PLACEMENT);
     this.removePieceToMove();
+    removedPieces = 0;
   }
 }
