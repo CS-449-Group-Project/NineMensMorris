@@ -24,6 +24,9 @@ public class GameManager {
             addMoves(cellPane);
             cellPane.setState(CellState.EMPTY);
             getInactivePlayer().decreaseBoardPieces();
+            if (getInactivePlayer().getBoardPieces() == 3 && getActivePlayer().currentPhase == Player.Phase.PIECE_MOVEMENT) {
+                getInactivePlayer().setGamePhase(Player.Phase.FLY_RULE);
+            }
             resetMill();
             switchTurn();
             return;
@@ -48,10 +51,8 @@ public class GameManager {
             case PIECE_MOVEMENT:
                 if (!currentPlayer.hasPieceToMove()) {
                     currentPlayer.setPieceToMove(cellPane);
-
                     return;
                 }
-
                 cellPane.setState(currentPlayer.getPlayerColorAsCellState());
                 addPlacedPieceMoves(cellPane);
                 removeMoves(cellPane);
@@ -63,9 +64,6 @@ public class GameManager {
                 System.out.println(getInactivePlayer().validMovesCounter);
                 if(millFormed(cellPane)){
                     return;
-                }
-                if (getInactivePlayer().getBoardPieces() == 3) {
-                    getInactivePlayer().setGamePhase(Player.Phase.FLY_RULE);
                 }
                 break;
             case FLY_RULE:
