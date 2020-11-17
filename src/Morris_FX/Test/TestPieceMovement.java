@@ -60,6 +60,8 @@ public class TestPieceMovement {
         gameManager.performMove(coordinate00);
 
         CellPane coordinate30 = board.getCell(new CellPosition(6, 0));
+        
+        board.validateCellSelection(coordinate30);
         gameManager.performMove(coordinate30);
 
         assertEquals(CellState.BLACK, coordinate00.getCellState());
