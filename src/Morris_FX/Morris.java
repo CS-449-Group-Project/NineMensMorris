@@ -145,7 +145,7 @@ public class Morris extends Application {
         // Label label3 = new Label("Game");
         reset.setOnAction(e -> reset());
         menu.setOnAction(e -> primaryStage.setScene(scene2));
-        scene3 = new Scene(gameWindow, 550, 600);
+        scene3 = new Scene(gameWindow, 550, 675);
 
 
         primaryStage.setScene(scene1);
