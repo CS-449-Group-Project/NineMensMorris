@@ -5,6 +5,7 @@ import Morris_FX.Logic.GameManager;
 import Morris_FX.Ui.BoardPane;
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -23,11 +24,50 @@ public class Morris extends Application {
     private final BoardPane boardPane;
     Scene scene1, scene2, scene3;
 
+    private TextField turnText = new TextField();
+    private TextField phaseText = new TextField();
+    private TextField errorMessage = new TextField();
+    private TextField cellSelectedText = new TextField();
+
     public Morris(){
         gameManager = new GameManager();
+        gameManager.onTurnSwitch((currentPlayerColor) -> {
+            turnText.setText(String.format("%s's Turn", currentPlayerColor));
+        });
+
+        gameManager.onCellSelected((marble) -> {
+            if (marble != null) {
+                cellSelectedText.setText(String.format("Selected %s", marble.getPosition()));
+            } else {
+                cellSelectedText.setText("");
+            }
+
+        });
+
+        gameManager.onPhaseChange(phase -> {
+            phaseText.setText(phase.toString());
+        });
+
+        gameManager.onError(errorMsg -> {
+            errorMessage.setText(errorMsg);
+        });
+
         board = new Board(gameManager);
         boardPane = new BoardPane(board, gameManager);
         boardPane.setPadding(new Insets((30), 0, 20, 35));
+
+        turnText.setMaxWidth(120);
+        turnText.setDisable(true);
+        turnText.setStyle("-fx-opacity: 1;");
+        phaseText.setMaxWidth(150);
+        phaseText.setDisable(true);
+        phaseText.setStyle("-fx-opacity: 1;");
+        errorMessage.setMaxWidth(200);
+        errorMessage.setDisable(true);
+        errorMessage.setStyle("-fx-opacity: 1;");
+        cellSelectedText.setMaxWidth(100);
+        cellSelectedText.setDisable(true);
+        cellSelectedText.setStyle("-fx-opacity: 1;");
     }
 
 
@@ -42,17 +82,25 @@ public class Morris extends Application {
         Button exit = new Button("Exit");
         Button reset = new Button("Play again");
 
+
         //set exit action for the exit button
         exit.setOnAction(e -> Platform.exit());
-
 
         //creating a box for scene3 (game scene) to include the 3 above buttons
         HBox choices = new HBox();
         choices.getChildren().addAll(menu, reset, exit);
 
+        VBox infoVBox = new VBox();
+        HBox infoBox = new HBox();
+        HBox errorBox = new HBox();
+
+        infoVBox.getChildren().addAll(infoBox, errorBox);
+        infoBox.getChildren().addAll(turnText,phaseText, cellSelectedText);
+        errorBox.getChildren().add(errorMessage);
 
         //setting the pane for game in the window
         BorderPane gameWindow = new BorderPane();
+        gameWindow.setTop(infoVBox);
         gameWindow.setCenter(boardPane);
         gameWindow.setBottom(choices);
 

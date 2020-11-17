@@ -61,4 +61,8 @@ public class BoardPane extends GridPane {
             System.out.println("Invalid cell type: " + board.getInvalidCellType());
         }
     }
+
+    public void onVoidCellClicked() {
+        gameManager.setError("Invalid cell selection.");
+    }
 }

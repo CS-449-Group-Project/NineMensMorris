@@ -36,4 +36,10 @@ public class CellPosition {
 
         return y2 < y1 ? "UP" : "DOWN";
     }
+
+    @Override
+    public String toString() {
+        char character = (char)(column + 0x41);
+        return String.format("%c%d", character, (Board.GRID_SIZE - row));
+    }
 }
