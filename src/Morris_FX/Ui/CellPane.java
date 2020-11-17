@@ -3,13 +3,16 @@ package Morris_FX.Ui;
 import Morris_FX.Logic.CellState;
 import Morris_FX.Logic.Player;
 import Morris_FX.Logic.CellPosition;
+import javafx.scene.control.Cell;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CellPane extends Pane {
-    private final BoardPane parent;
+    private BoardPane parent;
+    // initialState won't change if the cell position does not change
+    private CellState initialState = CellState.VOID;
     private CellPosition position;
 
     // could call above instead of up
@@ -21,22 +24,38 @@ public class CellPane extends Pane {
 
     public CellState cellState;
 
-    public List<CellPane> adjacentCells = new ArrayList<>();
+    public List<CellPosition> adjacentCellPositions = null;
+    public List<CellPane> adjacentCells = null;
 
-    public CellPane(CellPosition position, BoardPane boardPane) {
-        super();
-        this.parent = boardPane;
+    public CellPane(CellPosition position) {
+        this.cellState = CellState.VOID;
         this.position = position;
-        this.setPrefSize(2000, 2000);
-        this.setOnMouseClicked(e -> parent.onCellClick(this));
-        this.setState(CellState.VOID);
+        this.setOnMouseClicked(e -> {
+            // alert error invalid cell
+            System.out.println("Clicked void cell");
+        });
+        setState(initialState);
     }
 
-    // this is only exists to satisfy what is going on in the board class, I personally don't see a reason for it
-    public CellPane() {
-        this.cellState = CellState.VOID;
-        this.position = null;
+    public CellPane(CellPosition position, List<CellPosition> adjacentCellPositions) {
+        this.position = position;
+        this.adjacentCellPositions = adjacentCellPositions;
         this.parent = null;
+        this.setPrefSize(2000, 2000);
+
+        this.setOnMouseClicked(e -> {
+            boolean secondary = false;
+            if (e.getButton() == MouseButton.SECONDARY) {
+                secondary = true;
+            }
+            parent.onCellClick(this);
+        });
+        this.initialState = CellState.EMPTY;
+        setState(initialState);
+    }
+
+    public void setParentPane(BoardPane boardPane) {
+        this.parent = boardPane;
     }
 
     public CellPosition getPosition() {
@@ -66,6 +85,47 @@ public class CellPane extends Pane {
                 this.cellState = state;
                 break;
         }
+    }
+    
+    public void setDirectionalCellPane(String targetPositionDirection, CellPane adjacentCellPane) {
+        switch (targetPositionDirection) {
+            case "LEFT":
+                left = adjacentCellPane;
+                break;
+            case "RIGHT":
+                right = adjacentCellPane;
+                break;
+            case "UP":
+                up = adjacentCellPane;
+                break;
+            case "DOWN":
+                down = adjacentCellPane;
+                break;
+            default:
+                break;
+        }
+    }
+
+    public CellPane getDirectionalCellPane(String direction) {
+        CellPane targetCellPane;
+        switch (direction) {
+            case "LEFT":
+                targetCellPane = left;
+                break;
+            case "RIGHT":
+                targetCellPane = right;
+                break;
+            case "UP":
+                targetCellPane = up ;
+                break;
+            case "DOWN":
+                targetCellPane = down;
+                break;
+            default:
+                targetCellPane = null;
+                break;
+        }
+        return targetCellPane;
     }
 
     public boolean isVoid() { return this.cellState == CellState.VOID; }
@@ -99,6 +159,7 @@ public class CellPane extends Pane {
         if(this.right != null && this.right.cellState == CellState.EMPTY) {
             counter++;
         }
+
         if(counter > 0) {
             System.out.println("you may move");
             return true;
@@ -125,5 +186,10 @@ public class CellPane extends Pane {
         return this.cellState.equals(cellState);
     }
 
+
+    public void reset() {
+        // directional fields are automatically update when this is called
+        setState(initialState);
+    }
 }
 

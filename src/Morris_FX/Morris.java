@@ -83,7 +83,6 @@ public class Morris extends Application {
         Button play = new Button("Play");
         play.setOnAction(e -> {
             reset();
-            boardPane.linkCells();
             primaryStage.setScene(scene3);
         });
         menuLabel.setFont(Font.font("Tacoma", FontWeight.NORMAL, 20));
@@ -107,7 +106,6 @@ public class Morris extends Application {
     public void reset() {
         gameManager.resetGameManager();
         board.reset();
-        boardPane.reset();
         gameManager.getCurrentPlayer().reset();
         gameManager.getInactivePlayer().reset();
     }

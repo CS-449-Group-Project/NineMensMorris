@@ -51,6 +51,7 @@ public class GameManager {
 
                     return;
                 }
+
                 cellPane.setState(currentPlayer.getPlayerColorAsCellState());
                 addPlacedPieceMoves(cellPane);
                 removeMoves(cellPane);
