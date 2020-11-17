@@ -28,7 +28,8 @@ public class Morris extends Application {
     private TextField cellHoverText = new TextField();
 
     public Morris(){
-        gameManager = new GameManager(currentPlayerColor -> {
+        gameManager = new GameManager();
+        gameManager.onTurnSwitch(currentPlayerColor -> {
             turnText.setText("Turn: " + currentPlayerColor);
         });
         board = new Board(gameManager);

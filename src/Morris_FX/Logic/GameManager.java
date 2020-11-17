@@ -86,12 +86,6 @@ public class GameManager {
         switchTurn();
     }
 
-    public GameManager(TurnChangeListener turnChangeListener) {
-        this.currentPlayer = defaultPlayer;
-        onTurnSwitch(turnChangeListener);
-        setup();
-    }
-
     public GameManager() {
         this.currentPlayer = defaultPlayer;
         setup();
@@ -102,7 +96,6 @@ public class GameManager {
         for (PlayerColor playerColor : PlayerColor.values()) {
             player.put(playerColor, new Player(playerColor));
         }
-        turnChanged();
     }
 
     public PlayerColor getCurrentPlayerColor() {
@@ -186,6 +179,9 @@ public class GameManager {
 
     public void onTurnSwitch(TurnChangeListener turnChangeListener) {
         this.turnChangeListener = turnChangeListener;
+        // so the new listener instantly gets notified of the current player
+        // turn
+        turnChanged();
     }
 
     private void turnChanged() {
