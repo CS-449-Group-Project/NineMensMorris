@@ -52,4 +52,17 @@ public class TestPieceMovement {
     }
 
 
+    @Test
+    public void Player_UserSelectsNonAdjacentCellAfterPickup_PieceIsNotPlaced() {
+        CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
+        coordinate00.setState(CellState.BLACK);
+
+        gameManager.performMove(coordinate00);
+
+        CellPane coordinate30 = board.getCell(new CellPosition(6, 0));
+        gameManager.performMove(coordinate30);
+
+        assertEquals(CellState.BLACK, coordinate00.getCellState());
+        assertEquals(CellState.EMPTY, coordinate30.getCellState());
+    }
 }
