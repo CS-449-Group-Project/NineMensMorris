@@ -47,6 +47,8 @@ public class BoardPane extends GridPane {
         for (int row = 0; row < Board.GRID_SIZE; row++)
             for (int column = 0; column < Board.GRID_SIZE; column++) {
                 CellPane cellPane = board.getCell(new CellPosition(column, row));
+                cellPane.setMaxSize(74,74);
+                cellPane.setMinSize(74,74);
                 cellPane.setParentPane(this);
                 add(cellPane, column, row);
             }

@@ -118,6 +118,7 @@ public class Board {
 
 
     private void createGrid() {
+
         // let i be vertical, j be horizontal
         for (int i = 0; i < GRID_SIZE; i++) {
             for(int j = 0; j < GRID_SIZE; j++) {
@@ -131,6 +132,8 @@ public class Board {
                     // invalid should not
                     cellPane = new CellPane(pos);
                 }
+                cellPane.setMaxSize(74,74);
+                cellPane.setMinSize(74,74);
                 grid[i][j] = cellPane;
             }
         }
