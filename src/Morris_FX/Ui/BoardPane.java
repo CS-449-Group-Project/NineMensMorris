@@ -30,7 +30,7 @@ public class BoardPane extends GridPane {
             Image image = new Image(backgroundImage,550,550,false,true);
 
             BackgroundImage emptyBoard = new BackgroundImage(image,
-                    BackgroundRepeat.REPEAT,
+                    BackgroundRepeat.NO_REPEAT,
                     BackgroundRepeat.NO_REPEAT,
                     BackgroundPosition.DEFAULT,
                     BackgroundSize.DEFAULT);
