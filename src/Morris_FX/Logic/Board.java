@@ -42,13 +42,16 @@ public class Board {
         }
 
         if(gameManager.isMillFormed()){
-            if( cell.matches(opponentCellState) && !gameManager.millFormed(cell)) {
-                return true;
-            }else{
+            if (cell.matches(opponentCellState)) {
+                if (!gameManager.millFormed(cell)) {
+                    return true;
+                }
+                gameManager.setError(cell.getPosition() + " is in a mill.");
+            } else {
                 gameManager.setError("Select a " + opponentCellState + " marble.");
                 invalidCellType = InvalidCellType.EMPTY;
-                return false;
             }
+            return false;
         }
 
         // this is not needed because void cells will
@@ -90,10 +93,11 @@ public class Board {
                     return false;
                 }
                 // the second condition here checks the list of moves list which is populated by the linkCells method
+                boolean isValid = false;
                 if (cell.isEmpty() && currentPlayer.pieceToMove.adjacentCells.contains(cell)) {
                     return true;
                 }
-
+                gameManager.setError("Select an EMPTY adjacent space.");
                 return false;
             case FLY_RULE:
                 if (!currentPlayer.hasPieceToMove()) {
