@@ -73,11 +73,10 @@ public class TestPieceMovement {
         gameManager.addPlacedPieceMoves(coordinate00);
         CellPane coordinate60 = board.getCell(new CellPosition(6, 0));
 
-        if (board.validateCellSelection(coordinate60)) {
-            gameManager.performMove(coordinate60);
-        }
 
-        assertEquals(CellState.BLACK, coordinate00.getCellState());
-        assertEquals(CellState.EMPTY, coordinate60.getCellState());
+        // only need to check that it will refuse accept the cell
+        // selection
+        assertFalse(board.validateCellSelection(coordinate60));
+
     }
 }
