@@ -20,6 +20,8 @@ public class GameManager {
     // previously occupied cell to empty, and set pieceToMove to null in the current player object; "Places pieceToMove in new position"
     public void performMove(CellPane cellPane) {
         if (isMillFormed()) {
+            removePieceMoves(cellPane);
+            addMoves(cellPane);
             cellPane.setState(CellState.EMPTY);
             getInactivePlayer().decreaseBoardPieces();
             resetMill();
@@ -32,6 +34,8 @@ public class GameManager {
                 currentPlayer.removePiecesFromHand();
                 cellPane.setState(currentPlayer.getPlayerColorAsCellState());
                 getCurrentPlayer().increaseBoardPieces();
+                addPlacedPieceMoves(cellPane);
+                removeMoves(cellPane);
 
                 if (!currentPlayer.hasPiecesInHand()) {
                     currentPlayer.setGamePhase(Player.Phase.PIECE_MOVEMENT);
@@ -44,14 +48,38 @@ public class GameManager {
             case PIECE_MOVEMENT:
                 if (!currentPlayer.hasPieceToMove()) {
                     currentPlayer.setPieceToMove(cellPane);
+
                     return;
                 }
                 cellPane.setState(currentPlayer.getPlayerColorAsCellState());
+                addPlacedPieceMoves(cellPane);
+                removeMoves(cellPane);
                 currentPlayer.pieceToMove.setState(CellState.EMPTY);
+                addMoves(currentPlayer.pieceToMove);
+                removePieceMoves(currentPlayer.pieceToMove);
                 currentPlayer.removePieceToMove();
+                System.out.println(getActivePlayer().validMovesCounter);
+                System.out.println(getInactivePlayer().validMovesCounter);
                 if(millFormed(cellPane)){
                     return;
                 }
+                if (getInactivePlayer().getBoardPieces() == 3) {
+                    getInactivePlayer().setGamePhase(Player.Phase.FLY_RULE);
+                }
+                break;
+            case FLY_RULE:
+                if (!currentPlayer.hasPieceToMove()) {
+                    currentPlayer.setPieceToMove(cellPane);
+
+                    return;
+                }
+                cellPane.setState(currentPlayer.getPlayerColorAsCellState());
+                removeMoves(cellPane);
+                currentPlayer.pieceToMove.setState(CellState.EMPTY);
+                addMoves(currentPlayer.pieceToMove);
+                removePieceMoves(currentPlayer.pieceToMove);
+                currentPlayer.removePieceToMove();
+                System.out.println(getActivePlayer().validMovesCounter);
                 break;
         }
         switchTurn();
@@ -80,6 +108,10 @@ public class GameManager {
 
     public Player getInactivePlayer() {
         return player.get(this.currentPlayer.complement());
+    }
+
+    public Player getActivePlayer() {
+        return player.get(this.currentPlayer);
     }
 
     public CellState getOpponentCellState() {return player.get(this.currentPlayer.complement()).getPlayerColorAsCellState();}
@@ -146,6 +178,99 @@ public class GameManager {
     public void resetGameManager() {
         currentPlayer = defaultPlayer;
         millIsFormed = false;
+    }
+
+    public void addPlacedPieceMoves(CellPane cell){
+        if (cell.up != null && cell.up.cellState == CellState.EMPTY){
+            getActivePlayer().validMovesCounter++;
+        }
+        if (cell.down != null && cell.down.cellState == CellState.EMPTY){
+            getActivePlayer().validMovesCounter++;
+        }
+        if (cell.left != null && cell.left.cellState == CellState.EMPTY){
+            getActivePlayer().validMovesCounter++;
+        }
+        if (cell.right != null && cell.right.cellState == CellState.EMPTY){
+            getActivePlayer().validMovesCounter++;
+        }
+
+    }
+
+    public void removePieceMoves(CellPane cell){
+        Player playersMarble = getActivePlayer();
+        if(cell.cellState == getInactivePlayer().getPlayerColorAsCellState()) {
+            playersMarble = getInactivePlayer();
+        }
+
+        if (cell.up != null && cell.up.cellState == CellState.EMPTY){
+            playersMarble.validMovesCounter--;
+        }
+        if (cell.down != null && cell.down.cellState == CellState.EMPTY){
+            playersMarble.validMovesCounter--;
+        }
+        if (cell.left != null && cell.left.cellState == CellState.EMPTY){
+            playersMarble.validMovesCounter--;
+        }
+        if (cell.right != null && cell.right.cellState == CellState.EMPTY){
+            playersMarble.validMovesCounter--;
+        }
+
+    }
+
+    //add moves for the surrounding marble when a piece is PICKED UP
+    public void addMoves(CellPane cell){
+        if (cell.up!= null && cell.up.cellState == getActivePlayer().getPlayerColorAsCellState()){
+            getActivePlayer().validMovesCounter++;
+        }
+        if (cell.up != null && cell.up.cellState == getInactivePlayer().getPlayerColorAsCellState()){
+            getInactivePlayer().validMovesCounter++;
+        }
+        if (cell.down != null && cell.down.cellState == getActivePlayer().getPlayerColorAsCellState()){
+            getActivePlayer().validMovesCounter++;
+        }
+        if (cell.down != null && cell.down.cellState == getInactivePlayer().getPlayerColorAsCellState()){
+            getInactivePlayer().validMovesCounter++;
+        }
+        if (cell.left != null && cell.left.cellState == getActivePlayer().getPlayerColorAsCellState()){
+            getActivePlayer().validMovesCounter++;
+        }
+        if (cell.left != null && cell.left.cellState == getInactivePlayer().getPlayerColorAsCellState()){
+            getInactivePlayer().validMovesCounter++;
+        }
+        if (cell.right != null && cell.right.cellState == getActivePlayer().getPlayerColorAsCellState()){
+            getActivePlayer().validMovesCounter++;
+        }
+        if (cell.right != null && cell.right.cellState == getInactivePlayer().getPlayerColorAsCellState()){
+            getInactivePlayer().validMovesCounter++;
+        }
+    }
+
+    //removes moves for surrounding marbles when a piece is PLACED
+    public void removeMoves(CellPane cell){
+        if (cell.up != null && cell.up.cellState == getActivePlayer().getPlayerColorAsCellState()){
+            getActivePlayer().validMovesCounter--;
+        }
+        if (cell.up != null && cell.up.cellState == getInactivePlayer().getPlayerColorAsCellState()){
+            getInactivePlayer().validMovesCounter--;
+        }
+        if (cell.down != null && cell.down.cellState == getActivePlayer().getPlayerColorAsCellState()){
+            getActivePlayer().validMovesCounter--;
+        }
+        if (cell.down != null && cell.down.cellState == getInactivePlayer().getPlayerColorAsCellState()){
+            getInactivePlayer().validMovesCounter--;
+        }
+        if (cell.left != null && cell.left.cellState == getActivePlayer().getPlayerColorAsCellState()){
+            getActivePlayer().validMovesCounter--;
+        }
+        if (cell.left != null && cell.left.cellState == getInactivePlayer().getPlayerColorAsCellState()){
+            getInactivePlayer().validMovesCounter--;
+        }
+        if (cell.right != null && cell.right.cellState == getActivePlayer().getPlayerColorAsCellState()){
+            getActivePlayer().validMovesCounter--;
+        }
+        if (cell.right != null && cell.right.cellState == getInactivePlayer().getPlayerColorAsCellState()){
+            getInactivePlayer().validMovesCounter--;
+        }
     }
 
 
