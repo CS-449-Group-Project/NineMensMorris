@@ -187,8 +187,9 @@ public class Board {
         int max = midpoint * 2;
         Vector<CellPosition> validMoves = new Vector<>(4);
 
-        // center has 3 or 4 valid moves
+        // midpoint values have 3 or 4 valid moves
         if (x == midpoint) {
+            // this difference between each step in vertical is midpoint - y
             int xStepSize = Math.abs(midpoint - y);
             int leftAdjacentX = x - xStepSize;
             int rightAdjacentX = x + xStepSize;
@@ -199,17 +200,23 @@ public class Board {
                 validMoves.add(new CellPosition(rightAdjacentX, y));
             }
 
+
+            // starts at either : y = 0 or y = 4
             int offsetY = y < midpoint ? 0 : (midpoint + 1);
+
+            // this normalizes it so they speak the same language
             int refY = y < midpoint ? y : y - (midpoint + 1);
+
 
             for(int i = Math.max(0, refY - 1); i <= Math.min(refY + 1, midpoint - 1); i++) {
                 if(refY != i) {
+                    // offset is reapplied to make it valid again
                     validMoves.add(new CellPosition(x, i + offsetY));
                 }
             }
 
         } else if (y == midpoint) {
-            // this difference between each step is midpoint - x
+            // this difference between each step in horizontal is midpoint - x
             int yStepSize = Math.abs(midpoint - x);
             int upAdjacentY = y - yStepSize;
             int downAdjacentY = y + yStepSize;
@@ -219,17 +226,21 @@ public class Board {
             if (downAdjacentY <= max) { // down
                 validMoves.add(new CellPosition(x, downAdjacentY));
             }
-            // 4
+            // starts at either : x = 0 or x = 4
             int offsetX = x < midpoint ? 0 : (midpoint + 1);
-            // 6 => 2
+
+            // this normalizes it so they speak the same language
             int refX = x < midpoint ? x : x - (midpoint + 1);
+
             for(int i = Math.max(0, refX - 1); i <= Math.min(refX + 1,midpoint - 1); i++) {
                 if(refX != i) {
+                    // offset is reapplied to make it valid again
                     validMoves.add(new CellPosition(i + offsetX, y));
                 }
             }
         } else {
-            // a corner only has two
+            // a corner only has two valid positions which are located
+            // at the midpoints
             validMoves.add(new CellPosition(x, midpoint));
             validMoves.add(new CellPosition(midpoint, y));
         }

@@ -86,37 +86,7 @@ public class CellPane extends Pane {
                 break;
         }
     }
-
-    /*public void updateAdjacentCells() {
-        if (adjacentCells == null) {
-            String[] dirs = {
-                    "LEFT",
-                    "RIGHT",
-                    "UP",
-                    "DOWN"
-            };
-            for(String dir: dirs) {
-                setDirectionalCellPane(dir, null);
-            }
-        } else {
-
-            boolean isEmpty = cellState == CellState.EMPTY;
-
-            for(CellPane adjacentCell : adjacentCells) {
-                CellPosition adjacentCellPosition = adjacentCell.getPosition();
-                String direction = position.directionOf(adjacentCellPosition);
-                String oppositeDirection = adjacentCellPosition.directionOf(position);
-                if (isEmpty) {
-                    adjacentCell.setDirectionalCellPane(oppositeDirection, null);
-                    setDirectionalCellPane(direction, null);
-                } else {
-                    adjacentCell.setDirectionalCellPane(oppositeDirection, this);
-                    setDirectionalCellPane(direction, adjacentCell);
-                }
-            }
-        }
-    } */
-
+    
     public void setDirectionalCellPane(String targetPositionDirection, CellPane adjacentCellPane) {
         switch (targetPositionDirection) {
             case "LEFT":
