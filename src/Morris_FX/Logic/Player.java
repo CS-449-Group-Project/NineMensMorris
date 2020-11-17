@@ -20,13 +20,16 @@ public class Player {
     this.reset();
   }
 
+  public int getTotalPieces() {
+    return piecesInHand + boardPieces;
+  }
+
   public enum Phase {
     PIECE_PLACEMENT,
     PIECE_MOVEMENT,
     FLY_RULE,
     MILL_FORMED,
-    END_GAME;
-
+    GAME_OVER;
     @Override
     public String toString() {
       String phaseName;
@@ -72,7 +75,7 @@ public class Player {
   }
 
   public boolean hasPiecesInHand() {
-    return piecesInHand != NO_PIECES;
+    return piecesInHand > NO_PIECES;
   }
 
   public void setPieceToMove(CellPane cell) {

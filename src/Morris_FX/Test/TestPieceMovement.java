@@ -18,10 +18,19 @@ public class TestPieceMovement {
         gameManager = new GameManager();
         board = new Board(gameManager);
         player = gameManager.getCurrentPlayer();
+
         boardPane = new BoardPane(board, gameManager);
         board.reset();
         player.reset();
+        // needs to be satisifed
+
+        Player opponent = gameManager.getInactivePlayer();
+        while(player.hasPiecesInHand()) {
+            player.removePiecesFromHand();
+            opponent.removePiecesFromHand();
+        }
         player.setGamePhase(Player.Phase.PIECE_MOVEMENT);
+        opponent.setGamePhase(Player.Phase.PIECE_MOVEMENT);
     }
 
     // Class_GivenScenario_Expectation()
@@ -58,11 +67,10 @@ public class TestPieceMovement {
         CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
         coordinate00.setState(CellState.BLACK);
 
-        board.validateCellSelection(coordinate00);
+        assertTrue(board.validateCellSelection(coordinate00));
         gameManager.performMove(coordinate00);
         gameManager.addMoves(player.pieceToMove);
         gameManager.addPlacedPieceMoves(coordinate00);
-
         CellPane coordinate60 = board.getCell(new CellPosition(6, 0));
 
         if (board.validateCellSelection(coordinate60)) {

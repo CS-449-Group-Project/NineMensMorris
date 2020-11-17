@@ -33,13 +33,14 @@ public class TestMillFormation {
     public void GameManager_GivenMillIsFormedDuringPlacementPhase_PieceIsRemoved()
     {
         // black cell coordinates
-
+        gameManager.getActivePlayer().setGamePhase(Player.Phase.PIECE_PLACEMENT);
 
         CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
         CellPane coordinate30 = board.getCell(new CellPosition(3, 0));
         CellPane coordinate60 = board.getCell(new CellPosition(6, 0));
 
         // white cell coordinates
+        gameManager.getInactivePlayer().setGamePhase(Player.Phase.PIECE_PLACEMENT);
         CellPane coordinate03 = board.getCell(new CellPosition(0, 3));
         CellPane coordinate06 = board.getCell(new CellPosition(0, 6));
 

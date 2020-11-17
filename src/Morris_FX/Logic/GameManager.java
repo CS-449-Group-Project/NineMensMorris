@@ -9,6 +9,7 @@ public class GameManager {
 
     private Map<PlayerColor,Player> player;
     private boolean millIsFormed = false;
+    private boolean isGameOver = false;
     private PlayerColor defaultPlayer = PlayerColor.BLACK;
     private PlayerColor currentPlayer;
 
@@ -19,70 +20,78 @@ public class GameManager {
     // if they do have a piece to move already then it sets the state of the clicked cell to the player color, sets the
     // previously occupied cell to empty, and set pieceToMove to null in the current player object; "Places pieceToMove in new position"
     public void performMove(CellPane cellPane) {
+        Player currentPlayer = getCurrentPlayer();
+        Player inactivePlayer = getInactivePlayer();
         if (isMillFormed()) {
             removePieceMoves(cellPane);
             addMoves(cellPane);
             cellPane.setState(CellState.EMPTY);
-            getInactivePlayer().decreaseBoardPieces();
+            inactivePlayer.decreaseBoardPieces();
+            if (inactivePlayer.getTotalPieces() == 3) {
+                inactivePlayer.setGamePhase(Player.Phase.FLY_RULE);
+            }
             resetMill();
-            switchTurn();
-            return;
+        } else {
+            switch (currentPlayer.currentPhase) {
+                case PIECE_PLACEMENT:
+                    currentPlayer.removePiecesFromHand();
+                    cellPane.setState(currentPlayer.getPlayerColorAsCellState());
+                    getCurrentPlayer().increaseBoardPieces();
+                    addPlacedPieceMoves(cellPane);
+                    removeMoves(cellPane);
+
+                    if (!currentPlayer.hasPiecesInHand()) {
+                        currentPlayer.setGamePhase(Player.Phase.PIECE_MOVEMENT);
+                    }
+
+                    if(millFormed(cellPane)){
+                        return;
+                    }
+                    break;
+                case PIECE_MOVEMENT:
+                    if (!currentPlayer.hasPieceToMove()) {
+                        setCellSelect(cellPane);
+                        currentPlayer.setPieceToMove(cellPane);
+                        return;
+                    }
+                    cellPane.setState(currentPlayer.getPlayerColorAsCellState());
+                    addPlacedPieceMoves(cellPane);
+                    removeMoves(cellPane);
+                    currentPlayer.pieceToMove.setState(CellState.EMPTY);
+                    addMoves(currentPlayer.pieceToMove);
+                    removePieceMoves(currentPlayer.pieceToMove);
+                    currentPlayer.removePieceToMove();
+                    setCellSelect(null);
+                    if(millFormed(cellPane)){
+                        return;
+                    }
+                    break;
+                case FLY_RULE:
+                    if (!currentPlayer.hasPieceToMove()) {
+                        setCellSelect(cellPane);
+                        currentPlayer.setPieceToMove(cellPane);
+                        return;
+                    }
+                    setCellSelect(null);
+
+                    cellPane.setState(currentPlayer.getPlayerColorAsCellState());
+                    removeMoves(cellPane);
+                    currentPlayer.pieceToMove.setState(CellState.EMPTY);
+                    addMoves(currentPlayer.pieceToMove);
+                    removePieceMoves(currentPlayer.pieceToMove);
+                    currentPlayer.removePieceToMove();
+                    break;
+            }
         }
-        Player currentPlayer = getCurrentPlayer();
-        switch (currentPlayer.currentPhase) {
-            case PIECE_PLACEMENT:
-                currentPlayer.removePiecesFromHand();
-                cellPane.setState(currentPlayer.getPlayerColorAsCellState());
-                getCurrentPlayer().increaseBoardPieces();
-                addPlacedPieceMoves(cellPane);
-                removeMoves(cellPane);
 
-                if (!currentPlayer.hasPiecesInHand()) {
-                    currentPlayer.setGamePhase(Player.Phase.PIECE_MOVEMENT);
-                }
+        if (currentPlayer.getGamePhase() != Player.Phase.PIECE_PLACEMENT) {
+            isGameOver = inactivePlayer.validMovesCounter == 0 || inactivePlayer.getTotalPieces() == 2;
 
-                if(millFormed(cellPane)){
-                     return;
-                }
-                break;
-            case PIECE_MOVEMENT:
-                if (!currentPlayer.hasPieceToMove()) {
-                    setCellSelect(cellPane);
-                    currentPlayer.setPieceToMove(cellPane);
-
-                    return;
-                }
-
-                cellPane.setState(currentPlayer.getPlayerColorAsCellState());
-                addPlacedPieceMoves(cellPane);
-                removeMoves(cellPane);
-                currentPlayer.pieceToMove.setState(CellState.EMPTY);
-                addMoves(currentPlayer.pieceToMove);
-                removePieceMoves(currentPlayer.pieceToMove);
-                currentPlayer.removePieceToMove();
-                setCellSelect(null);
-                if(millFormed(cellPane)){
-                    return;
-                }
-                if (getInactivePlayer().getBoardPieces() == 3) {
-                    getInactivePlayer().setGamePhase(Player.Phase.FLY_RULE);
-                }
-                break;
-            case FLY_RULE:
-                if (!currentPlayer.hasPieceToMove()) {
-                    setCellSelect(cellPane);
-                    currentPlayer.setPieceToMove(cellPane);
-                    return;
-                }
-                setCellSelect(null);
-
-                cellPane.setState(currentPlayer.getPlayerColorAsCellState());
-                removeMoves(cellPane);
-                currentPlayer.pieceToMove.setState(CellState.EMPTY);
-                addMoves(currentPlayer.pieceToMove);
-                removePieceMoves(currentPlayer.pieceToMove);
-                currentPlayer.removePieceToMove();
-                break;
+            if (isGameOver) {
+                getActivePlayer().setGamePhase(Player.Phase.GAME_OVER);
+                setError(getCurrentPlayerColor() + " won!");
+                return;
+            }
         }
         switchTurn();
     }
@@ -170,7 +179,7 @@ public class GameManager {
     }
 
     public boolean isOver() {
-        return false;
+        return isGameOver;
     }
 
     public interface OnPhaseChangeListener {
