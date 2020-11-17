@@ -33,7 +33,7 @@ public class TestMillFormation {
         if (state != null) pane.setState(state);
         return pane;
     }
-    @Test
+    //@Test
     public void GameManager_GivenAllPlayersHaveOnlyMillsFormed_AnOpponentsPieceCanBeRemoved() {
         CellPosition[] positions = {
                 new CellPosition(0,0),
