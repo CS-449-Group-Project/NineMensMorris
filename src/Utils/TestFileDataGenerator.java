@@ -29,9 +29,9 @@ public class TestFileDataGenerator {
         comments.add(lastComment + extraComment);
     }
 
-    public boolean generateFile(String fileName) {
+    public boolean generateFile(String filePath) {
         try {
-            FileWriter fileWriter = new FileWriter(String.format("./%s",fileName));
+            FileWriter fileWriter = new FileWriter(filePath);
             fileWriter.append(gridSize + "\n");
             for (int i = 0; i < positions.size(); i++) {
                 CellPosition pos = positions.get(i);

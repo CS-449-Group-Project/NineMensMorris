@@ -13,11 +13,14 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.geometry.Pos;
 import javafx.application.Platform;
+
+import java.io.File;
 
 
 public class Morris extends Application {
@@ -100,13 +103,22 @@ public class Morris extends Application {
         Button testGenerate = new Button("Generate Test");
         if (isDebug) {
             testGenerate.setOnAction(e -> {
-                boolean succeeded = testFileData.generateFile("debug.log");
-                if (succeeded) {
-                    String filePath = System.getProperty("user.dir") + "/debug.log";
-                    System.out.println(String.format("You can find the file at:%s", filePath));
-                } else {
-                    System.out.println(String.format("Failed to create test case file."));
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("TEST INPUT DATA", "*.td"));
+
+                File file = fileChooser.showSaveDialog(null);
+                if (file != null) {
+                    boolean succeeded = testFileData.generateFile(file.getAbsolutePath());
+                    if (succeeded) {
+                        String filePath = file.getAbsolutePath();
+                        System.out.println(String.format("You can find the file at:%s", filePath));
+                    } else {
+                        System.out.println(String.format("Failed to create test case file."));
+                    }
+                } else  {
+                    System.out.println("error"); // or something else
                 }
+
             });
         }
 
