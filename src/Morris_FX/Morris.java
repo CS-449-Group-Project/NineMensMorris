@@ -43,6 +43,7 @@ public class Morris extends Application {
     private TestFileDataGenerator testFileData;
     private boolean isDebug = false;
     public Morris(){
+        // requires intellij to be running in debug mode
         isDebug = java.lang.management.ManagementFactory.
                 getRuntimeMXBean().
                 getInputArguments().toString().indexOf("jdwp") >= 0;
