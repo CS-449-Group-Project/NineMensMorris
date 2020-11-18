@@ -3,8 +3,12 @@ package Morris_FX.Test;
 import Morris_FX.Logic.*;
 import Morris_FX.Ui.BoardPane;
 import Morris_FX.Ui.CellPane;
+import Utils.TestCaseGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestGameOver {
@@ -205,5 +209,21 @@ public class TestGameOver {
         assertTrue(gameManager.isOver());
         assertEquals(Player.Phase.GAME_OVER, gameManager.getActivePlayer().getGamePhase());
     }
+
+    @Test
+    public void gameOverDoesNotOccurWithValidMovesLeft() throws IOException {
+        TestCaseGenerator testCaseObject = new TestCaseGenerator("./test-inputs/gameOverInMiddleOfGame.td");
+
+        // make sure you are testing the same board
+        assertEquals(testCaseObject.getExpectedGridSize(), board.GRID_SIZE);
+
+        for (CellPosition recordedPos: testCaseObject) {
+            gameManager.performMove(board.getCell(recordedPos));
+        }
+
+        // check states here
+        assertFalse(gameManager.isOver());
+    }
+
 }
 

@@ -122,17 +122,4 @@ public class TestMillFormation {
         assertTrue(gameManager.isMillFormed());
     }
 
-    @Test
-    public void sampleManualTestMadeAutomated() throws IOException {
-        TestCaseGenerator testCaseObject = new TestCaseGenerator("./debug.log");
-
-        // make sure you are testing the same board
-        assertEquals(testCaseObject.getExpectedGridSize(), board.GRID_SIZE);
-
-        for (CellPosition recordedPos: testCaseObject) {
-            gameManager.performMove(board.getCell(recordedPos));
-        }
-
-        // check states here
-    }
 }
