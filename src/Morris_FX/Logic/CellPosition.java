@@ -8,6 +8,12 @@ public class CellPosition {
         this.column = column;
     }
 
+    public static CellPosition createFromHumanString(String humanMoveName) {
+        int column = humanMoveName.charAt(0) - 0x41;
+        int row = Board.GRID_SIZE - (humanMoveName.charAt(1) - '0');
+        return new CellPosition(column, row);
+    }
+
     public int getRow() {
         return row;
     }

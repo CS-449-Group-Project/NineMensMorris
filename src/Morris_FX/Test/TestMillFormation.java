@@ -3,9 +3,12 @@ package Morris_FX.Test;
 import Morris_FX.Logic.*;
 import Morris_FX.Ui.BoardPane;
 import Morris_FX.Ui.CellPane;
+import Utils.TestCaseGenerator;
 import javafx.geometry.Pos;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -118,6 +121,14 @@ public class TestMillFormation {
         gameManager.performMove(coordinate60);
 
         assertTrue(gameManager.isMillFormed());
+    }
 
+    @Test
+    public void sampleManualTestMadeAutomated() throws IOException {
+        TestCaseGenerator testCellPositions = new TestCaseGenerator("./debug.log");
+        for (CellPosition pos: testCellPositions) {
+            gameManager.performMove(board.getCell(pos));
+        }
+        assertTrue(gameManager.isMillFormed());
     }
 }
