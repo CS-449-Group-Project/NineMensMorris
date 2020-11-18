@@ -279,6 +279,9 @@ public class GameManager {
 
     public void resetGameManager() {
         currentPlayer = defaultPlayer;
+        for (Player aPlayer: player.values()) {
+            aPlayer.reset();
+        }
         millIsFormed = false;
         isGameOver = false;
         setError("");
