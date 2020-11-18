@@ -33,6 +33,43 @@ public class Board {
         return this.grid[column][row];
     }
 
+    public Vector<CellPane> getAllCellsWithState(CellState cellState) {
+        Vector<CellPane> cellsWithState = new Vector<>(9);
+        for (int i = 0; i < Board.GRID_SIZE; i++) {
+            List<Integer> validMoves = getValidRowMoves(i);
+            for (int j : validMoves) {
+                CellPane cell = grid[i][j];
+                if (cell.matches(cellState)) {
+                    cellsWithState.add(cell);
+                }
+            }
+        }
+        return cellsWithState;
+    }
+
+    public boolean doesStateHaveNonMillPiece(CellState state) {
+        Vector<CellPane> allPiecePlacements = getAllCellsWithState(state);
+        for (CellPane cell : allPiecePlacements) {
+            if (!gameManager.millFormed(cell)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean doesStateHaveAtleastOneMove(CellState state) {
+        Vector<CellPane> allPiecePlacements = getAllCellsWithState(state);
+        for (CellPane cell : allPiecePlacements) {
+            Vector<CellPosition> validAdjacentSpots = getAdjacentSpots(cell.getPosition());
+            for(CellPosition pos: validAdjacentSpots) {
+                if(getCell(pos).isEmpty()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     // Checks whether the current cell click is a valid move given the phase of the game and pieces on the board
     public boolean validateCellSelection(CellPane cell) {
         gameManager.setError("");
@@ -59,6 +96,8 @@ public class Board {
             if (cell.matches(opponentCellState)) {
                 if (!gameManager.millFormed(cell)) {
                     return true;
+                } else if (!doesStateHaveNonMillPiece(opponentCellState)) {
+                    return true;
                 }
                 gameManager.setError(cell.getPosition() + " is in a mill.");
             } else {
@@ -77,26 +116,25 @@ public class Board {
         }
 
         switch (currentPlayer.currentPhase) {
-            case PIECE_PLACEMENT:
+            case PIECE_PLACEMENT: {
                 if (cell.isOccupied()) {
                     invalidCellType = InvalidCellType.OCCUPIED;
                     if (cell.matches(currentPlayerCellState)) {
                         invalidCellType = InvalidCellType.OWNED;
                     }
                     gameManager.setError("Select empty space.");
-                    return false;
+                } else {
+                    invalidCellType = InvalidCellType.NONE;
+                    return true;
                 }
-
-                invalidCellType = InvalidCellType.NONE;
-
-                return true;
-            case PIECE_MOVEMENT:
+                break;
+            }
+            case PIECE_MOVEMENT: {
                 if (!currentPlayer.hasPieceToMove()) {
+
                     if (cell.isEmpty()) {
                         gameManager.setError("Select a " + currentPlayerCellState + " marble.");
-                        return false;
-                    }
-                    if (cell.canPickup(currentPlayer)) {
+                    } else if (cell.canPickup(currentPlayer)) {
                         return true;
                     } else if (cell.matches(currentPlayerCellState)) {
                         String errorMessage = "Marble at " + cell.getPosition() + " is stuck";
@@ -104,34 +142,31 @@ public class Board {
                     } else {
                         gameManager.setError("Select a " + currentPlayerCellState + " marble.");
                     }
-                    return false;
-                }
-                // the second condition here checks the list of moves list which is populated by the linkCells method
-                boolean isValid = false;
-                if (cell.isEmpty() && currentPlayer.pieceToMove.adjacentCells.contains(cell)) {
+                } else if (cell.isEmpty() && currentPlayer.pieceToMove.adjacentCells.contains(cell)) {
+                    // the second condition here checks the list of moves list which is populated by the linkCells method
                     return true;
                 }
                 gameManager.setError("Select an EMPTY adjacent space.");
-                return false;
-            case FLY_RULE:
+                break;
+            }
+            case FLY_RULE: {
                 if (!currentPlayer.hasPieceToMove()) {
                     if (cell.isEmpty()) {
-                        gameManager.setError("Must select a piece to move.");
-                        return false;
-                    }
-                    if (cell.cellState.equals(currentPlayerCellState)) {
+                        gameManager.setError(String.format("Select a %s marble.", currentPlayer.getColor()));
+                    } else if (cell.cellState.equals(currentPlayerCellState)) {
                         return true;
                     }
+                } else if (cell.isEmpty()) {
+                    return true;
                 }
-                else {
-                    if (cell.isEmpty()) {
-                        return true;
-                    }
-                }
+                gameManager.setError("Select an EMPTY spot.");
+                break;
+            }
             default:
                 gameManager.setError(currentPlayer.currentPhase + " is not a valid phase.");
-                return false;
+                break;
         }
+        return false;
     }
 
 

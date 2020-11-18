@@ -250,5 +250,9 @@ public class CellPane extends Pane {
         // directional fields are automatically update when this is called
         setState(initialState);
     }
+
+    public BoardPane getParentPane() {
+        return parent;
+    }
 }
 

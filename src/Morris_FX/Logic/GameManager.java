@@ -27,8 +27,11 @@ public class GameManager {
             addMoves(cellPane);
             cellPane.setState(CellState.EMPTY);
             inactivePlayer.decreaseBoardPieces();
-            if (inactivePlayer.getTotalPieces() == 3) {
-                inactivePlayer.setGamePhase(Player.Phase.FLY_RULE);
+
+            if (!inactivePlayer.hasPiecesInHand()) {
+                if (inactivePlayer.getTotalPieces() == 3) {
+                    inactivePlayer.setGamePhase(Player.Phase.FLY_RULE);
+                }
             }
             resetMill();
         } else {
@@ -42,10 +45,6 @@ public class GameManager {
 
                     if (!currentPlayer.hasPiecesInHand()) {
                         currentPlayer.setGamePhase(Player.Phase.PIECE_MOVEMENT);
-                    }
-
-                    if(millFormed(cellPane)){
-                        return;
                     }
                     break;
                 case PIECE_MOVEMENT:
@@ -62,9 +61,6 @@ public class GameManager {
                     removePieceMoves(currentPlayer.pieceToMove);
                     currentPlayer.removePieceToMove();
                     setCellSelect(null);
-                    if(millFormed(cellPane)){
-                        return;
-                    }
                     break;
                 case FLY_RULE:
                     if (!currentPlayer.hasPieceToMove()) {
@@ -82,16 +78,22 @@ public class GameManager {
                     currentPlayer.removePieceToMove();
                     break;
             }
-        }
-
-        if (currentPlayer.getGamePhase() != Player.Phase.PIECE_PLACEMENT) {
-            isGameOver = inactivePlayer.validMovesCounter == 0 || inactivePlayer.getTotalPieces() == 2;
-
-            if (isGameOver) {
-                getActivePlayer().setGamePhase(Player.Phase.GAME_OVER);
-                setError(getCurrentPlayerColor() + " won!");
+            if(millFormed(cellPane)){
                 return;
             }
+        }
+
+        isGameOver = inactivePlayer.getTotalPieces() == 2;
+        if (currentPlayer.getGamePhase() != Player.Phase.PIECE_PLACEMENT) {
+            // check if
+             isGameOver = isGameOver || inactivePlayer.validMovesCounter == 0;
+
+        }
+
+        if (isGameOver) {
+            getActivePlayer().setGamePhase(Player.Phase.GAME_OVER);
+            setError(getCurrentPlayerColor() + " won!");
+            return;
         }
         switchTurn();
     }
@@ -278,8 +280,10 @@ public class GameManager {
     public void resetGameManager() {
         currentPlayer = defaultPlayer;
         millIsFormed = false;
+        isGameOver = false;
         setError("");
         turnChanged();
+        announcePhaseChange();
     }
 
     public void addPlacedPieceMoves(CellPane cell){

@@ -36,7 +36,7 @@ public class TestMillFormation {
     @Test
     public void GameManager_GivenAllPlayersHaveOnlyMillsFormed_AnOpponentsPieceCanBeRemoved() {
         CellPosition[] positions = {
-                new CellPosition(0,0),
+                new CellPosition(0,0),//black's
                 new CellPosition(5,5),
                 new CellPosition(0,3),
                 new CellPosition(3,5),

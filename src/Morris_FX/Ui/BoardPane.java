@@ -65,4 +65,8 @@ public class BoardPane extends GridPane {
     public void onVoidCellClicked() {
         gameManager.setError("Invalid cell selection.");
     }
+
+    public Board getBoard() {
+        return board;
+    }
 }
