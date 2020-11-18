@@ -3,7 +3,9 @@ package Morris_FX;
 import Morris_FX.Logic.Board;
 import Morris_FX.Logic.GameManager;
 import Morris_FX.Ui.BoardPane;
-import static Utils.TestGenerator.*;
+import Utils.TestFileDataGenerator;
+
+import Utils.TestFileDataGenerator;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
@@ -16,9 +18,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.geometry.Pos;
 import javafx.application.Platform;
-
-import java.io.FileWriter;
-import java.io.IOException;
 
 
 public class Morris extends Application {
@@ -33,8 +32,19 @@ public class Morris extends Application {
     private TextField errorMessage = new TextField();
     private TextField cellSelectedText = new TextField();
 
+    private TestFileDataGenerator testFileData;
+    private boolean isDebug = false;
     public Morris(){
-        gameManager = new GameManager();
+        isDebug = java.lang.management.ManagementFactory.
+                getRuntimeMXBean().
+                getInputArguments().toString().indexOf("jdwp") >= 0;
+        if (isDebug) {
+            testFileData = new TestFileDataGenerator(Board.GRID_SIZE);
+            gameManager = new GameManager(testFileData);
+        } else {
+            gameManager = new GameManager();
+        }
+
         gameManager.onTurnSwitch((currentPlayerColor) -> {
             turnText.setText(String.format("%s's Turn", currentPlayerColor));
         });
@@ -87,20 +97,15 @@ public class Morris extends Application {
         Button reset = new Button("Play again");
 
         // https://stackoverflow.com/a/28754689
-        boolean isDebug = java.lang.management.ManagementFactory.
-                getRuntimeMXBean().
-                getInputArguments().toString().indexOf("jdwp") >= 0;
         Button testGenerate = new Button("Generate Test");
         if (isDebug) {
             testGenerate.setOnAction(e -> {
-                FileWriter fileWriter;
-                try {
-                    fileWriter = new FileWriter("./debug.log");
-                    fileWriter.append(board.GRID_SIZE + "\n");
-                    fileWriter.append(generateFromCellPositions(gameManager.allPlacedPieces, gameManager.piecePlacementComments));
-                    fileWriter.close();
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
+                boolean succeeded = testFileData.generateFile("debug.log");
+                if (succeeded) {
+                    String filePath = System.getProperty("user.dir") + "/debug.log";
+                    System.out.println(String.format("You can find the file at:%s", filePath));
+                } else {
+                    System.out.println(String.format("Failed to create test case file."));
                 }
             });
         }
