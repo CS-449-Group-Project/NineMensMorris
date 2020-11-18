@@ -4,7 +4,6 @@ import Morris_FX.Logic.*;
 import Morris_FX.Ui.BoardPane;
 import Morris_FX.Ui.CellPane;
 import Utils.TestCaseGenerator;
-import javafx.geometry.Pos;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -125,10 +124,15 @@ public class TestMillFormation {
 
     @Test
     public void sampleManualTestMadeAutomated() throws IOException {
-        TestCaseGenerator testCellPositions = new TestCaseGenerator("./debug.log");
-        for (CellPosition pos: testCellPositions) {
-            gameManager.performMove(board.getCell(pos));
+        TestCaseGenerator testCaseObject = new TestCaseGenerator("./debug.log");
+
+        // make sure you are testing the same board
+        assertEquals(testCaseObject.getExpectedGridSize(), board.GRID_SIZE);
+
+        for (CellPosition recordedPos: testCaseObject) {
+            gameManager.performMove(board.getCell(recordedPos));
         }
-        assertTrue(gameManager.isMillFormed());
+
+        // check states here
     }
 }
