@@ -96,6 +96,7 @@ public class Morris extends Application {
                 FileWriter fileWriter;
                 try {
                     fileWriter = new FileWriter("./debug.log");
+                    fileWriter.append(board.GRID_SIZE + "\n");
                     fileWriter.append(generateFromCellPositions(gameManager.allPlacedPieces, gameManager.piecePlacementComments));
                     fileWriter.close();
                 } catch (IOException ioException) {
