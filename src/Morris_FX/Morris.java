@@ -144,8 +144,9 @@ public class Morris extends Application {
                         ioException.printStackTrace();
                         return;
                     }
-
                     Thread t = new Thread(() -> {
+                        loadTestState.setDisable(true);
+                        boardPane.setDisable(true);
                         for (CellPosition recordedPos: testCaseObject) {
                             gameManager.performMove(board.getCell(recordedPos));
                             try {
@@ -154,6 +155,8 @@ public class Morris extends Application {
                                 interruptedException.printStackTrace();
                             }
                         }
+                        boardPane.setDisable(false);
+                        loadTestState.setDisable(false);
                     });
                     t.start();
                 }

@@ -55,6 +55,10 @@ public class BoardPane extends GridPane {
     }
 
     public void onCellClick(CellPane cell) {
+        if (isDisabled()) {
+            return;
+        }
+
         if (board.validateCellSelection(cell)) {
             gameManager.performMove(cell);
         } else {
