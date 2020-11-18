@@ -19,7 +19,6 @@ public class TestGenerator {
             String lineComment = piecePlacementComments.get(i);
             testMethod.append(String.format("%s %s\n", varName, lineComment));
         }
-        testMethod.append("\n");
         return testMethod;
     }
 
