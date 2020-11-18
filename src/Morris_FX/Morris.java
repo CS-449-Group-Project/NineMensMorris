@@ -145,9 +145,17 @@ public class Morris extends Application {
                         return;
                     }
 
-                    for (CellPosition recordedPos: testCaseObject) {
-                        gameManager.performMove(board.getCell(recordedPos));
-                    }
+                    Thread t = new Thread(() -> {
+                        for (CellPosition recordedPos: testCaseObject) {
+                            gameManager.performMove(board.getCell(recordedPos));
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException interruptedException) {
+                                interruptedException.printStackTrace();
+                            }
+                        }
+                    });
+                    t.start();
                 }
             });
         }
