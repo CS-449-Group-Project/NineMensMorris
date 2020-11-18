@@ -1,8 +1,10 @@
 package Morris_FX;
 
 import Morris_FX.Logic.Board;
+import Morris_FX.Logic.CellPosition;
 import Morris_FX.Logic.GameManager;
 import Morris_FX.Ui.BoardPane;
+import Utils.TestCaseGenerator;
 import Utils.TestFileDataGenerator;
 
 import Utils.TestFileDataGenerator;
@@ -21,6 +23,10 @@ import javafx.geometry.Pos;
 import javafx.application.Platform;
 
 import java.io.File;
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
 public class Morris extends Application {
@@ -34,7 +40,6 @@ public class Morris extends Application {
     private TextField phaseText = new TextField();
     private TextField errorMessage = new TextField();
     private TextField cellSelectedText = new TextField();
-
     private TestFileDataGenerator testFileData;
     private boolean isDebug = false;
     public Morris(){
@@ -100,7 +105,8 @@ public class Morris extends Application {
         Button reset = new Button("Play again");
 
         // https://stackoverflow.com/a/28754689
-        Button testGenerate = new Button("Generate Test");
+        Button testGenerate = new Button("Save State.");
+        Button loadTestState = new Button("Load save state.");
         if (isDebug) {
             testGenerate.setOnAction(e -> {
                 FileChooser fileChooser = new FileChooser();
@@ -120,6 +126,28 @@ public class Morris extends Application {
                 }
 
             });
+
+            loadTestState.setOnAction(e -> {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.getExtensionFilters().add(
+                        new FileChooser.ExtensionFilter("TEST INPUT DATA", "*.td")
+                );
+
+                File file = fileChooser.showOpenDialog(null);
+                if (file != null) {
+                    TestCaseGenerator testCaseObject = null;
+                    try {
+                        testCaseObject = new TestCaseGenerator(file.getAbsolutePath());
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
+                        return;
+                    }
+
+                    for (CellPosition recordedPos: testCaseObject) {
+                        gameManager.performMove(board.getCell(recordedPos));
+                    }
+                }
+            });
         }
 
         //set exit action for the exit button
@@ -130,7 +158,7 @@ public class Morris extends Application {
         choices.getChildren().addAll(menu, reset, exit);
 
         if (isDebug) {
-            choices.getChildren().add(testGenerate);
+            choices.getChildren().addAll(testGenerate, loadTestState);
         }
         VBox infoVBox = new VBox();
         HBox infoBox = new HBox();
