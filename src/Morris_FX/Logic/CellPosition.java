@@ -39,7 +39,11 @@ public class CellPosition {
 
     @Override
     public String toString() {
+        return String.format("%s (%d,%d)",getHumanString(), column, row);
+    }
+
+    public String getHumanString() {
         char character = (char)(column + 0x41);
-        return String.format("%c%d (%d,%d)", character, (Board.GRID_SIZE - row), column, row);
+        return String.format("%c%d", character, (Board.GRID_SIZE - row));
     }
 }

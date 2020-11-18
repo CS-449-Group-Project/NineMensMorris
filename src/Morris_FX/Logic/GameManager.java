@@ -4,9 +4,11 @@ import Morris_FX.Ui.CellPane;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Vector;
 
 public class GameManager {
-
+    public Vector<CellPosition> allPlacedPieces = new Vector<>(50);
+    public Vector<String> piecePlacementComments = new Vector<>(50);
     private Map<PlayerColor,Player> player;
     private boolean millIsFormed = false;
     private boolean isGameOver = false;
@@ -22,12 +24,13 @@ public class GameManager {
     public void performMove(CellPane cellPane) {
         Player currentPlayer = getCurrentPlayer();
         Player inactivePlayer = getInactivePlayer();
+        allPlacedPieces.add(cellPane.getPosition());
         if (isMillFormed()) {
+            piecePlacementComments.add(currentPlayer.getColor() + " removed piece.");
             removePieceMoves(cellPane);
             addMoves(cellPane);
             cellPane.setState(CellState.EMPTY);
             inactivePlayer.decreaseBoardPieces();
-
             if (!inactivePlayer.hasPiecesInHand()) {
                 if (inactivePlayer.getTotalPieces() == 3) {
                     inactivePlayer.setGamePhase(Player.Phase.FLY_RULE);
@@ -37,6 +40,7 @@ public class GameManager {
         } else {
             switch (currentPlayer.currentPhase) {
                 case PIECE_PLACEMENT:
+                    piecePlacementComments.add(currentPlayer.getColor() + " marble placed.");
                     currentPlayer.removePiecesFromHand();
                     cellPane.setState(currentPlayer.getPlayerColorAsCellState());
                     getCurrentPlayer().increaseBoardPieces();
@@ -49,10 +53,12 @@ public class GameManager {
                     break;
                 case PIECE_MOVEMENT:
                     if (!currentPlayer.hasPieceToMove()) {
+                        piecePlacementComments.add(currentPlayer.getColor() + " selected marble.");
                         setCellSelect(cellPane);
                         currentPlayer.setPieceToMove(cellPane);
                         return;
                     }
+                    piecePlacementComments.add(currentPlayer.getColor() + " moved marble here.");
                     cellPane.setState(currentPlayer.getPlayerColorAsCellState());
                     addPlacedPieceMoves(cellPane);
                     removeMoves(cellPane);
@@ -64,10 +70,12 @@ public class GameManager {
                     break;
                 case FLY_RULE:
                     if (!currentPlayer.hasPieceToMove()) {
+                        piecePlacementComments.add(currentPlayer.getColor() + " selected marble (fly rule).");
                         setCellSelect(cellPane);
                         currentPlayer.setPieceToMove(cellPane);
                         return;
                     }
+                    piecePlacementComments.add(currentPlayer.getColor() + " moved marble here (fly rule).");
                     setCellSelect(null);
 
                     cellPane.setState(currentPlayer.getPlayerColorAsCellState());
@@ -79,6 +87,9 @@ public class GameManager {
                     break;
             }
             if(millFormed(cellPane)){
+                String lastComment = piecePlacementComments.remove(piecePlacementComments.size() - 1);
+                lastComment += " Mill formed.";
+                piecePlacementComments.add(lastComment);
                 return;
             }
         }
@@ -91,6 +102,10 @@ public class GameManager {
         }
 
         if (isGameOver) {
+;
+            String lastComment = piecePlacementComments.remove(piecePlacementComments.size() - 1);
+            lastComment += " Causing a game over.";
+            piecePlacementComments.add(lastComment);
             getActivePlayer().setGamePhase(Player.Phase.GAME_OVER);
             setError(getCurrentPlayerColor() + " won!");
             return;
@@ -287,6 +302,7 @@ public class GameManager {
         setError("");
         turnChanged();
         announcePhaseChange();
+        allPlacedPieces.clear();
     }
 
     public void addPlacedPieceMoves(CellPane cell){

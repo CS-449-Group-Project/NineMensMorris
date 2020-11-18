@@ -93,6 +93,7 @@ public class TestGameBoardSetup {
             return adjacentPosition.matches(other);
         }).count() == 1;
     }
+
     @Test
     public void Board_GivenNewGame_VoidCells() {
         CellPane coordinate33 = board.getCell(new CellPosition(3, 3));

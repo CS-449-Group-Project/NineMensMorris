@@ -3,6 +3,7 @@ package Morris_FX;
 import Morris_FX.Logic.Board;
 import Morris_FX.Logic.GameManager;
 import Morris_FX.Ui.BoardPane;
+import static Utils.TestGenerator.*;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
@@ -15,6 +16,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.geometry.Pos;
 import javafx.application.Platform;
+
+import java.io.FileWriter;
+import java.io.IOException;
 
 
 public class Morris extends Application {
@@ -71,7 +75,7 @@ public class Morris extends Application {
     }
 
 
-    public static void main(String[] args) {  launch(args); }
+    public static void main(String[] args) { launch(args); }
 
     @Override
     public void start(Stage primaryStage)  {
@@ -82,6 +86,23 @@ public class Morris extends Application {
         Button exit = new Button("Exit");
         Button reset = new Button("Play again");
 
+        // https://stackoverflow.com/a/28754689
+        boolean isDebug = java.lang.management.ManagementFactory.
+                getRuntimeMXBean().
+                getInputArguments().toString().indexOf("jdwp") >= 0;
+        Button testGenerate = new Button("Generate Test");
+        if (isDebug) {
+            testGenerate.setOnAction(e -> {
+                FileWriter fileWriter;
+                try {
+                    fileWriter = new FileWriter("./debug.log");
+                    fileWriter.append(generateFromCellPositions(gameManager.allPlacedPieces, gameManager.piecePlacementComments));
+                    fileWriter.close();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
+            });
+        }
 
         //set exit action for the exit button
         exit.setOnAction(e -> Platform.exit());
@@ -90,6 +111,9 @@ public class Morris extends Application {
         HBox choices = new HBox();
         choices.getChildren().addAll(menu, reset, exit);
 
+        if (isDebug) {
+            choices.getChildren().add(testGenerate);
+        }
         VBox infoVBox = new VBox();
         HBox infoBox = new HBox();
         HBox errorBox = new HBox();
@@ -146,7 +170,6 @@ public class Morris extends Application {
         reset.setOnAction(e -> reset());
         menu.setOnAction(e -> primaryStage.setScene(scene2));
         scene3 = new Scene(gameWindow, 550, 675);
-
 
         primaryStage.setScene(scene1);
         primaryStage.show();
