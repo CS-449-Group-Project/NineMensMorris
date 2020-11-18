@@ -135,9 +135,10 @@ public class Morris extends Application {
 
                 File file = fileChooser.showOpenDialog(null);
                 if (file != null) {
-                    TestCaseGenerator testCaseObject = null;
+                    TestCaseGenerator testCaseObject;
                     try {
                         testCaseObject = new TestCaseGenerator(file.getAbsolutePath());
+                        reset();
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
                         return;
