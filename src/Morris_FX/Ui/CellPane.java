@@ -220,11 +220,9 @@ public class CellPane extends Pane {
         }
 
         if(counter > 0) {
-            System.out.println("you may move");
             return true;
         }
         else {
-            System.out.println("no possible moves");
             return false;
         }
     }

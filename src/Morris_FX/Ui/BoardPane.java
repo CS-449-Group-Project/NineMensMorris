@@ -57,8 +57,6 @@ public class BoardPane extends GridPane {
     public void onCellClick(CellPane cell) {
         if (board.validateCellSelection(cell)) {
             gameManager.performMove(cell);
-        } else {
-            System.out.println("Invalid cell type: " + board.getInvalidCellType());
         }
     }
 

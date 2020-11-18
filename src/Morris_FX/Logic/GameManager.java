@@ -2,6 +2,7 @@ package Morris_FX.Logic;
 
 import Morris_FX.Ui.CellPane;
 
+import java.sql.SQLOutput;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -33,6 +34,12 @@ public class GameManager {
                     inactivePlayer.setGamePhase(Player.Phase.FLY_RULE);
                 }
             }
+            System.out.println(cellPane.getPosition());
+            Board board = cellPane.getParentPane().getBoard();
+            for (Player player: player.values()) {
+
+                // System.out.println(player.getColor() + " => " + player.validMovesCounter + " " + validMovesCount);
+            }
             resetMill();
         } else {
             switch (currentPlayer.currentPhase) {
@@ -44,7 +51,12 @@ public class GameManager {
                     removeMoves(cellPane);
 
                     if (!currentPlayer.hasPiecesInHand()) {
-                        currentPlayer.setGamePhase(Player.Phase.PIECE_MOVEMENT);
+                        if (currentPlayer.getTotalPieces() == 3) {
+                            currentPlayer.setGamePhase(Player.Phase.FLY_RULE);
+                        } else {
+                            currentPlayer.setGamePhase(Player.Phase.PIECE_MOVEMENT);
+                        }
+
                     }
                     break;
                 case PIECE_MOVEMENT:
@@ -78,17 +90,31 @@ public class GameManager {
                     currentPlayer.removePieceToMove();
                     break;
             }
+            System.out.println(cellPane.getPosition());
+            Board board = cellPane.getParentPane().getBoard();
+            for (Player player: player.values()) {
+                int validMovesCount = board.getValidMoveCount(player.getPlayerColorAsCellState());
+                System.out.println(player.getColor() + " => " + player.validMovesCounter + " " + validMovesCount);
+            }
+
             if(millFormed(cellPane)){
                 return;
             }
         }
-
         isGameOver = inactivePlayer.getTotalPieces() == 2;
         if (currentPlayer.getGamePhase() != Player.Phase.PIECE_PLACEMENT) {
+            boolean debug;
+            if (inactivePlayer.getTotalPieces() > 2 && inactivePlayer.validMovesCounter == 0) {
+                debug = true;
+            }
+            Board board = cellPane.getParentPane().getBoard();
+
+            int validMovesCount = board.getValidMoveCount(getOpponentCellState());
             // check if
-             isGameOver = isGameOver || inactivePlayer.validMovesCounter == 0;
+             isGameOver = isGameOver || validMovesCount == 0;
 
         }
+
 
         if (isGameOver) {
             getActivePlayer().setGamePhase(Player.Phase.GAME_OVER);
