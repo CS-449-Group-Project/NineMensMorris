@@ -112,17 +112,11 @@ public class GameManager {
             }
         }
         isGameOver = inactivePlayer.getTotalPieces() == 2;
-        if (currentPlayer.getGamePhase() != Player.Phase.PIECE_PLACEMENT) {
-            boolean debug;
-            if (inactivePlayer.getTotalPieces() > 2 && inactivePlayer.validMovesCounter == 0) {
-                debug = true;
-            }
+        if (inactivePlayer.getGamePhase() != Player.Phase.PIECE_PLACEMENT) {
             Board board = cellPane.getParentPane().getBoard();
-
             int validMovesCount = board.getValidMoveCount(getOpponentCellState());
             // check if
              isGameOver = isGameOver || validMovesCount == 0;
-
         }
 
 
