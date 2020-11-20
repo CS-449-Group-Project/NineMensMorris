@@ -11,6 +11,7 @@ public class TestFileDataGenerator {
     private int gridSize = 0;
     private short version = 0;
     private Vector<CellPosition> positions = new Vector<>(10);
+
     public TestFileDataGenerator(int gridSize) {
         this.gridSize = gridSize;
     }
@@ -34,19 +35,27 @@ public class TestFileDataGenerator {
     private byte[] convertDataToByteArray() {
         int headerSize = 4;
         int size = positions.size() + headerSize;
-        byte[] stream = new byte[size * 2];
-        int offset = writeShortToBuffer(stream, 0, magicNumber);
 
-        offset = writeShortToBuffer(stream, offset, version);
-        offset = writeShortToBuffer(stream, offset, (short)gridSize);
-        offset = writeShortToBuffer(stream, offset, (short)positions.size());
+        byte[] buffer = new byte[size * 2];
+
+        short[] header = {
+                magicNumber,
+                version,
+                (short)gridSize,
+                (short)positions.size()
+        };
+
+        int offset = 0;
+        for (short headerProperty : header) {
+            offset = writeShortToBuffer(buffer, offset, headerProperty);
+        }
 
         for (int i = 0; i < positions.size(); i++) {
             CellPosition pos = positions.get(i);
             short compressedPos = compressPosition(pos);
-            offset = writeShortToBuffer(stream, offset, compressedPos);
+            offset = writeShortToBuffer(buffer, offset, compressedPos);
         }
-        return stream;
+        return buffer;
     }
 
     private int writeShortToBuffer(byte[] buffer, int offset, short value) {
@@ -61,6 +70,7 @@ public class TestFileDataGenerator {
         short compressedPos = (short)((pos.getColumn() << 8) | pos.getRow());
         return compressedPos;
     }
+
     public void reset() {
         positions.clear();
     }
