@@ -43,12 +43,6 @@ public class GameManager {
                     inactivePlayer.setGamePhase(Player.Phase.FLY_RULE);
                 }
             }
-            System.out.println(cellPane.getPosition());
-            Board board = cellPane.getParentPane().getBoard();
-            for (Player player: player.values()) {
-
-                // System.out.println(player.getColor() + " => " + player.validMovesCounter + " " + validMovesCount);
-            }
             resetMill();
         } else {
             switch (currentPlayer.currentPhase) {
@@ -101,13 +95,6 @@ public class GameManager {
                     currentPlayer.removePieceToMove();
                     break;
             }
-            System.out.println(cellPane.getPosition());
-            Board board = cellPane.getParentPane().getBoard();
-            for (Player player: player.values()) {
-                int validMovesCount = board.getValidMoveCount(player.getPlayerColorAsCellState());
-                System.out.println(player.getColor() + " => " + player.validMovesCounter + " " + validMovesCount);
-            }
-
             if(millFormed(cellPane)){
                 return;
             }
