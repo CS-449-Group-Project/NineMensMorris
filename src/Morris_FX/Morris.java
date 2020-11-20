@@ -138,7 +138,7 @@ public class Morris extends Application {
                 if (file != null) {
                     TestCaseGenerator testCaseObject;
                     try {
-                        testCaseObject = new TestCaseGenerator(file.getAbsolutePath());
+                        testCaseObject = TestCaseGenerator.createFromFile(file.getAbsolutePath());
                         reset();
                     } catch (IOException ioException) {
                         ioException.printStackTrace();
