@@ -55,6 +55,7 @@ public class GameManager {
                 case PIECE_PLACEMENT:
 
                     currentPlayer.removePiecesFromHand();
+                    announceMarblesInHandChange();
                     cellPane.setState(currentPlayer.getPlayerColorAsCellState());
                     getCurrentPlayer().increaseBoardPieces();
                     addPlacedPieceMoves(cellPane);
@@ -242,6 +243,24 @@ public class GameManager {
     }
 
 
+    public interface MarblesInHandListener {
+        void marblesInHandChange(int blackMarbles, int whiteMarbles);
+    }
+
+    private MarblesInHandListener marblesInHandListener = null;
+    public void onMarblesInHandChange(MarblesInHandListener listener) {
+        marblesInHandListener = listener;
+        announceMarblesInHandChange();
+    }
+
+    public void announceMarblesInHandChange() {
+        if (marblesInHandListener != null) {
+            int blackMarbles = player.get(PlayerColor.BLACK).getPiecesInHand();
+            int whiteMarbles = player.get(PlayerColor.WHITE).getPiecesInHand();
+            marblesInHandListener.marblesInHandChange(blackMarbles, whiteMarbles);
+        }
+    }
+
     public interface CellSelectListener {
         void onCellSelect(CellPane cell);
     }
@@ -318,6 +337,7 @@ public class GameManager {
         for (Player aPlayer: player.values()) {
             aPlayer.reset();
         }
+        announceMarblesInHandChange();
         millIsFormed = false;
         isGameOver = false;
         setError("");

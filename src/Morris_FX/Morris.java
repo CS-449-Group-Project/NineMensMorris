@@ -40,13 +40,14 @@ public class Morris extends Application {
     private TextField phaseText = new TextField();
     private TextField errorMessage = new TextField();
     private TextField cellSelectedText = new TextField();
+    private TextField playerMarblesInHand = new TextField();
     private TestFileDataGenerator testFileData;
-    private boolean isDebug = false;
+    private boolean isDebug;
     public Morris(){
         // requires intellij to be running in debug mode
         isDebug = java.lang.management.ManagementFactory.
                 getRuntimeMXBean().
-                getInputArguments().toString().indexOf("jdwp") >= 0;
+                getInputArguments().toString().contains("jdwp");
         if (isDebug) {
             testFileData = new TestFileDataGenerator(Board.GRID_SIZE);
             gameManager = new GameManager(testFileData);
@@ -75,6 +76,10 @@ public class Morris extends Application {
             errorMessage.setText(errorMsg);
         });
 
+        gameManager.onMarblesInHandChange((blackMarbles, whiteMarbles) -> {
+            playerMarblesInHand.setText(String.format("BLACK marbles: %d, WHITE marbles: %d", blackMarbles, whiteMarbles));
+        });
+
         board = new Board(gameManager, true);
         boardPane = new BoardPane(board, gameManager);
         boardPane.setPadding(new Insets((30), 0, 20, 35));
@@ -91,6 +96,10 @@ public class Morris extends Application {
         cellSelectedText.setMaxWidth(100);
         cellSelectedText.setDisable(true);
         cellSelectedText.setStyle("-fx-opacity: 1;");
+
+        playerMarblesInHand.setMinWidth(275);
+        playerMarblesInHand.setDisable(true);
+        playerMarblesInHand.setStyle("-fx-opacity: 1;");
     }
 
 
@@ -179,7 +188,7 @@ public class Morris extends Application {
 
         infoVBox.getChildren().addAll(infoBox, errorBox);
         infoBox.getChildren().addAll(turnText,phaseText, cellSelectedText);
-        errorBox.getChildren().add(errorMessage);
+        errorBox.getChildren().addAll(errorMessage, playerMarblesInHand);
 
         //setting the pane for game in the window
         BorderPane gameWindow = new BorderPane();
