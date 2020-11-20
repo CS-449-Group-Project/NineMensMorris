@@ -1,4 +1,3 @@
-package Morris_FX.Test;
 
 import Morris_FX.Logic.*;
 import Morris_FX.Ui.BoardPane;
@@ -136,86 +135,13 @@ public class TestGameOver {
     }
 
 
-    @Test
-    public void test1() {
-        CellPosition[] positions = {
-                new CellPosition(0,0),
-                new CellPosition(6,0),
-                new CellPosition(6,3),
-                new CellPosition(6,6),
-                new CellPosition(0,6),
-                new CellPosition(0,3),
-                new CellPosition(2,4),
-                new CellPosition(3,5),
-                new CellPosition(3,6),
-                new CellPosition(5,5),
-                new CellPosition(1,5),
-                new CellPosition(3,4),
-                new CellPosition(4,4),
-                new CellPosition(4,3),
-                new CellPosition(1,3),
-                new CellPosition(2,3),
-                new CellPosition(1,1),
-                new CellPosition(2,3),
-                new CellPosition(5,3),
-                new CellPosition(2,4),
-                new CellPosition(2,3),
-                new CellPosition(4,3),
-                new CellPosition(4,2),
-                new CellPosition(2,3),
-                new CellPosition(2,2),
-                new CellPosition(4,2),
-                new CellPosition(3,2),
-                new CellPosition(1,3),
-                new CellPosition(2,3),
-                new CellPosition(3,2),
-                new CellPosition(3,1),
-                new CellPosition(2,3),
-                new CellPosition(1,3),
-                new CellPosition(0,3),
-                new CellPosition(3,1),
-                new CellPosition(5,1),
-                new CellPosition(2,2),
-                new CellPosition(1,3),
-                new CellPosition(0,3),
-                new CellPosition(3,4),
-                new CellPosition(5,3),
-                new CellPosition(4,3),
-                new CellPosition(0,3),
-                new CellPosition(1,3),
-                new CellPosition(4,3),
-                new CellPosition(5,5),
-                new CellPosition(5,3),
-                new CellPosition(1,3),
-                new CellPosition(0,3),
-                new CellPosition(6,6),
-                new CellPosition(3,5),
-                new CellPosition(5,5),
-                new CellPosition(4,4),
-                new CellPosition(0,3),
-                new CellPosition(1,3),
-                new CellPosition(6,0),
-                new CellPosition(5,3),
-                new CellPosition(3,0),
-                new CellPosition(1,3),
-                new CellPosition(0,3),
-                new CellPosition(5,1)
-        };
-
-        for(int i = 0; i < positions.length; i++) {
-            CellPosition pos = positions[i];
-            gameManager.performMove(board.getCell(pos));
-        }
-        assertTrue(gameManager.isOver());
-        assertEquals(Player.Phase.GAME_OVER, gameManager.getActivePlayer().getGamePhase());
-    }
 
     @Test
     public void gameOverDoesNotOccurWithValidMovesLeft() throws IOException {
-        TestCaseGenerator testCaseObject = new TestCaseGenerator("./test-inputs/gameOverInMiddleOfGame.td");
+        TestCaseGenerator testCaseObject = TestCaseGenerator.createFromFile("./test-inputs/gameOverInMiddleOfGame.td");
 
         // make sure you are testing the same board
-        assertEquals(testCaseObject.getExpectedGridSize(), board.GRID_SIZE);
+        assertEquals(testCaseObject.getExpectedGridSize(), Board.GRID_SIZE);
 
         for (CellPosition recordedPos: testCaseObject) {
             gameManager.performMove(board.getCell(recordedPos));
@@ -224,6 +150,5 @@ public class TestGameOver {
         // check states here
         assertFalse(gameManager.isOver());
     }
-
 }
 
