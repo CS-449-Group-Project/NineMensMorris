@@ -33,9 +33,6 @@ public class GameManager {
         }
 
         if (isMillFormed()) {
-            if (isTesting) {
-                testFileDataGenerator.addComment(currentPlayer.getColor() + " removed piece.");
-            }
             removePieceMoves(cellPane);
             addMoves(cellPane);
             cellPane.setState(CellState.EMPTY);
@@ -49,9 +46,7 @@ public class GameManager {
         } else {
             switch (currentPlayer.currentPhase) {
                 case PIECE_PLACEMENT:
-                    if (isTesting) {
-                        testFileDataGenerator.addComment(currentPlayer.getColor() + " marble placed.");
-                    }
+
                     currentPlayer.removePiecesFromHand();
                     cellPane.setState(currentPlayer.getPlayerColorAsCellState());
                     getCurrentPlayer().increaseBoardPieces();
@@ -60,23 +55,13 @@ public class GameManager {
 
                     if (!currentPlayer.hasPiecesInHand()) {
                         currentPlayer.setGamePhase(Player.Phase.PIECE_MOVEMENT);
-                        if (isTesting) {
-                            testFileDataGenerator.updateLastComment(" Now in piece movement phase.");
-                        }
                     }
                     break;
                 case PIECE_MOVEMENT:
                     if (!currentPlayer.hasPieceToMove()) {
-                        if (isTesting) {
-                            testFileDataGenerator.addComment(currentPlayer.getColor() + " selected marble.");
-                        }
-
                         setCellSelect(cellPane);
                         currentPlayer.setPieceToMove(cellPane);
                         return;
-                    }
-                    if (isTesting) {
-                        testFileDataGenerator.addComment(currentPlayer.getColor() + " moved marble here.");
                     }
                     cellPane.setState(currentPlayer.getPlayerColorAsCellState());
                     addPlacedPieceMoves(cellPane);
@@ -89,15 +74,9 @@ public class GameManager {
                     break;
                 case FLY_RULE:
                     if (!currentPlayer.hasPieceToMove()) {
-                        if (isTesting) {
-                            testFileDataGenerator.addComment(currentPlayer.getColor() + " selected marble (fly rule).");
-                        }
                         setCellSelect(cellPane);
                         currentPlayer.setPieceToMove(cellPane);
                         return;
-                    }
-                    if (isTesting) {
-                        testFileDataGenerator.addComment(currentPlayer.getColor() + " moved marble here (fly rule).");
                     }
                     setCellSelect(null);
 
@@ -110,9 +89,6 @@ public class GameManager {
                     break;
             }
             if(millFormed(cellPane)){
-                if (isTesting) {
-                    testFileDataGenerator.updateLastComment(" Mill formed.");
-                }
                 return;
             }
         }
@@ -125,9 +101,6 @@ public class GameManager {
         }
 
         if (isGameOver) {
-;           if (isTesting) {
-                testFileDataGenerator.updateLastComment(" Causing a game over.");
-            }
             getActivePlayer().setGamePhase(Player.Phase.GAME_OVER);
             setError(getCurrentPlayerColor() + " won!");
             return;
