@@ -19,15 +19,19 @@ public class TestCaseGenerator implements  Iterable<CellPosition> {
     public static TestCaseGenerator createFromFile(String filePath) throws IOException {
         TestCaseGenerator testCaseGenerator = new TestCaseGenerator();
         BufferedInputStream reader = new BufferedInputStream(new FileInputStream(filePath));
+
+        // header is 4 sets of Half-words (2 bytes)
         int headerLength = 8;
         byte[] header = new byte[headerLength];
         reader.read(header, 0, headerLength);
 
         int magicNumber = readTwoBytesAsShort(header,0);
+
         if (magicNumber != TestFileDataGenerator.magicNumber) {
             throw new Error("Invalid magic number");
         }
-        // int version = header[1] << ; // ignore version number for now
+
+        // int version = readTwoBytesAsShort(header, 2); // ignore version number for now
 
         int gridSizeOffset = 2 * 2;
         int gridSize = readTwoBytesAsShort(header, gridSizeOffset);
