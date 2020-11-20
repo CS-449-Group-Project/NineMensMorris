@@ -57,17 +57,18 @@ public class Board {
         return false;
     }
 
-    public boolean doesStateHaveAtleastOneMove(CellState state) {
+    public int getValidMoveCount(CellState state) {
+        int count = 0;
         Vector<CellPane> allPiecePlacements = getAllCellsWithState(state);
         for (CellPane cell : allPiecePlacements) {
             Vector<CellPosition> validAdjacentSpots = getAdjacentSpots(cell.getPosition());
             for(CellPosition pos: validAdjacentSpots) {
                 if(getCell(pos).isEmpty()) {
-                    return true;
+                    count++;
                 }
             }
         }
-        return false;
+        return count;
     }
 
     // Checks whether the current cell click is a valid move given the phase of the game and pieces on the board
@@ -80,18 +81,6 @@ public class Board {
         if (gameManager.isOver()) {
             return false;
         }
-        /*if (currentPlayer.validMovesCounter == 0 && currentPlayer.getGamePhase() != Player.Phase.PIECE_PLACEMENT) {
-            currentPlayer.setGamePhase(Player.Phase.GAME_OVER);
-            System.out.println("Game Over");
-            return false;
-        }
-
-        if (currentPlayer.getBoardPieces() == 2 && currentPlayer.getGamePhase() != Player.Phase.PIECE_PLACEMENT) {
-            currentPlayer.setGamePhase(Player.Phase.GAME_OVER);
-            System.out.println("Game Over");
-            return false;
-        }*/
-
         if(gameManager.isMillFormed()){
             if (cell.matches(opponentCellState)) {
                 if (!gameManager.millFormed(cell)) {

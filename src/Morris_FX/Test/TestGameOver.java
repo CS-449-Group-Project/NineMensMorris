@@ -62,9 +62,6 @@ public class TestGameOver {
         coordinate44.setState(CellState.WHITE);
         coordinate55.setState(CellState.WHITE);
 
-        System.out.println(gameManager.getActivePlayer().getGamePhase());
-        System.out.println(gameManager.getInactivePlayer().getGamePhase());
-
         gameManager.performMove(coordinate66); // black picks up piece
         gameManager.performMove(coordinate06); // black flies to this location to form mill
         gameManager.performMove(coordinate22); // black remove this white piece
@@ -127,9 +124,6 @@ public class TestGameOver {
 
         gameManager.performMove(coordinate32); // white forms mill
         gameManager.performMove(coordinate22); // white removes black's only movable piece
-
-        System.out.println("Black valid moves: " + gameManager.getActivePlayer().validMovesCounter);
-        System.out.println("White valid moves: " + gameManager.getInactivePlayer().validMovesCounter);
 
         assertEquals(Player.Phase.GAME_OVER, gameManager.getActivePlayer().getGamePhase());
     }

@@ -60,18 +60,12 @@ public class TestFlyRule {
         coordinate55.setState(CellState.WHITE);
 
         // hard code board piece population
-        System.out.println("Black pieces on board: " + gameManager.getActivePlayer().getBoardPieces());
-        System.out.println("White pieces on board: " + gameManager.getInactivePlayer().getBoardPieces());
 
         while(gameManager.getActivePlayer().getBoardPieces() < 4)
         {
             gameManager.getActivePlayer().increaseBoardPieces();
             gameManager.getInactivePlayer().increaseBoardPieces();
         }
-
-        System.out.println("Black pieces on board: " + gameManager.getActivePlayer().getBoardPieces());
-        System.out.println("White pieces on board: " + gameManager.getInactivePlayer().getBoardPieces());
-
         gameManager.performMove(coordinate36); // piece to move
         gameManager.performMove(coordinate06); // black forms mill
         gameManager.performMove(coordinate11); // black removes this white piece
