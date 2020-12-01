@@ -1,6 +1,8 @@
 package Morris_FX.Test;
 
 import Morris_FX.Logic.*;
+import Morris_FX.Ui.BoardPane;
+import Morris_FX.Ui.CellPane;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -9,56 +11,51 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestPiecePlacement {
 
     private Board board;
-    private Turn turn;
-    private GameState newGame;
+    private GameManager gameManager;
+    private BoardPane boardPane;
 
     // format of test method names: public void Class_GivenScenario_Expectation()
 
     @BeforeEach
     private void setup() {
-        turn = new Turn(PlayerColor.BLACK);
-        newGame = new GameState(turn);
-        board = new Board(newGame);
+        gameManager = new GameManager();
+        board = new Board(gameManager);
+        boardPane = new BoardPane(board, gameManager);
         board.reset();
     }
 
     @Test
     public void Cell_EmptyCellIsClicked_CellStateIsBlack() {
-        CellPosition position0 = new CellPosition(0, 0);
-        Cell coordinate00 = board.getCell(position0);
+        CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
 
-        board.performMove(position0);
-        assertEquals(CellState.BLACK, coordinate00.getState());
+        gameManager.performMove(coordinate00);
+        assertEquals(CellState.BLACK, coordinate00.getCellState());
     }
 
     @Test
-    public void Cell_EmptyCellIsClickedAfterBlackMarbleIsPlaced_CellStateIsWhite() {
-        CellPosition position0 = new CellPosition(0, 0);
+    public void Cell_EmptyCellIsClickedAfterBlackPieceIsPlaced_CellStateIsWhite() {
+        CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
+        CellPane coordinate11 = board.getCell(new CellPosition(1, 1));
 
-        CellPosition position1 = new CellPosition(1, 1);
-        Cell coordinate11 = board.getCell(position1);
+        gameManager.performMove(coordinate00);
+        gameManager.performMove(coordinate11);
 
-        board.performMove(position0);
-        newGame.switchTurn();
-        board.performMove(position1);
-
-        assertEquals(CellState.WHITE, coordinate11.getState());
+        assertEquals(CellState.WHITE, coordinate11.getCellState());
     }
 
     @Test
-    public void Cell_EmptyCellIsClickedAfterAllMarblesArePlaced_NoPieceIsPlaced() {
-        Player player = newGame.getActivePlayer();
+    public void Cell_EmptyCellIsClickedAfterAllPiecesArePlaced_NoPieceIsPlaced() {
+        Player player = gameManager.getCurrentPlayer();
+        player.setGamePhase(Player.Phase.PIECE_MOVEMENT);
 
-        while (player.hasMarblesInHand())
+        while (player.hasPiecesInHand())
         {
-            player.removeMarblesFromHand();
+            player.removePiecesFromHand();
         }
 
-        CellPosition position0 = new CellPosition(0, 0);
-        Cell coordinate00 = board.getCell(position0);
+        CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
+        gameManager.performMove(coordinate00);
 
-        board.performMove(position0);
-
-        assertEquals(CellState.EMPTY, coordinate00.getState());
+        assertEquals(CellState.EMPTY, coordinate00.getCellState());
     }
 }

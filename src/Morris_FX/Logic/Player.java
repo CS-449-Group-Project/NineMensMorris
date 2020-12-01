@@ -1,44 +1,118 @@
 package Morris_FX.Logic;
 
+import Morris_FX.Ui.CellPane;
+
 public class Player {
-    private static final int MAX_MARBLES = 9;
-    private static final int NO_MARBLES = 0;
-    private int marblesInHand = MAX_MARBLES;
-    private int boardPieces;
-    private final PlayerColor color;
+  private static final int MAX_PIECES = 9;
+  private static final int NO_PIECES = 0;
+  private int piecesInHand = MAX_PIECES;
+  private int boardPieces;
+  private int removedPieces = 0;
+  private final PlayerColor color;
+  public Phase currentPhase = Phase.PIECE_PLACEMENT;
 
-    public Player(PlayerColor color) {
+  public int validMovesCounter = 0;
+  public CellPane pieceToMove; // this is the piece a player has selected from the board during the
+                   // PIECE_MOVEMENT phase that they want to move
 
-        this.color = color;
-        this.reset();
+  public Player(PlayerColor color) {
+
+    this.color = color;
+    this.reset();
+  }
+
+  public int getTotalPieces() {
+    return piecesInHand + boardPieces;
+  }
+
+  public enum Phase {
+    PIECE_PLACEMENT,
+    PIECE_MOVEMENT,
+    FLY_RULE,
+    MILL_FORMED,
+    GAME_OVER;
+    @Override
+    public String toString() {
+      String phaseName;
+      switch(this) {
+        case PIECE_PLACEMENT:
+          phaseName = "Marble Placement";
+          break;
+        case PIECE_MOVEMENT:
+          phaseName = "Marble Move";
+          break;
+        case FLY_RULE:
+          phaseName = "Marble Fly";
+          break;
+        case MILL_FORMED:
+          phaseName = "Mill formed";
+          break;
+        default:
+          phaseName = "End Game";
+          break;
+      }
+      return phaseName;
     }
+  }
 
-    CellState getCellState() {
-        return color == PlayerColor.BLACK ?
-                CellState.BLACK :
-                CellState.WHITE;
-    }
+  public void setGamePhase(Phase phase) {
+    this.currentPhase = phase;
+  }
 
-    PlayerColor getColor() {
-        return color;
-    }
+  public Phase getGamePhase() {
+    return this.currentPhase;
+  }
 
-    public int getMarblesInHand() {
-        return marblesInHand;
-    }
+  public CellState getPlayerColorAsCellState() {
+    return color == PlayerColor.BLACK ? CellState.BLACK : CellState.WHITE;
+  }
 
+  public PlayerColor getColor() {
+    return color;
+  }
 
-    public boolean hasMarblesInHand() {
-        return marblesInHand != NO_MARBLES;
-    }
+  public int getPiecesInHand() {
+    return piecesInHand;
+  }
 
-    public void removeMarblesFromHand() {
-        marblesInHand--;
-    }
+  public boolean hasPiecesInHand() {
+    return piecesInHand > NO_PIECES;
+  }
 
-    public void reset() {
-        marblesInHand = MAX_MARBLES;
-        boardPieces = NO_MARBLES;
-    }
+  public void setPieceToMove(CellPane cell) {
+    pieceToMove = cell;
+  }
 
+  public boolean hasPieceToMove() {
+    return pieceToMove != null;
+  }
+
+  public void removePieceToMove() {
+    pieceToMove = null;
+  }
+
+  public void removePiecesFromHand() {
+    piecesInHand--;
+  }
+
+  public void increaseBoardPieces() {
+    boardPieces++;
+  }
+
+  public void decreaseBoardPieces() {
+    boardPieces--;
+    removedPieces++;
+  }
+
+  public int getBoardPieces() {
+    return boardPieces;
+  }
+
+  public void reset() {
+    piecesInHand = MAX_PIECES;
+    boardPieces = NO_PIECES;
+    this.setGamePhase(Phase.PIECE_PLACEMENT);
+    this.removePieceToMove();
+    removedPieces = 0;
+  }
 }
