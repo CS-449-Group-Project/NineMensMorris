@@ -7,7 +7,6 @@ import Morris_FX.Ui.BoardPane;
 import Utils.TestCaseGenerator;
 import Utils.TestFileDataGenerator;
 
-import Utils.TestFileDataGenerator;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
@@ -247,8 +246,8 @@ public class Morris extends Application {
     public void reset() {
         gameManager.resetGameManager();
         board.reset();
-        gameManager.getCurrentPlayer().reset();
-        gameManager.getInactivePlayer().reset();
+        gameManager.getPlayer().reset();
+        gameManager.getOpponent().reset();
     }
 
 }
