@@ -2,10 +2,11 @@ package Morris_FX.Logic;
 
 import Morris_FX.Ui.CellPane;
 
-public class Player {
+public class Player extends ObservableObject {
   private static final int MAX_PIECES = 9;
   private static final int NO_PIECES = 0;
-  private int piecesInHand = MAX_PIECES;
+
+  protected int piecesInHand;
   private int boardPieces;
   private int removedPieces = 0;
   private final PlayerColor color;
@@ -16,9 +17,8 @@ public class Player {
                    // PIECE_MOVEMENT phase that they want to move
 
   public Player(PlayerColor color) {
-
     this.color = color;
-    this.reset();
+    setPiecesInHand(MAX_PIECES);
   }
 
   public int getTotalPieces() {
@@ -75,6 +75,13 @@ public class Player {
     return piecesInHand;
   }
 
+  public void setPiecesInHand(int pieces) {
+    String propertyName = "piecesInHand";
+
+    propertyChangeSupport.firePropertyChange(propertyName, -1, pieces);
+    piecesInHand = pieces;
+  }
+
   public boolean hasPiecesInHand() {
     return piecesInHand > NO_PIECES;
   }
@@ -92,7 +99,7 @@ public class Player {
   }
 
   public void removePiecesFromHand() {
-    piecesInHand--;
+    setPiecesInHand(piecesInHand - 1);
   }
 
   public void increaseBoardPieces() {
@@ -109,10 +116,9 @@ public class Player {
   }
 
   public void reset() {
-    piecesInHand = MAX_PIECES;
+    setPiecesInHand(MAX_PIECES);
     boardPieces = NO_PIECES;
     this.setGamePhase(Phase.PIECE_PLACEMENT);
     this.removePieceToMove();
-    removedPieces = 0;
   }
 }

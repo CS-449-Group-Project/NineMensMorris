@@ -1,8 +1,10 @@
 package Morris_FX.Logic;
 
 import Morris_FX.Ui.CellPane;
+import Morris_FX.Ui.TurnTextField;
 import Utils.TestFileDataGenerator;
 
+import java.beans.PropertyChangeListener;
 import java.util.Vector;
 
 public class GameManager {
@@ -10,7 +12,7 @@ public class GameManager {
     public Vector<CellPosition> allPlacedPieces = new Vector<>(50);
     public Vector<String> piecePlacementComments = new Vector<>(50);
     // delet this
-    private TurnContext playerContext;
+    private TurnContext turnContext;
     // change from millIsFormed to isMill?
     private boolean millIsFormed = false;
     private boolean isGameOver = false;
@@ -24,8 +26,8 @@ public class GameManager {
     // if they do have a piece to move already then it sets the state of the clicked cell to the player color, sets the
     // previously occupied cell to empty, and set pieceToMove to null in the current player object; "Places pieceToMove in new position"
     public void performMove(CellPane cellPane) {
-        Player currentPlayer = playerContext.getPlayer();
-        Player inactivePlayer = playerContext.getOpponent();
+        Player currentPlayer = turnContext.getPlayer();
+        Player inactivePlayer = turnContext.getOpponent();
 
         boolean isTesting = testFileDataGenerator != null;
         if (isTesting) {
@@ -46,9 +48,7 @@ public class GameManager {
         } else {
             switch (currentPlayer.currentPhase) {
                 case PIECE_PLACEMENT:
-
                     currentPlayer.removePiecesFromHand();
-                    announceMarblesInHandChange();
                     cellPane.setState(currentPlayer.getPlayerColorAsCellState());
                     getPlayer().increaseBoardPieces();
                     addPlacedPieceMoves(cellPane);
@@ -85,7 +85,6 @@ public class GameManager {
                         return;
                     }
                     setCellSelect(null);
-
                     cellPane.setState(currentPlayer.getPlayerColorAsCellState());
                     removeMoves(cellPane);
                     currentPlayer.pieceToMove.setState(CellState.EMPTY);
@@ -112,23 +111,16 @@ public class GameManager {
             setError(getCurrentPlayerColor() + " won!");
             return;
         }
-        playerContext.switchPlayers();
-        switchTurn();
+        turnContext.switchPlayers();
     }
 
     public GameManager() {
         this.currentPlayer = defaultPlayer;
-        setup();
     }
 
     public GameManager(TestFileDataGenerator testFileDataGenerator) {
         this.currentPlayer = defaultPlayer;
         this.testFileDataGenerator = testFileDataGenerator;
-        setup();
-    }
-
-    private void setup() {
-        playerContext = new TurnContext(new Player(PlayerColor.BLACK), new Player(PlayerColor.WHITE));
     }
 
     public PlayerColor getCurrentPlayerColor() {
@@ -136,14 +128,14 @@ public class GameManager {
     }
 
     public Player getPlayer() {
-        return playerContext.getPlayer();
+        return turnContext.getPlayer();
     }
 
     public Player getOpponent() {
-        return playerContext.getOpponent();
+        return turnContext.getOpponent();
     }
 
-    public CellState getOpponentCellState() {return playerContext.getOpponent().getPlayerColorAsCellState();}
+    public CellState getOpponentCellState() {return turnContext.getOpponent().getPlayerColorAsCellState();}
 
     public void resetMill(){
         this.millIsFormed = false;
@@ -202,6 +194,10 @@ public class GameManager {
         return isGameOver;
     }
 
+    public void addTurnContext(TurnContext turnContext) {
+        this.turnContext = turnContext;
+    }
+
     public interface OnPhaseChangeListener {
         void onPhaseChange(Player.Phase phase);
     }
@@ -223,27 +219,6 @@ public class GameManager {
         }
     }
 
-
-    public interface MarblesInHandListener {
-        // void marblesInHandChange(PlayerColor playerColor, int playerMarbles)
-        void marblesInHandChange(int blackMarbles, int whiteMarbles);
-    }
-
-    private MarblesInHandListener marblesInHandListener = null;
-    public void onMarblesInHandChange(MarblesInHandListener listener) {
-        marblesInHandListener = listener;
-        announceMarblesInHandChange();
-    }
-
-    public void announceMarblesInHandChange() {
-        if (marblesInHandListener != null) {
-            // FIXME: should only update when currentPlayer places a piece, currently buggy
-            // TODO: Have separate textboxes for each player marbles in hand
-            int blackMarbles = getPlayer().getPiecesInHand();
-            int whiteMarbles = getOpponent().getPiecesInHand();
-            marblesInHandListener.marblesInHandChange(blackMarbles, whiteMarbles);
-        }
-    }
 
     public interface CellSelectListener {
         void onCellSelect(CellPane cell);
@@ -290,41 +265,15 @@ public class GameManager {
         }
     }
 
-    public interface TurnChangeListener {
-        void onTurnSwitch(PlayerColor color);
-    }
-
-    private TurnChangeListener turnChangeListener = null;
-
-    public void onTurnSwitch(TurnChangeListener turnChangeListener) {
-        this.turnChangeListener = turnChangeListener;
-        // so the new listener instantly gets notified of the current player
-        // turn
-        turnChanged();
-    }
-
-    private void turnChanged() {
-        if (turnChangeListener != null) {
-            turnChangeListener.onTurnSwitch(getCurrentPlayerColor());
-        }
-    }
-
-    public void switchTurn() {
-        currentPlayer = currentPlayer.complement();
-        turnChanged();
-        announcePhaseChange();
-    }
-
 
     public void resetGameManager() {
         currentPlayer = defaultPlayer;
-        playerContext.getPlayer().reset();
-        playerContext.getOpponent().reset();
-        announceMarblesInHandChange();
+        turnContext.reset();
+        turnContext.getPlayer().reset();
+        turnContext.getOpponent().reset();
         millIsFormed = false;
         isGameOver = false;
         setError("");
-        turnChanged();
         announcePhaseChange();
         allPlacedPieces.clear();
         if (testFileDataGenerator != null) {
