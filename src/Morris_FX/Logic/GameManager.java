@@ -12,7 +12,9 @@ public class GameManager {
     private TestFileDataGenerator testFileDataGenerator;
     public Vector<CellPosition> allPlacedPieces = new Vector<>(50);
     public Vector<String> piecePlacementComments = new Vector<>(50);
+    // delet this
     private Map<PlayerColor,Player> player;
+    // change from millIsFormed to isMill?
     private boolean millIsFormed = false;
     private boolean isGameOver = false;
     private PlayerColor defaultPlayer = PlayerColor.BLACK;
@@ -161,6 +163,7 @@ public class GameManager {
         announcePhaseChange();
     }
 
+    // change from isMillFormed to millIsFormed()?
     public boolean isMillFormed() {
         return this.millIsFormed;
     }

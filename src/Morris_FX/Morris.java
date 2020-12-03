@@ -43,6 +43,7 @@ public class Morris extends Application {
     private TextField playerMarblesInHand = new TextField();
     private TestFileDataGenerator testFileData;
     private boolean isDebug;
+
     public Morris(){
         // requires intellij to be running in debug mode
         isDebug = java.lang.management.ManagementFactory.
