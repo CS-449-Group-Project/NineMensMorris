@@ -77,8 +77,7 @@ public class Player extends ObservableObject {
 
   public void setPiecesInHand(int pieces) {
     String propertyName = "piecesInHand";
-
-    propertyChangeSupport.firePropertyChange(propertyName, -1, pieces);
+    firePropertyChange(propertyName, pieces);
     piecesInHand = pieces;
   }
 
