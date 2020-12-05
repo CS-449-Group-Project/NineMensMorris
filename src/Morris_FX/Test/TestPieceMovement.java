@@ -15,7 +15,7 @@ public class TestPieceMovement {
 
     @BeforeEach
     private void setup() {
-        gameManager = new GameManager();
+        gameManager = GameManager.create();
         board = new Board(gameManager);
         player = gameManager.getPlayer();
 

@@ -19,6 +19,13 @@ public class GameManager {
     private PlayerColor defaultPlayer = PlayerColor.BLACK;
     private PlayerColor currentPlayer;
 
+    public static GameManager create() {
+        GameManager gameManager = new GameManager();
+        TurnContext context = new TurnContext(new Player(PlayerColor.BLACK), new Player(PlayerColor.WHITE));
+        gameManager.addTurnContext(context);
+        return gameManager;
+    }
+
     // for PIECE_PLACEMENT phase this method sets the state of the clicked cell equal to the player color; "Places current
     // player piece on the board"
     // for PIECE_MOVEMENT phase this method sets the pieceToMove variable of the current player to the clicked cell if they
@@ -124,7 +131,7 @@ public class GameManager {
     }
 
     public PlayerColor getCurrentPlayerColor() {
-        return this.currentPlayer;
+        return getPlayer().getColor();
     }
 
     public Player getPlayer() {
