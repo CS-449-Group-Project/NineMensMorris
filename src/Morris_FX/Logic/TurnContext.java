@@ -15,8 +15,7 @@ public class TurnContext extends ObservableObject {
     private void setPlayerOpponent(Player player, Player opponent) {
         this.player = player;
         this.opponent = opponent;
-        String propertyName = "player";
-        firePropertyChange(propertyName, player);
+        firePropertyChange("player", player);
     }
 
     public void switchPlayers() {
