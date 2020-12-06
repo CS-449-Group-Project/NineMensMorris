@@ -76,7 +76,7 @@ public class Board {
         gameManager.setError("");
         Player currentPlayer = gameManager.getCurrentPlayer();
         CellState currentPlayerCellState = currentPlayer.getPlayerColorAsCellState();
-        CellState opponentCellState = gameManager.getOpponentCellState(); // this function needs to be created
+        CellState opponentCellState = gameManager.getOpponentCellState();
 
         if (gameManager.isOver()) {
             return false;
