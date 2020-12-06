@@ -17,6 +17,22 @@ public class GameManager {
     private boolean isGameOver = false;
     private PlayerColor defaultPlayer = PlayerColor.BLACK;
     private PlayerColor currentPlayer;
+    public EnumMap<phaseEnum, Phase> phaseMap;
+
+    public enum phaseEnum {
+        PIECE_PLACEMENT,
+        PIECE_MOVEMENT,
+        FLY_RULE,
+        MILL_FORMED,
+        GAME_OVER
+    }
+
+
+
+    public GameManager() {
+        this.currentPlayer = defaultPlayer;
+        setup();
+    }
 
     // for PIECE_PLACEMENT phase this method sets the state of the clicked cell equal to the player color; "Places current
     // player piece on the board"
@@ -65,19 +81,11 @@ public class GameManager {
                     }
                     break;
                 case PIECE_MOVEMENT:
-                    if (!currentPlayer.hasPieceToMove()) {
-                        setCellSelect(cellPane);
-                        currentPlayer.setPieceToMove(cellPane);
+                    PieceMovementPhase pieceMovementPhase = (PieceMovementPhase) phaseMap.get(GameManager.phaseEnum.PIECE_MOVEMENT);
+                    pieceMovementPhase.performMove(cellPane, currentPlayer);
+                    if (currentPlayer.hasPieceToMove()) {
                         return;
                     }
-                    cellPane.setState(currentPlayer.getPlayerColorAsCellState());
-                    addPlacedPieceMoves(cellPane);
-                    removeMoves(cellPane);
-                    currentPlayer.pieceToMove.setState(CellState.EMPTY);
-                    addMoves(currentPlayer.pieceToMove);
-                    removePieceMoves(currentPlayer.pieceToMove);
-                    currentPlayer.removePieceToMove();
-                    setCellSelect(null);
                     break;
                 case FLY_RULE:
                     if (!currentPlayer.hasPieceToMove()) {
@@ -116,10 +124,7 @@ public class GameManager {
         switchTurn();
     }
 
-    public GameManager() {
-        this.currentPlayer = defaultPlayer;
-        setup();
-    }
+
 
     public GameManager(TestFileDataGenerator testFileDataGenerator) {
         this.currentPlayer = defaultPlayer;
@@ -132,6 +137,8 @@ public class GameManager {
         for (PlayerColor playerColor : PlayerColor.values()) {
             player.put(playerColor, new Player(playerColor));
         }
+        phaseMap = new EnumMap<phaseEnum, Phase>(phaseEnum.class);
+        phaseMap.put(phaseEnum.PIECE_MOVEMENT, new PieceMovementPhase(this));
     }
 
     public PlayerColor getCurrentPlayerColor() {
