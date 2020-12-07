@@ -47,6 +47,11 @@ public class Board {
         return cellsWithState;
     }
 
+    /*public void setInvalidCellType(InvalidCellType invalidCellType)
+    {
+        this.invalidCellType = invalidCellType;
+    }*/
+
     public boolean doesStateHaveNonMillPiece(CellState state) {
         Vector<CellPane> allPiecePlacements = getAllCellsWithState(state);
         for (CellPane cell : allPiecePlacements) {
@@ -99,7 +104,7 @@ public class Board {
 
         switch (currentPlayer.currentPhase) {
             case PIECE_PLACEMENT: {
-                if (cell.isOccupied()) {
+                /*if (cell.isOccupied()) {
                     invalidCellType = InvalidCellType.OCCUPIED;
                     if (cell.matches(currentPlayerCellState)) {
                         invalidCellType = InvalidCellType.OWNED;
@@ -107,6 +112,12 @@ public class Board {
                     gameManager.setError("Select empty space.");
                 } else {
                     invalidCellType = InvalidCellType.NONE;
+                    return true;
+                }
+                break;*/
+
+                PiecePlacementPhase piecePlacementPhase = (PiecePlacementPhase) gameManager.phaseMap.get(GameManager.phaseEnum.PIECE_PLACEMENT);
+                if (piecePlacementPhase.validateCellSelection(cell, currentPlayer, currentPlayerCellState, opponentCellState)) {
                     return true;
                 }
                 break;

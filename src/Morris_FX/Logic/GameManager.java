@@ -64,7 +64,7 @@ public class GameManager {
             switch (currentPlayer.currentPhase) {
                 case PIECE_PLACEMENT:
 
-                    currentPlayer.removePiecesFromHand();
+                    /*currentPlayer.removePiecesFromHand();
                     announceMarblesInHandChange();
                     cellPane.setState(currentPlayer.getPlayerColorAsCellState());
                     getCurrentPlayer().increaseBoardPieces();
@@ -78,7 +78,11 @@ public class GameManager {
                             currentPlayer.setGamePhase(Player.Phase.PIECE_MOVEMENT);
                         }
 
-                    }
+                    }*/
+
+                    PiecePlacementPhase piecePlacementPhase = (PiecePlacementPhase) phaseMap.get(GameManager.phaseEnum.PIECE_MOVEMENT);
+                    piecePlacementPhase.performMove(cellPane, currentPlayer);
+
                     break;
                 case PIECE_MOVEMENT:
                     PieceMovementPhase pieceMovementPhase = (PieceMovementPhase) phaseMap.get(GameManager.phaseEnum.PIECE_MOVEMENT);
