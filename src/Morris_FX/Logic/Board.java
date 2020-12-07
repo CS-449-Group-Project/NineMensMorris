@@ -10,7 +10,6 @@ public class Board {
     public static final int GRID_SIZE = 7;
 
     private final CellPane[][] grid;
-    private InvalidCellType invalidCellType;
     private final GameManager gameManager;
     private boolean enableToolTip = false;
 
@@ -97,7 +96,6 @@ public class Board {
                 gameManager.setError(cell.getPosition() + " is in a mill.");
             } else {
                 gameManager.setError("Select a " + opponentCellState + " marble.");
-                invalidCellType = InvalidCellType.EMPTY;
             }
             return false;
         }
@@ -236,10 +234,6 @@ public class Board {
             }
         }
         return rowMoves;
-    }
-
-    public InvalidCellType getInvalidCellType() {
-        return invalidCellType;
     }
 
     // I copied this from my NMM implementation with some modifications
