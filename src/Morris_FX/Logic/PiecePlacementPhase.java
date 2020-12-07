@@ -12,16 +12,10 @@ public class PiecePlacementPhase extends Phase implements IPhase {
 
     public boolean validateCellSelection(CellPane cell, Player currentPlayer, CellState currentPlayerCellState, CellState opponentCellState) {
         if (cell.isOccupied()) {
-            /*invalidCellType = InvalidCellType.OCCUPIED;
-            if (cell.matches(currentPlayerCellState)) {
-                invalidCellType = InvalidCellType.OWNED;
-            }*/
             gameManager.setError("Select empty space.");
-        } else {
-            // invalidCellType = InvalidCellType.NONE;
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     public void performMove(CellPane cellPane, Player currentPlayer) {

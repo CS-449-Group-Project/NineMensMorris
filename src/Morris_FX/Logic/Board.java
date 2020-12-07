@@ -104,18 +104,6 @@ public class Board {
 
         switch (currentPlayer.currentPhase) {
             case PIECE_PLACEMENT: {
-                /*if (cell.isOccupied()) {
-                    invalidCellType = InvalidCellType.OCCUPIED;
-                    if (cell.matches(currentPlayerCellState)) {
-                        invalidCellType = InvalidCellType.OWNED;
-                    }
-                    gameManager.setError("Select empty space.");
-                } else {
-                    invalidCellType = InvalidCellType.NONE;
-                    return true;
-                }
-                break;*/
-
                 PiecePlacementPhase piecePlacementPhase = (PiecePlacementPhase) gameManager.phaseMap.get(GameManager.phaseEnum.PIECE_PLACEMENT);
                 if (piecePlacementPhase.validateCellSelection(cell, currentPlayer, currentPlayerCellState, opponentCellState)) {
                     return true;
