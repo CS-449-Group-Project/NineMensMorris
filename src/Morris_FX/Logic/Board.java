@@ -95,7 +95,7 @@ public class Board {
                 }
                 gameManager.setError(cell.getPosition() + " is in a mill.");
             } else {
-                gameManager.setError("Select a " + opponentCellState + " marble.");
+                gameManager.setError("Select a " + opponentCellState + " piece.");
             }
             return false;
         }
@@ -115,22 +115,31 @@ public class Board {
                 }
                 break;
             }
-            case FLY_RULE: {
-                if (!currentPlayer.hasPieceToMove()) {
-                    if (cell.isEmpty()) {
-                        gameManager.setError(String.format("Select a %s marble.", currentPlayer.getColor()));
-                    } else if (cell.cellState.equals(currentPlayerCellState)) {
-                        return true;
-                    }
-                } else if (cell.isEmpty()) {
+
+            case FLY_RULE: { // test for fly rule case
+
+                FlyRulePhase flyRulePhase= (FlyRulePhase) gameManager.phaseMap.get(GameManager.phaseEnum.FLY_RULE);
+                if (flyRulePhase.validateCellSelection(cell, currentPlayer, currentPlayerCellState, opponentCellState)) {
                     return true;
                 }
-                gameManager.setError("Select an EMPTY spot.");
                 break;
+
             }
-            default:
-                gameManager.setError(currentPlayer.currentPhase + " is not a valid phase.");
-                break;
+//                if (!currentPlayer.hasPieceToMove()) {
+//                    if (cell.isEmpty()) {
+//                        gameManager.setError(String.format("Select a %s marble.", currentPlayer.getColor()));
+//                    } else if (cell.cellState.equals(currentPlayerCellState)) {
+//                        return true;
+//                    }
+//                } else if (cell.isEmpty()) {
+//                    return true;
+//                }
+//                gameManager.setError("Select an EMPTY spot.");
+//                break;
+//            }
+//            default:
+//                gameManager.setError(currentPlayer.currentPhase + " is not a valid phase.");
+//                break;
         }
         return false;
     }

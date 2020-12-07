@@ -12,14 +12,14 @@ public class PieceMovementPhase extends Phase implements IPhase {
 
         if (!currentPlayer.hasPieceToMove()) {
             if (cell.isEmpty()) {
-                gameManager.setError("Select a " + currentPlayerCellState + " marble.");
+                gameManager.setError("Select a " + currentPlayerCellState + " piece.");
             } else if (cell.canPickup(currentPlayer)) {
                 return true;
             } else if (cell.matches(currentPlayerCellState)) {
-                String errorMessage = "Marble at " + cell.getPosition() + " is stuck";
+                String errorMessage = "Piece at " + cell.getPosition() + " is stuck";
                 gameManager.setError(errorMessage);
             } else {
-                gameManager.setError("Select a " + currentPlayerCellState + " marble.");
+                gameManager.setError("Select a " + currentPlayerCellState + " piece.");
             }
         } else if (cell.isEmpty() && currentPlayer.pieceToMove.adjacentCells.contains(cell)) {
             // the second condition here checks the list of moves list which is populated by the linkCells method

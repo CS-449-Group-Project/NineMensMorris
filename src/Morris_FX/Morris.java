@@ -7,7 +7,6 @@ import Morris_FX.Ui.BoardPane;
 import Utils.TestCaseGenerator;
 import Utils.TestFileDataGenerator;
 
-import Utils.TestFileDataGenerator;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
@@ -76,7 +75,7 @@ public class Morris extends Application {
             errorMessage.setText(errorMsg);
         });
 
-        gameManager.onMarblesInHandChange((blackMarbles, whiteMarbles) -> {
+        gameManager.onPiecesInHandChange((blackMarbles, whiteMarbles) -> {
             playerMarblesInHand.setText(String.format("BLACK marbles: %d, WHITE marbles: %d", blackMarbles, whiteMarbles));
         });
 
