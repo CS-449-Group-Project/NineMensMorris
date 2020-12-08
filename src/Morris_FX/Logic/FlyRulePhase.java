@@ -37,8 +37,6 @@ public class FlyRulePhase extends Phase implements IPhase {
             return;
         }
 
-
-
         cellPane.setState(currentPlayer.getPlayerColorAsCellState());
         gameManager.removeMoves(cellPane);
         currentPlayer.pieceToMove.setState(CellState.EMPTY);

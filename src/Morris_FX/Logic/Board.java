@@ -137,9 +137,9 @@ public class Board {
 //                gameManager.setError("Select an EMPTY spot.");
 //                break;
 //            }
-//            default:
-//                gameManager.setError(currentPlayer.currentPhase + " is not a valid phase.");
-//                break;
+            default:
+              gameManager.setError(currentPlayer.currentPhase + " is not a valid phase.");
+              break;
         }
         return false;
     }
