@@ -17,7 +17,7 @@ public class GameManager {
     private boolean isGameOver = false;
     private PlayerColor defaultPlayer = PlayerColor.BLACK;
     private PlayerColor currentPlayer;
-    public EnumMap<phaseEnum, Phase> phaseMap;
+    public EnumMap<phaseEnum, IPhase> phaseMap;
 
     public enum phaseEnum {
         PIECE_PLACEMENT,
@@ -123,7 +123,7 @@ public class GameManager {
         for (PlayerColor playerColor : PlayerColor.values()) {
             player.put(playerColor, new Player(playerColor));
         }
-        phaseMap = new EnumMap<phaseEnum, Phase>(phaseEnum.class);
+        phaseMap = new EnumMap<phaseEnum, IPhase>(phaseEnum.class);
         phaseMap.put(phaseEnum.PIECE_PLACEMENT, new PiecePlacementPhase(this));
         phaseMap.put(phaseEnum.PIECE_MOVEMENT, new PieceMovementPhase(this));
     }
