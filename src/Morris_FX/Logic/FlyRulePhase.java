@@ -6,7 +6,7 @@ import Morris_FX.Ui.CellPane;
 //testing FlyRulePhase
 
 
-public class FlyRulePhase extends Phase implements IPhase {
+public class FlyRulePhase implements IPhase {
     GameManager gameManager;
 
     FlyRulePhase(GameManager gameManager) {

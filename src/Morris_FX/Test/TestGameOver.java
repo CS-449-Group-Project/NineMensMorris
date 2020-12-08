@@ -28,7 +28,7 @@ public class TestGameOver {
 
     @Test
     public void GameManager_GivenPlayerReachesTwoPiecesOnBoard_GameIsOver() {
-        // game over can only happen when no marbles are in hand
+        // game over can only happen when no pieces are in hand
         while (gameManager.getActivePlayer().hasPiecesInHand()) {
             gameManager.getActivePlayer().removePiecesFromHand();
             gameManager.getInactivePlayer().removePiecesFromHand();

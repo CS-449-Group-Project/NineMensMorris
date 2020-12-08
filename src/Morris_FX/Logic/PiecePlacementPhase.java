@@ -2,7 +2,7 @@ package Morris_FX.Logic;
 
 import Morris_FX.Ui.CellPane;
 
-public class PiecePlacementPhase extends Phase implements IPhase {
+public class PiecePlacementPhase implements IPhase {
     GameManager gameManager;
 
     PiecePlacementPhase(GameManager gameManager)

@@ -39,10 +39,10 @@ public class Player {
           phaseName = "Piece Placement";
           break;
         case PIECE_MOVEMENT:
-          phaseName = "Piece Move";
+          phaseName = "Piece Movement";
           break;
         case FLY_RULE:
-          phaseName = "Piece Fly";
+          phaseName = "Piece Can Fly";
           break;
         case MILL_FORMED:
           phaseName = "Mill formed";

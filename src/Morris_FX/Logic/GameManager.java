@@ -16,7 +16,7 @@ public class GameManager {
     private boolean isGameOver = false;
     private PlayerColor defaultPlayer = PlayerColor.BLACK;
     private PlayerColor currentPlayer;
-    public EnumMap<phaseEnum, Phase> phaseMap;
+    public EnumMap<phaseEnum, IPhase> phaseMap;
 
     public enum phaseEnum {
         PIECE_PLACEMENT,
@@ -33,12 +33,7 @@ public class GameManager {
         setup();
     }
 
-    // for PIECE_PLACEMENT phase this method sets the state of the clicked cell equal to the player color; "Places current
-    // player piece on the board"
-    // for PIECE_MOVEMENT phase this method sets the pieceToMove variable of the current player to the clicked cell if they
-    // dont have one to move already; "Selects a piece"
-    // if they do have a piece to move already then it sets the state of the clicked cell to the player color, sets the
-    // previously occupied cell to empty, and set pieceToMove to null in the current player object; "Places pieceToMove in new position"
+
     public void performMove(CellPane cellPane) {
         Player currentPlayer = getCurrentPlayer();
         Player inactivePlayer = getInactivePlayer();
@@ -80,20 +75,7 @@ public class GameManager {
                         return;
                     }
                     break;
-//                    if (!currentPlayer.hasPieceToMove()) {
-//                        setCellSelect(cellPane);
-//                        currentPlayer.setPieceToMove(cellPane);
-//                        return;
-//                    }
-//                    setCellSelect(null);
-//
-//                    cellPane.setState(currentPlayer.getPlayerColorAsCellState());
-//                    removeMoves(cellPane);
-//                    currentPlayer.pieceToMove.setState(CellState.EMPTY);
-//                    addMoves(currentPlayer.pieceToMove);
-//                    removePieceMoves(currentPlayer.pieceToMove);
-//                    currentPlayer.removePieceToMove();
-//                    break;
+
             }
             if(millFormed(cellPane)){
                 return;
@@ -129,7 +111,7 @@ public class GameManager {
         for (PlayerColor playerColor : PlayerColor.values()) {
             player.put(playerColor, new Player(playerColor));
         }
-        phaseMap = new EnumMap<phaseEnum, Phase>(phaseEnum.class);
+        phaseMap = new EnumMap<phaseEnum, IPhase>(phaseEnum.class);
         phaseMap.put(phaseEnum.PIECE_PLACEMENT, new PiecePlacementPhase(this));
         phaseMap.put(phaseEnum.PIECE_MOVEMENT, new PieceMovementPhase(this));
         //test fly
