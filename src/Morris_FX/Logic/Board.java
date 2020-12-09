@@ -47,7 +47,6 @@ public class Board {
         return cellsWithState;
     }
 
-
     public boolean doesStateHaveNonMillPiece(CellState state) {
         Vector<CellPane> allPiecePlacements = getAllCellsWithState(state);
         for (CellPane cell : allPiecePlacements) {
@@ -222,7 +221,6 @@ public class Board {
         }
         return rowMoves;
     }
-
 
     public Vector<CellPosition> getAdjacentSpots(CellPosition from) {
         int x = from.getColumn(),y=from.getRow();

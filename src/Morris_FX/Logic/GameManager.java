@@ -33,7 +33,6 @@ public class GameManager {
         setup();
     }
 
-
     public void performMove(CellPane cellPane) {
         Player currentPlayer = getCurrentPlayer();
         Player inactivePlayer = getInactivePlayer();
@@ -114,7 +113,6 @@ public class GameManager {
         phaseMap = new EnumMap<phaseEnum, IPhase>(phaseEnum.class);
         phaseMap.put(phaseEnum.PIECE_PLACEMENT, new PiecePlacementPhase(this));
         phaseMap.put(phaseEnum.PIECE_MOVEMENT, new PieceMovementPhase(this));
-        //test fly
         phaseMap.put(phaseEnum.FLY_RULE, new FlyRulePhase(this));
     }
 
