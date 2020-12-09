@@ -28,17 +28,17 @@ public class TestGameOver {
 
     @Test
     public void GameManager_GivenPlayerReachesTwoPiecesOnBoard_GameIsOver() {
-        // game over can only happen when no pieces are in hand
-        while (gameManager.getActivePlayer().hasPiecesInHand()) {
-            gameManager.getActivePlayer().removePiecesFromHand();
-            gameManager.getInactivePlayer().removePiecesFromHand();
+        // game over can only happen when no marbles are in hand
+        while (gameManager.getPlayer().hasPiecesInHand()) {
+            gameManager.getPlayer().removePiecesFromHand();
+            gameManager.getOpponent().removePiecesFromHand();
         }
-        gameManager.getActivePlayer().setGamePhase(Player.Phase.PIECE_MOVEMENT);
-        gameManager.getInactivePlayer().setGamePhase(Player.Phase.PIECE_MOVEMENT);
+        gameManager.getPlayer().setGamePhase(Player.Phase.PIECE_MOVEMENT);
+        gameManager.getOpponent().setGamePhase(Player.Phase.PIECE_MOVEMENT);
 
         for(int i = 0; i < 3;i++) {
-            gameManager.getActivePlayer().increaseBoardPieces();
-            gameManager.getInactivePlayer().increaseBoardPieces();
+            gameManager.getPlayer().increaseBoardPieces();
+            gameManager.getOpponent().increaseBoardPieces();
         }
 
         // black cells
@@ -66,7 +66,7 @@ public class TestGameOver {
         gameManager.performMove(coordinate06); // black flies to this location to form mill
         gameManager.performMove(coordinate22); // black remove this white piece
 
-        assertEquals(Player.Phase.GAME_OVER, gameManager.getActivePlayer().getGamePhase());
+        assertEquals(Player.Phase.GAME_OVER, gameManager.getPlayer().getGamePhase());
     }
 
     @Test
@@ -125,7 +125,7 @@ public class TestGameOver {
         gameManager.performMove(coordinate32); // white forms mill
         gameManager.performMove(coordinate22); // white removes black's only movable piece
 
-        assertEquals(Player.Phase.GAME_OVER, gameManager.getActivePlayer().getGamePhase());
+        assertEquals(Player.Phase.GAME_OVER, gameManager.getPlayer().getGamePhase());
     }
 
 

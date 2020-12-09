@@ -45,7 +45,7 @@ public class TestPiecePlacement {
 
     @Test
     public void Cell_EmptyCellIsClickedAfterAllPiecesArePlaced_NoPieceIsPlaced() {
-        Player player = gameManager.getCurrentPlayer();
+        Player player = gameManager.getPlayer();
         player.setGamePhase(Player.Phase.PIECE_MOVEMENT);
 
         while (player.hasPiecesInHand())

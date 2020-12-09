@@ -42,6 +42,7 @@ public class Morris extends Application {
     private TextField playerPiecesInHand = new TextField();
     private TestFileDataGenerator testFileData;
     private boolean isDebug;
+
     public Morris(){
         // requires intellij to be running in debug mode
         isDebug = java.lang.management.ManagementFactory.
@@ -245,8 +246,8 @@ public class Morris extends Application {
     public void reset() {
         gameManager.resetGameManager();
         board.reset();
-        gameManager.getCurrentPlayer().reset();
-        gameManager.getInactivePlayer().reset();
+        gameManager.getPlayer().reset();
+        gameManager.getOpponent().reset();
     }
 
 }

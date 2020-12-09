@@ -9,10 +9,10 @@ import java.util.Vector;
 public class Board {
     public static final int GRID_SIZE = 7;
 
-    private final CellPane[][] grid;
+    private final CellPane[][] grid;		
     private final GameManager gameManager;
     private boolean enableToolTip = false;
-    //is this redundant? Just want to clarify initialization?
+	
 
     public Board(GameManager gameManager, boolean enableToolTip) {
         this.gameManager = gameManager;
@@ -74,7 +74,7 @@ public class Board {
     // Checks whether the current cell click is a valid move given the phase of the game and pieces on the board
     public boolean validateCellSelection(CellPane cell) {
         gameManager.setError("");
-        Player currentPlayer = gameManager.getCurrentPlayer();
+        Player currentPlayer = gameManager.getPlayer();
         CellState currentPlayerCellState = currentPlayer.getPlayerColorAsCellState();
         CellState opponentCellState = gameManager.getOpponentCellState();
 
@@ -92,10 +92,12 @@ public class Board {
                 gameManager.setError(cell.getPosition() + " is in a mill.");
             } else {
                 gameManager.setError("Select a " + opponentCellState + " piece.");
+														
             }
             return false;
         }
 
+ 
         switch (currentPlayer.currentPhase) {
             case PIECE_PLACEMENT: {
                 PiecePlacementPhase piecePlacementPhase = (PiecePlacementPhase) gameManager.phaseMap.get(GameManager.phaseEnum.PIECE_PLACEMENT);
@@ -109,6 +111,7 @@ public class Board {
                 if (pieceMovementPhase.validateCellSelection(cell, currentPlayer, currentPlayerCellState, opponentCellState)) {
                     return true;
                 }
+                gameManager.setError("Select an EMPTY adjacent space.");																		
                 break;
             }
 
@@ -118,6 +121,7 @@ public class Board {
                 if (flyRulePhase.validateCellSelection(cell, currentPlayer, currentPlayerCellState, opponentCellState)) {
                     return true;
                 }
+                gameManager.setError("Select an EMPTY spot.");						  
                 break;
 
             }
@@ -159,6 +163,7 @@ public class Board {
                     cellPane = new CellPane(pos);
                 }
 
+											  
                 grid[i][j] = cellPane;
             }
         }
@@ -198,7 +203,6 @@ public class Board {
         } else if (y == midpoint) {
             return true;
         }
-
         return x == y || (x + y == max);
     }
 
@@ -228,7 +232,6 @@ public class Board {
         int midpoint = GRID_SIZE/2;
         int max = midpoint * 2;
         Vector<CellPosition> validMoves = new Vector<>(4);
-
 
         if (x == midpoint) {
 
@@ -270,7 +273,6 @@ public class Board {
             }
 
             int offsetX = x < midpoint ? 0 : (midpoint + 1);
-
 
             int refX = x < midpoint ? x : x - (midpoint + 1);
 

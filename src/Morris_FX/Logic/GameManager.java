@@ -5,13 +5,16 @@ import Utils.TestFileDataGenerator;
 
 import java.util.EnumMap;
 import java.util.Map;
+
 import java.util.Vector;
 
 public class GameManager {
     private TestFileDataGenerator testFileDataGenerator;
     public Vector<CellPosition> allPlacedPieces = new Vector<>(50);
     public Vector<String> piecePlacementComments = new Vector<>(50);
-    private Map<PlayerColor,Player> player;
+    // delet this
+    private TurnContext playerContext;
+    // change from millIsFormed to isMill?
     private boolean millIsFormed = false;
     private boolean isGameOver = false;
     private PlayerColor defaultPlayer = PlayerColor.BLACK;
@@ -34,8 +37,8 @@ public class GameManager {
     }
 
     public void performMove(CellPane cellPane) {
-        Player currentPlayer = getCurrentPlayer();
-        Player inactivePlayer = getInactivePlayer();
+        Player currentPlayer = playerContext.getPlayer();
+        Player inactivePlayer = playerContext.getOpponent();
 
         boolean isTesting = testFileDataGenerator != null;
         if (isTesting) {
@@ -90,10 +93,11 @@ public class GameManager {
 
 
         if (isGameOver) {
-            getActivePlayer().setGamePhase(Player.Phase.GAME_OVER);
+            getPlayer().setGamePhase(Player.Phase.GAME_OVER);
             setError(getCurrentPlayerColor() + " won!");
             return;
         }
+        playerContext.switchPlayers();
         switchTurn();
     }
 
@@ -114,25 +118,22 @@ public class GameManager {
         phaseMap.put(phaseEnum.PIECE_PLACEMENT, new PiecePlacementPhase(this));
         phaseMap.put(phaseEnum.PIECE_MOVEMENT, new PieceMovementPhase(this));
         phaseMap.put(phaseEnum.FLY_RULE, new FlyRulePhase(this));
+        playerContext = new TurnContext(new Player(PlayerColor.BLACK), new Player(PlayerColor.WHITE));
     }
 
     public PlayerColor getCurrentPlayerColor() {
         return this.currentPlayer;
     }
 
-    public Player getCurrentPlayer() {
-        return player.get(this.currentPlayer);
+    public Player getPlayer() {
+        return playerContext.getPlayer();
     }
 
-    public Player getInactivePlayer() {
-        return player.get(this.currentPlayer.complement());
+    public Player getOpponent() {
+        return playerContext.getOpponent();
     }
 
-    public Player getActivePlayer() {
-        return player.get(this.currentPlayer);
-    }
-
-    public CellState getOpponentCellState() {return player.get(this.currentPlayer.complement()).getPlayerColorAsCellState();}
+    public CellState getOpponentCellState() {return playerContext.getOpponent().getPlayerColorAsCellState();}
 
     public void resetMill(){
         this.millIsFormed = false;
@@ -143,6 +144,7 @@ public class GameManager {
         announcePhaseChange();
     }
 
+    // change from isMillFormed to millIsFormed()?
     public boolean isMillFormed() {
         return this.millIsFormed;
     }
@@ -205,12 +207,11 @@ public class GameManager {
             if (isMillFormed()) {
                 phaseListener.onPhaseChange(Player.Phase.MILL_FORMED);
             } else {
-                phaseListener.onPhaseChange(getCurrentPlayer().getGamePhase());
+                phaseListener.onPhaseChange(getPlayer().getGamePhase());
             }
 
         }
     }
-
 
     public interface PiecesInHandListener {
         void piecesInHandChange(int blackPieces, int whitePieces);
@@ -303,10 +304,11 @@ public class GameManager {
 
     public void resetGameManager() {
         currentPlayer = defaultPlayer;
-        for (Player aPlayer: player.values()) {
-            aPlayer.reset();
-        }
+      
+        playerContext.getPlayer().reset();
+        playerContext.getOpponent().reset();
         announcePiecesInHandChange();
+
         millIsFormed = false;
         isGameOver = false;
         setError("");
@@ -320,24 +322,24 @@ public class GameManager {
 
     public void addPlacedPieceMoves(CellPane cell){
         if (cell.up != null && cell.up.cellState == CellState.EMPTY){
-            getActivePlayer().validMovesCounter++;
+            getPlayer().validMovesCounter++;
         }
         if (cell.down != null && cell.down.cellState == CellState.EMPTY){
-            getActivePlayer().validMovesCounter++;
+            getPlayer().validMovesCounter++;
         }
         if (cell.left != null && cell.left.cellState == CellState.EMPTY){
-            getActivePlayer().validMovesCounter++;
+            getPlayer().validMovesCounter++;
         }
         if (cell.right != null && cell.right.cellState == CellState.EMPTY){
-            getActivePlayer().validMovesCounter++;
+            getPlayer().validMovesCounter++;
         }
 
     }
 
     public void removePieceMoves(CellPane cell){
-        Player playersPieces = getActivePlayer();
-        if(cell.cellState == getInactivePlayer().getPlayerColorAsCellState()) {
-            playersPieces = getInactivePlayer();
+        Player playersPieces = getPlayer();
+        if(cell.cellState == getOpponent().getPlayerColorAsCellState()) {
+            playersPieces = getOpponent();
         }
 
         if (cell.up != null && cell.up.cellState == CellState.EMPTY){
@@ -357,57 +359,57 @@ public class GameManager {
 
     //add moves for the surrounding piece when a piece is PICKED UP
     public void addMoves(CellPane cell){
-        if (cell.up!= null && cell.up.cellState == getActivePlayer().getPlayerColorAsCellState()){
-            getActivePlayer().validMovesCounter++;
+        if (cell.up!= null && cell.up.cellState == getPlayer().getPlayerColorAsCellState()){
+            getPlayer().validMovesCounter++;
         }
-        if (cell.up != null && cell.up.cellState == getInactivePlayer().getPlayerColorAsCellState()){
-            getInactivePlayer().validMovesCounter++;
+        if (cell.up != null && cell.up.cellState == getOpponent().getPlayerColorAsCellState()){
+            getOpponent().validMovesCounter++;
         }
-        if (cell.down != null && cell.down.cellState == getActivePlayer().getPlayerColorAsCellState()){
-            getActivePlayer().validMovesCounter++;
+        if (cell.down != null && cell.down.cellState == getPlayer().getPlayerColorAsCellState()){
+            getPlayer().validMovesCounter++;
         }
-        if (cell.down != null && cell.down.cellState == getInactivePlayer().getPlayerColorAsCellState()){
-            getInactivePlayer().validMovesCounter++;
+        if (cell.down != null && cell.down.cellState == getOpponent().getPlayerColorAsCellState()){
+            getOpponent().validMovesCounter++;
         }
-        if (cell.left != null && cell.left.cellState == getActivePlayer().getPlayerColorAsCellState()){
-            getActivePlayer().validMovesCounter++;
+        if (cell.left != null && cell.left.cellState == getPlayer().getPlayerColorAsCellState()){
+            getPlayer().validMovesCounter++;
         }
-        if (cell.left != null && cell.left.cellState == getInactivePlayer().getPlayerColorAsCellState()){
-            getInactivePlayer().validMovesCounter++;
+        if (cell.left != null && cell.left.cellState == getOpponent().getPlayerColorAsCellState()){
+            getOpponent().validMovesCounter++;
         }
-        if (cell.right != null && cell.right.cellState == getActivePlayer().getPlayerColorAsCellState()){
-            getActivePlayer().validMovesCounter++;
+        if (cell.right != null && cell.right.cellState == getPlayer().getPlayerColorAsCellState()){
+            getPlayer().validMovesCounter++;
         }
-        if (cell.right != null && cell.right.cellState == getInactivePlayer().getPlayerColorAsCellState()){
-            getInactivePlayer().validMovesCounter++;
+        if (cell.right != null && cell.right.cellState == getOpponent().getPlayerColorAsCellState()){
+            getOpponent().validMovesCounter++;
         }
     }
 
     //removes moves for surrounding pieces when a piece is PLACED
     public void removeMoves(CellPane cell){
-        if (cell.up != null && cell.up.cellState == getActivePlayer().getPlayerColorAsCellState()){
-            getActivePlayer().validMovesCounter--;
+        if (cell.up != null && cell.up.cellState == getPlayer().getPlayerColorAsCellState()){
+            getPlayer().validMovesCounter--;
         }
-        if (cell.up != null && cell.up.cellState == getInactivePlayer().getPlayerColorAsCellState()){
-            getInactivePlayer().validMovesCounter--;
+        if (cell.up != null && cell.up.cellState == getOpponent().getPlayerColorAsCellState()){
+            getOpponent().validMovesCounter--;
         }
-        if (cell.down != null && cell.down.cellState == getActivePlayer().getPlayerColorAsCellState()){
-            getActivePlayer().validMovesCounter--;
+        if (cell.down != null && cell.down.cellState == getPlayer().getPlayerColorAsCellState()){
+            getPlayer().validMovesCounter--;
         }
-        if (cell.down != null && cell.down.cellState == getInactivePlayer().getPlayerColorAsCellState()){
-            getInactivePlayer().validMovesCounter--;
+        if (cell.down != null && cell.down.cellState == getOpponent().getPlayerColorAsCellState()){
+            getOpponent().validMovesCounter--;
         }
-        if (cell.left != null && cell.left.cellState == getActivePlayer().getPlayerColorAsCellState()){
-            getActivePlayer().validMovesCounter--;
+        if (cell.left != null && cell.left.cellState == getPlayer().getPlayerColorAsCellState()){
+            getPlayer().validMovesCounter--;
         }
-        if (cell.left != null && cell.left.cellState == getInactivePlayer().getPlayerColorAsCellState()){
-            getInactivePlayer().validMovesCounter--;
+        if (cell.left != null && cell.left.cellState == getOpponent().getPlayerColorAsCellState()){
+            getOpponent().validMovesCounter--;
         }
-        if (cell.right != null && cell.right.cellState == getActivePlayer().getPlayerColorAsCellState()){
-            getActivePlayer().validMovesCounter--;
+        if (cell.right != null && cell.right.cellState == getPlayer().getPlayerColorAsCellState()){
+            getPlayer().validMovesCounter--;
         }
-        if (cell.right != null && cell.right.cellState == getInactivePlayer().getPlayerColorAsCellState()){
-            getInactivePlayer().validMovesCounter--;
+        if (cell.right != null && cell.right.cellState == getOpponent().getPlayerColorAsCellState()){
+            getOpponent().validMovesCounter--;
         }
     }
 }
