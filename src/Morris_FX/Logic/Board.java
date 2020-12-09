@@ -10,7 +10,6 @@ public class Board {
     public static final int GRID_SIZE = 7;
 
     private final CellPane[][] grid;
-    private InvalidCellType invalidCellType;
     private final GameManager gameManager;
     private boolean enableToolTip = false;
 
@@ -46,6 +45,11 @@ public class Board {
         }
         return cellsWithState;
     }
+
+    /*public void setInvalidCellType(InvalidCellType invalidCellType)
+    {
+        this.invalidCellType = invalidCellType;
+    }*/
 
     public boolean doesStateHaveNonMillPiece(CellState state) {
         Vector<CellPane> allPiecePlacements = getAllCellsWithState(state);
@@ -92,21 +96,14 @@ public class Board {
                 gameManager.setError(cell.getPosition() + " is in a mill.");
             } else {
                 gameManager.setError("Select a " + opponentCellState + " marble.");
-                invalidCellType = InvalidCellType.EMPTY;
             }
             return false;
         }
 
         switch (currentPlayer.currentPhase) {
             case PIECE_PLACEMENT: {
-                if (cell.isOccupied()) {
-                    invalidCellType = InvalidCellType.OCCUPIED;
-                    if (cell.matches(currentPlayerCellState)) {
-                        invalidCellType = InvalidCellType.OWNED;
-                    }
-                    gameManager.setError("Select empty space.");
-                } else {
-                    invalidCellType = InvalidCellType.NONE;
+                PiecePlacementPhase piecePlacementPhase = (PiecePlacementPhase) gameManager.phaseMap.get(GameManager.phaseEnum.PIECE_PLACEMENT);
+                if (piecePlacementPhase.validateCellSelection(cell, currentPlayer, currentPlayerCellState, opponentCellState)) {
                     return true;
                 }
                 break;
@@ -237,10 +234,6 @@ public class Board {
             }
         }
         return rowMoves;
-    }
-
-    public InvalidCellType getInvalidCellType() {
-        return invalidCellType;
     }
 
     // I copied this from my NMM implementation with some modifications

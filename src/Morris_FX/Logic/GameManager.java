@@ -17,7 +17,7 @@ public class GameManager {
     private boolean isGameOver = false;
     private PlayerColor defaultPlayer = PlayerColor.BLACK;
     private PlayerColor currentPlayer;
-    public EnumMap<phaseEnum, Phase> phaseMap;
+    public EnumMap<phaseEnum, IPhase> phaseMap;
 
     public enum phaseEnum {
         PIECE_PLACEMENT,
@@ -63,22 +63,8 @@ public class GameManager {
         } else {
             switch (currentPlayer.currentPhase) {
                 case PIECE_PLACEMENT:
-
-                    currentPlayer.removePiecesFromHand();
-                    announceMarblesInHandChange();
-                    cellPane.setState(currentPlayer.getPlayerColorAsCellState());
-                    getCurrentPlayer().increaseBoardPieces();
-                    addPlacedPieceMoves(cellPane);
-                    removeMoves(cellPane);
-
-                    if (!currentPlayer.hasPiecesInHand()) {
-                        if (currentPlayer.getTotalPieces() == 3) {
-                            currentPlayer.setGamePhase(Player.Phase.FLY_RULE);
-                        } else {
-                            currentPlayer.setGamePhase(Player.Phase.PIECE_MOVEMENT);
-                        }
-
-                    }
+                    PiecePlacementPhase piecePlacementPhase = (PiecePlacementPhase) phaseMap.get(GameManager.phaseEnum.PIECE_PLACEMENT);
+                    piecePlacementPhase.performMove(cellPane, currentPlayer);
                     break;
                 case PIECE_MOVEMENT:
                     PieceMovementPhase pieceMovementPhase = (PieceMovementPhase) phaseMap.get(GameManager.phaseEnum.PIECE_MOVEMENT);
@@ -137,7 +123,8 @@ public class GameManager {
         for (PlayerColor playerColor : PlayerColor.values()) {
             player.put(playerColor, new Player(playerColor));
         }
-        phaseMap = new EnumMap<phaseEnum, Phase>(phaseEnum.class);
+        phaseMap = new EnumMap<phaseEnum, IPhase>(phaseEnum.class);
+        phaseMap.put(phaseEnum.PIECE_PLACEMENT, new PiecePlacementPhase(this));
         phaseMap.put(phaseEnum.PIECE_MOVEMENT, new PieceMovementPhase(this));
     }
 
