@@ -3,26 +3,38 @@ package Morris_FX.Logic;
 import Morris_FX.Ui.CellPane;
 import Utils.TestFileDataGenerator;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 import java.util.Vector;
 
 public class GameManager {
     private TestFileDataGenerator testFileDataGenerator;
     public Vector<CellPosition> allPlacedPieces = new Vector<>(50);
     public Vector<String> piecePlacementComments = new Vector<>(50);
-    // delet this
     private TurnContext playerContext;
     // change from millIsFormed to isMill?
     private boolean millIsFormed = false;
     private boolean isGameOver = false;
     private PlayerColor defaultPlayer = PlayerColor.BLACK;
     private PlayerColor currentPlayer;
+    public EnumMap<phaseEnum, IPhase> phaseMap;
 
-    // for PIECE_PLACEMENT phase this method sets the state of the clicked cell equal to the player color; "Places current
-    // player piece on the board"
-    // for PIECE_MOVEMENT phase this method sets the pieceToMove variable of the current player to the clicked cell if they
-    // dont have one to move already; "Selects a piece"
-    // if they do have a piece to move already then it sets the state of the clicked cell to the player color, sets the
-    // previously occupied cell to empty, and set pieceToMove to null in the current player object; "Places pieceToMove in new position"
+    public enum phaseEnum {
+        PIECE_PLACEMENT,
+        PIECE_MOVEMENT,
+        FLY_RULE,
+        MILL_FORMED,
+        GAME_OVER
+    }
+
+
+
+    public GameManager() {
+        this.currentPlayer = defaultPlayer;
+        setup();
+    }
+
     public void performMove(CellPane cellPane) {
         Player currentPlayer = playerContext.getPlayer();
         Player inactivePlayer = playerContext.getOpponent();
@@ -46,53 +58,25 @@ public class GameManager {
         } else {
             switch (currentPlayer.currentPhase) {
                 case PIECE_PLACEMENT:
-
-                    currentPlayer.removePiecesFromHand();
-                    announceMarblesInHandChange();
-                    cellPane.setState(currentPlayer.getPlayerColorAsCellState());
-                    getPlayer().increaseBoardPieces();
-                    addPlacedPieceMoves(cellPane);
-                    removeMoves(cellPane);
-
-                    if (!currentPlayer.hasPiecesInHand()) {
-                        if (currentPlayer.getTotalPieces() == 3) {
-                            currentPlayer.setGamePhase(Player.Phase.FLY_RULE);
-                        } else {
-                            currentPlayer.setGamePhase(Player.Phase.PIECE_MOVEMENT);
-                        }
-
-                    }
+                    PiecePlacementPhase piecePlacementPhase = (PiecePlacementPhase) phaseMap.get(GameManager.phaseEnum.PIECE_PLACEMENT);
+                    piecePlacementPhase.performMove(cellPane, currentPlayer);
                     break;
                 case PIECE_MOVEMENT:
-                    if (!currentPlayer.hasPieceToMove()) {
-                        setCellSelect(cellPane);
-                        currentPlayer.setPieceToMove(cellPane);
+                    PieceMovementPhase pieceMovementPhase = (PieceMovementPhase) phaseMap.get(GameManager.phaseEnum.PIECE_MOVEMENT);
+                    pieceMovementPhase.performMove(cellPane, currentPlayer);
+                    if (currentPlayer.hasPieceToMove()) {
                         return;
                     }
-                    cellPane.setState(currentPlayer.getPlayerColorAsCellState());
-                    addPlacedPieceMoves(cellPane);
-                    removeMoves(cellPane);
-                    currentPlayer.pieceToMove.setState(CellState.EMPTY);
-                    addMoves(currentPlayer.pieceToMove);
-                    removePieceMoves(currentPlayer.pieceToMove);
-                    currentPlayer.removePieceToMove();
-                    setCellSelect(null);
                     break;
                 case FLY_RULE:
-                    if (!currentPlayer.hasPieceToMove()) {
-                        setCellSelect(cellPane);
-                        currentPlayer.setPieceToMove(cellPane);
+                    //add fly rule Phase
+                    FlyRulePhase flyRulePhase = (FlyRulePhase) phaseMap.get(phaseEnum.FLY_RULE);
+                    flyRulePhase.performMove(cellPane, currentPlayer);
+                    if (currentPlayer.hasPieceToMove()) {
                         return;
                     }
-                    setCellSelect(null);
-
-                    cellPane.setState(currentPlayer.getPlayerColorAsCellState());
-                    removeMoves(cellPane);
-                    currentPlayer.pieceToMove.setState(CellState.EMPTY);
-                    addMoves(currentPlayer.pieceToMove);
-                    removePieceMoves(currentPlayer.pieceToMove);
-                    currentPlayer.removePieceToMove();
                     break;
+
             }
             if(millFormed(cellPane)){
                 return;
@@ -116,10 +100,7 @@ public class GameManager {
         switchTurn();
     }
 
-    public GameManager() {
-        this.currentPlayer = defaultPlayer;
-        setup();
-    }
+
 
     public GameManager(TestFileDataGenerator testFileDataGenerator) {
         this.currentPlayer = defaultPlayer;
@@ -128,6 +109,11 @@ public class GameManager {
     }
 
     private void setup() {
+        playerContext = new TurnContext(new Player(PlayerColor.BLACK), new Player(PlayerColor.WHITE));
+        phaseMap = new EnumMap<phaseEnum, IPhase>(phaseEnum.class);
+        phaseMap.put(phaseEnum.PIECE_PLACEMENT, new PiecePlacementPhase(this));
+        phaseMap.put(phaseEnum.PIECE_MOVEMENT, new PieceMovementPhase(this));
+        phaseMap.put(phaseEnum.FLY_RULE, new FlyRulePhase(this));
         playerContext = new TurnContext(new Player(PlayerColor.BLACK), new Player(PlayerColor.WHITE));
     }
 
@@ -223,25 +209,23 @@ public class GameManager {
         }
     }
 
-
-    public interface MarblesInHandListener {
-        // void marblesInHandChange(PlayerColor playerColor, int playerMarbles)
-        void marblesInHandChange(int blackMarbles, int whiteMarbles);
+    public interface PiecesInHandListener {
+        void piecesInHandChange(int blackPieces, int whitePieces);
     }
 
-    private MarblesInHandListener marblesInHandListener = null;
-    public void onMarblesInHandChange(MarblesInHandListener listener) {
-        marblesInHandListener = listener;
-        announceMarblesInHandChange();
+    private PiecesInHandListener piecesInHandListener = null;
+    public void onPiecesInHandChange(PiecesInHandListener listener) {
+        piecesInHandListener = listener;
+        announcePiecesInHandChange();
     }
 
-    public void announceMarblesInHandChange() {
-        if (marblesInHandListener != null) {
+    public void announcePiecesInHandChange() {
+        if (piecesInHandListener != null) {
             // FIXME: should only update when currentPlayer places a piece, currently buggy
             // TODO: Have separate textboxes for each player marbles in hand
-            int blackMarbles = getPlayer().getPiecesInHand();
-            int whiteMarbles = getOpponent().getPiecesInHand();
-            marblesInHandListener.marblesInHandChange(blackMarbles, whiteMarbles);
+            int blackPieces = getPlayer().getPiecesInHand();
+            int whitePieces = getOpponent().getPiecesInHand();
+            piecesInHandListener.piecesInHandChange(blackPieces, whitePieces);
         }
     }
 
@@ -318,9 +302,11 @@ public class GameManager {
 
     public void resetGameManager() {
         currentPlayer = defaultPlayer;
+      
         playerContext.getPlayer().reset();
         playerContext.getOpponent().reset();
-        announceMarblesInHandChange();
+        announcePiecesInHandChange();
+
         millIsFormed = false;
         isGameOver = false;
         setError("");
@@ -349,27 +335,27 @@ public class GameManager {
     }
 
     public void removePieceMoves(CellPane cell){
-        Player playersMarble = getPlayer();
+        Player playersPieces = getPlayer();
         if(cell.cellState == getOpponent().getPlayerColorAsCellState()) {
-            playersMarble = getOpponent();
+            playersPieces = getOpponent();
         }
 
         if (cell.up != null && cell.up.cellState == CellState.EMPTY){
-            playersMarble.validMovesCounter--;
+            playersPieces.validMovesCounter--;
         }
         if (cell.down != null && cell.down.cellState == CellState.EMPTY){
-            playersMarble.validMovesCounter--;
+            playersPieces.validMovesCounter--;
         }
         if (cell.left != null && cell.left.cellState == CellState.EMPTY){
-            playersMarble.validMovesCounter--;
+            playersPieces.validMovesCounter--;
         }
         if (cell.right != null && cell.right.cellState == CellState.EMPTY){
-            playersMarble.validMovesCounter--;
+            playersPieces.validMovesCounter--;
         }
 
     }
 
-    //add moves for the surrounding marble when a piece is PICKED UP
+    //add moves for the surrounding piece when a piece is PICKED UP
     public void addMoves(CellPane cell){
         if (cell.up!= null && cell.up.cellState == getPlayer().getPlayerColorAsCellState()){
             getPlayer().validMovesCounter++;
@@ -397,7 +383,7 @@ public class GameManager {
         }
     }
 
-    //removes moves for surrounding marbles when a piece is PLACED
+    //removes moves for surrounding pieces when a piece is PLACED
     public void removeMoves(CellPane cell){
         if (cell.up != null && cell.up.cellState == getPlayer().getPlayerColorAsCellState()){
             getPlayer().validMovesCounter--;

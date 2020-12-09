@@ -39,7 +39,7 @@ public class Morris extends Application {
     private TextField phaseText = new TextField();
     private TextField errorMessage = new TextField();
     private TextField cellSelectedText = new TextField();
-    private TextField playerMarblesInHand = new TextField();
+    private TextField playerPiecesInHand = new TextField();
     private TestFileDataGenerator testFileData;
     private boolean isDebug;
 
@@ -59,9 +59,9 @@ public class Morris extends Application {
             turnText.setText(String.format("%s's Turn", currentPlayerColor));
         });
 
-        gameManager.onCellSelected((marble) -> {
-            if (marble != null) {
-                cellSelectedText.setText(String.format("Selected %s", marble.getPosition()));
+        gameManager.onCellSelected((piece) -> {
+            if (piece != null) {
+                cellSelectedText.setText(String.format("Selected %s", piece.getPosition()));
             } else {
                 cellSelectedText.setText("");
             }
@@ -76,8 +76,8 @@ public class Morris extends Application {
             errorMessage.setText(errorMsg);
         });
 
-        gameManager.onMarblesInHandChange((blackMarbles, whiteMarbles) -> {
-            playerMarblesInHand.setText(String.format("BLACK marbles: %d, WHITE marbles: %d", blackMarbles, whiteMarbles));
+        gameManager.onPiecesInHandChange((blackPieces, whitePieces) -> {
+            playerPiecesInHand.setText(String.format("BLACK pieces: %d, WHITE pieces: %d", blackPieces, whitePieces));
         });
 
         board = new Board(gameManager, true);
@@ -97,9 +97,9 @@ public class Morris extends Application {
         cellSelectedText.setDisable(true);
         cellSelectedText.setStyle("-fx-opacity: 1;");
 
-        playerMarblesInHand.setMinWidth(275);
-        playerMarblesInHand.setDisable(true);
-        playerMarblesInHand.setStyle("-fx-opacity: 1;");
+        playerPiecesInHand.setMinWidth(275);
+        playerPiecesInHand.setDisable(true);
+        playerPiecesInHand.setStyle("-fx-opacity: 1;");
     }
 
 
@@ -188,7 +188,7 @@ public class Morris extends Application {
 
         infoVBox.getChildren().addAll(infoBox, errorBox);
         infoBox.getChildren().addAll(turnText,phaseText, cellSelectedText);
-        errorBox.getChildren().addAll(errorMessage, playerMarblesInHand);
+        errorBox.getChildren().addAll(errorMessage, playerPiecesInHand);
 
         //setting the pane for game in the window
         BorderPane gameWindow = new BorderPane();
