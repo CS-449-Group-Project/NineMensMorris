@@ -36,13 +36,13 @@ public class Player {
       String phaseName;
       switch(this) {
         case PIECE_PLACEMENT:
-          phaseName = "Marble Placement";
+          phaseName = "Piece Placement";
           break;
         case PIECE_MOVEMENT:
-          phaseName = "Marble Move";
+          phaseName = "Piece Movement";
           break;
         case FLY_RULE:
-          phaseName = "Marble Fly";
+          phaseName = "Piece Can Fly";
           break;
         case MILL_FORMED:
           phaseName = "Mill formed";

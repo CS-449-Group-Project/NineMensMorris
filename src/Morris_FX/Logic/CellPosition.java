@@ -26,13 +26,10 @@ public class CellPosition {
         int y1 = row, y2 = adjacentPos.getRow();
 
         if (y1 == y2) {
-            // targetPosition <- currentPosition (x2 < x1)
-            // currentPosition -> targetPosition (x1 < x2)
+
             return x2 < x1 ? "LEFT" : "RIGHT";
         }
 
-        // targetPosition <- currentPosition (y2 < y1) UP
-        // currentPosition -> targetPosition (y1 < y2) DOWN
 
         return y2 < y1 ? "UP" : "DOWN";
     }
