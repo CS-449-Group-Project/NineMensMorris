@@ -12,7 +12,6 @@ public class GameManager {
     private TestFileDataGenerator testFileDataGenerator;
     public Vector<CellPosition> allPlacedPieces = new Vector<>(50);
     public Vector<String> piecePlacementComments = new Vector<>(50);
-    // delet this
     private TurnContext playerContext;
     // change from millIsFormed to isMill?
     private boolean millIsFormed = false;
@@ -110,10 +109,7 @@ public class GameManager {
     }
 
     private void setup() {
-        player = new EnumMap<PlayerColor, Player>(PlayerColor.class);
-        for (PlayerColor playerColor : PlayerColor.values()) {
-            player.put(playerColor, new Player(playerColor));
-        }
+        playerContext = new TurnContext(new Player(PlayerColor.BLACK), new Player(PlayerColor.WHITE));
         phaseMap = new EnumMap<phaseEnum, IPhase>(phaseEnum.class);
         phaseMap.put(phaseEnum.PIECE_PLACEMENT, new PiecePlacementPhase(this));
         phaseMap.put(phaseEnum.PIECE_MOVEMENT, new PieceMovementPhase(this));
@@ -225,8 +221,10 @@ public class GameManager {
 
     public void announcePiecesInHandChange() {
         if (piecesInHandListener != null) {
-            int blackPieces = player.get(PlayerColor.BLACK).getPiecesInHand();
-            int whitePieces = player.get(PlayerColor.WHITE).getPiecesInHand();
+            // FIXME: should only update when currentPlayer places a piece, currently buggy
+            // TODO: Have separate textboxes for each player marbles in hand
+            int blackPieces = getPlayer().getPiecesInHand();
+            int whitePieces = getOpponent().getPiecesInHand();
             piecesInHandListener.piecesInHandChange(blackPieces, whitePieces);
         }
     }

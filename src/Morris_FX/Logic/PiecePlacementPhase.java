@@ -22,7 +22,7 @@ public class PiecePlacementPhase implements IPhase {
         currentPlayer.removePiecesFromHand();
         gameManager.announcePiecesInHandChange();
         cellPane.setState(currentPlayer.getPlayerColorAsCellState());
-        gameManager.getCurrentPlayer().increaseBoardPieces();
+        gameManager.getPlayer().increaseBoardPieces();
         gameManager.addPlacedPieceMoves(cellPane);
         gameManager.removeMoves(cellPane);
 
