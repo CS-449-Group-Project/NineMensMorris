@@ -4,7 +4,6 @@ import Morris_FX.Ui.CellPane;
 import Utils.TestFileDataGenerator;
 
 import java.util.EnumMap;
-import java.util.Map;
 
 import java.util.Vector;
 
@@ -19,6 +18,8 @@ public class GameManager {
     private PlayerColor defaultPlayer = PlayerColor.BLACK;
     private PlayerColor currentPlayer;
     public EnumMap<phaseEnum, IPhase> phaseMap;
+    private boolean playerVersusComputer;
+    private ComputerPlayer computerPlayer;
 
     public enum phaseEnum {
         PIECE_PLACEMENT,
@@ -27,7 +28,6 @@ public class GameManager {
         MILL_FORMED,
         GAME_OVER
     }
-
 
 
     public GameManager() {
@@ -100,7 +100,21 @@ public class GameManager {
         switchTurn();
     }
 
+    public void setComputerPlayer(ComputerPlayer computerPlayer) {
+        this.computerPlayer = computerPlayer;
+    }
 
+    public boolean isComputerPlayerTurn() {
+        return (getPlayer() instanceof ComputerPlayer);
+    }
+
+    public void setPlayerVersusComputer() {
+        playerVersusComputer = true;
+    }
+
+    public void setPlayerVersusPlayer() {
+        playerVersusComputer = false;
+    }
 
     public GameManager(TestFileDataGenerator testFileDataGenerator) {
         this.currentPlayer = defaultPlayer;
@@ -109,12 +123,16 @@ public class GameManager {
     }
 
     private void setup() {
-        playerContext = new TurnContext(new Player(PlayerColor.BLACK), new Player(PlayerColor.WHITE));
+        if (!playerVersusComputer) {
+            playerContext = new TurnContext(new Player(PlayerColor.BLACK), new Player(PlayerColor.WHITE));
+        } else {
+            playerContext = new TurnContext(new Player(PlayerColor.BLACK), computerPlayer);
+        }
+
         phaseMap = new EnumMap<phaseEnum, IPhase>(phaseEnum.class);
         phaseMap.put(phaseEnum.PIECE_PLACEMENT, new PiecePlacementPhase(this));
         phaseMap.put(phaseEnum.PIECE_MOVEMENT, new PieceMovementPhase(this));
         phaseMap.put(phaseEnum.FLY_RULE, new FlyRulePhase(this));
-        playerContext = new TurnContext(new Player(PlayerColor.BLACK), new Player(PlayerColor.WHITE));
     }
 
     public PlayerColor getCurrentPlayerColor() {
@@ -284,10 +302,10 @@ public class GameManager {
         this.turnChangeListener = turnChangeListener;
         // so the new listener instantly gets notified of the current player
         // turn
-        turnChanged();
+        announceTurnChanged();
     }
 
-    private void turnChanged() {
+    private void announceTurnChanged() {
         if (turnChangeListener != null) {
             turnChangeListener.onTurnSwitch(getCurrentPlayerColor());
         }
@@ -295,7 +313,7 @@ public class GameManager {
 
     public void switchTurn() {
         currentPlayer = currentPlayer.complement();
-        turnChanged();
+        announceTurnChanged();
         announcePhaseChange();
     }
 
@@ -310,7 +328,7 @@ public class GameManager {
         millIsFormed = false;
         isGameOver = false;
         setError("");
-        turnChanged();
+        announceTurnChanged();
         announcePhaseChange();
         allPlacedPieces.clear();
         if (testFileDataGenerator != null) {

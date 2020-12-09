@@ -1,8 +1,6 @@
 package Morris_FX;
 
-import Morris_FX.Logic.Board;
-import Morris_FX.Logic.CellPosition;
-import Morris_FX.Logic.GameManager;
+import Morris_FX.Logic.*;
 import Morris_FX.Ui.BoardPane;
 import Utils.TestCaseGenerator;
 import Utils.TestFileDataGenerator;
@@ -82,6 +80,8 @@ public class Morris extends Application {
 
         board = new Board(gameManager, true);
         boardPane = new BoardPane(board, gameManager);
+        ComputerPlayer computerPlayer = new ComputerPlayer(PlayerColor.WHITE, board, gameManager);
+        gameManager.setComputerPlayer(computerPlayer);
         boardPane.setPadding(new Insets((30), 0, 20, 35));
 
         turnText.setMaxWidth(120);
@@ -222,9 +222,12 @@ public class Morris extends Application {
 
         Text menuLabel = new Text("Menu");
         Button play = new Button("Play");
+
         play.setOnAction(e -> {
             reset();
             primaryStage.setScene(scene3);
+            // gameManager.setPlayerVersusPlayer();
+            // gameManager.setPlayerVersusComputer();
         });
         menuLabel.setFont(Font.font("Tacoma", FontWeight.NORMAL, 20));
         second.add(menuLabel, 0, 0, 2, 1);
