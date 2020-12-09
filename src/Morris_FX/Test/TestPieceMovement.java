@@ -17,14 +17,14 @@ public class TestPieceMovement {
     private void setup() {
         gameManager = new GameManager();
         board = new Board(gameManager);
-        player = gameManager.getCurrentPlayer();
+        player = gameManager.getPlayer();
 
         boardPane = new BoardPane(board, gameManager);
         board.reset();
         player.reset();
         // needs to be satisifed
 
-        Player opponent = gameManager.getInactivePlayer();
+        Player opponent = gameManager.getOpponent();
         while(player.hasPiecesInHand()) {
             player.removePiecesFromHand();
             opponent.removePiecesFromHand();

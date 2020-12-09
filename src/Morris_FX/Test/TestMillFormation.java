@@ -3,11 +3,8 @@ package Morris_FX.Test;
 import Morris_FX.Logic.*;
 import Morris_FX.Ui.BoardPane;
 import Morris_FX.Ui.CellPane;
-import Utils.TestCaseGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,7 +24,7 @@ public class TestMillFormation {
 
         boardPane = new BoardPane(board, gameManager);
         board.reset();
-        player = gameManager.getCurrentPlayer();
+        player = gameManager.getPlayer();
     }
 
     private CellPane createCellPane(CellPosition pos, CellState state) {
@@ -67,14 +64,14 @@ public class TestMillFormation {
     public void GameManager_GivenMillIsFormedDuringPlacementPhase_PieceIsRemoved()
     {
         // black cell coordinates
-        gameManager.getActivePlayer().setGamePhase(Player.Phase.PIECE_PLACEMENT);
+        gameManager.getPlayer().setGamePhase(Player.Phase.PIECE_PLACEMENT);
 
         CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
         CellPane coordinate30 = board.getCell(new CellPosition(3, 0));
         CellPane coordinate60 = board.getCell(new CellPosition(6, 0));
 
         // white cell coordinates
-        gameManager.getInactivePlayer().setGamePhase(Player.Phase.PIECE_PLACEMENT);
+        gameManager.getOpponent().setGamePhase(Player.Phase.PIECE_PLACEMENT);
         CellPane coordinate03 = board.getCell(new CellPosition(0, 3));
         CellPane coordinate06 = board.getCell(new CellPosition(0, 6));
 

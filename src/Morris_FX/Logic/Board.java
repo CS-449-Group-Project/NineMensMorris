@@ -71,10 +71,12 @@ public class Board {
         return count;
     }
 
+    // move this method to Phase interface
+    // invalidCellType is not used at all
     // Checks whether the current cell click is a valid move given the phase of the game and pieces on the board
     public boolean validateCellSelection(CellPane cell) {
         gameManager.setError("");
-        Player currentPlayer = gameManager.getCurrentPlayer();
+        Player currentPlayer = gameManager.getPlayer();
         CellState currentPlayerCellState = currentPlayer.getPlayerColorAsCellState();
         CellState opponentCellState = gameManager.getOpponentCellState(); // this function needs to be created
 

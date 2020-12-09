@@ -17,23 +17,23 @@ public class TestFlyRule {
     private void setup() {
         gameManager = new GameManager();
         board = new Board(gameManager);
-        player = gameManager.getCurrentPlayer();
+        player = gameManager.getPlayer();
         boardPane = new BoardPane(board, gameManager);
         board.reset();
         player.reset();
 
         // piece movement happens when no pieces in hand
-        while (gameManager.getActivePlayer().hasPiecesInHand()) {
-            gameManager.getActivePlayer().removePiecesFromHand();
-            gameManager.getInactivePlayer().removePiecesFromHand();
+        while (gameManager.getPlayer().hasPiecesInHand()) {
+            gameManager.getPlayer().removePiecesFromHand();
+            gameManager.getOpponent().removePiecesFromHand();
         }
     }
 
     @Test
     public void GameManager_GivenPlayerReachesThreePieces_FlyRuleImplemented()
     {
-        gameManager.getActivePlayer().setGamePhase(Player.Phase.PIECE_MOVEMENT);
-        gameManager.getInactivePlayer().setGamePhase(Player.Phase.PIECE_MOVEMENT);
+        gameManager.getPlayer().setGamePhase(Player.Phase.PIECE_MOVEMENT);
+        gameManager.getOpponent().setGamePhase(Player.Phase.PIECE_MOVEMENT);
         // black cells
         CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
         CellPane coordinate30 = board.getCell(new CellPosition(3, 0));
@@ -61,23 +61,23 @@ public class TestFlyRule {
 
         // hard code board piece population
 
-        while(gameManager.getActivePlayer().getBoardPieces() < 4)
+        while(gameManager.getPlayer().getBoardPieces() < 4)
         {
-            gameManager.getActivePlayer().increaseBoardPieces();
-            gameManager.getInactivePlayer().increaseBoardPieces();
+            gameManager.getPlayer().increaseBoardPieces();
+            gameManager.getOpponent().increaseBoardPieces();
         }
         gameManager.performMove(coordinate36); // piece to move
         gameManager.performMove(coordinate06); // black forms mill
         gameManager.performMove(coordinate11); // black removes this white piece
 
-        assertEquals(PlayerColor.WHITE, gameManager.getActivePlayer().getColor());
-        assertEquals(Player.Phase.FLY_RULE, gameManager.getActivePlayer().getGamePhase());
+        assertEquals(PlayerColor.WHITE, gameManager.getPlayer().getColor());
+        assertEquals(Player.Phase.FLY_RULE, gameManager.getPlayer().getGamePhase());
     }
 
     @Test
     public void GameManager_GivenPlayerIsInFlyRulePhase_PlayerCanMovePieceAnywhere()
     {
-        gameManager.getActivePlayer().setGamePhase(Player.Phase.FLY_RULE);
+        gameManager.getPlayer().setGamePhase(Player.Phase.FLY_RULE);
 
         CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
         CellPane coordinate66 = board.getCell(new CellPosition(6, 6));
