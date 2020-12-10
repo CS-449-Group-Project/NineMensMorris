@@ -1,17 +1,19 @@
 package Morris_FX.Logic;
 
 import Morris_FX.Ui.CellPane;
+import Morris_FX.Ui.TurnTextField;
 import Utils.TestFileDataGenerator;
 
 import java.util.EnumMap;
-
+import java.beans.PropertyChangeListener;
 import java.util.Vector;
 
 public class GameManager {
     private TestFileDataGenerator testFileDataGenerator;
     public Vector<CellPosition> allPlacedPieces = new Vector<>(50);
     public Vector<String> piecePlacementComments = new Vector<>(50);
-    private TurnContext playerContext;
+    // delet this
+    private TurnContext turnContext;
     // change from millIsFormed to isMill?
     private boolean millIsFormed = false;
     private boolean isGameOver = false;
@@ -35,9 +37,22 @@ public class GameManager {
         setup();
     }
 
+    public static GameManager create() {
+        GameManager gameManager = new GameManager();
+        TurnContext context = new TurnContext(new Player(PlayerColor.BLACK), new Player(PlayerColor.WHITE));
+        gameManager.addTurnContext(context);
+        return gameManager;
+    }
+
+    // for PIECE_PLACEMENT phase this method sets the state of the clicked cell equal to the player color; "Places current
+    // player piece on the board"
+    // for PIECE_MOVEMENT phase this method sets the pieceToMove variable of the current player to the clicked cell if they
+    // dont have one to move already; "Selects a piece"
+    // if they do have a piece to move already then it sets the state of the clicked cell to the player color, sets the
+    // previously occupied cell to empty, and set pieceToMove to null in the current player object; "Places pieceToMove in new position"
     public void performMove(CellPane cellPane) {
-        Player currentPlayer = playerContext.getPlayer();
-        Player inactivePlayer = playerContext.getOpponent();
+        Player currentPlayer = turnContext.getPlayer();
+        Player inactivePlayer = turnContext.getOpponent();
 
         boolean isTesting = testFileDataGenerator != null;
         if (isTesting) {
@@ -75,6 +90,13 @@ public class GameManager {
                     if (currentPlayer.hasPieceToMove()) {
                         return;
                     }
+                    setCellSelect(null);
+                    cellPane.setState(currentPlayer.getPlayerColorAsCellState());
+                    removeMoves(cellPane);
+                    currentPlayer.pieceToMove.setState(CellState.EMPTY);
+                    addMoves(currentPlayer.pieceToMove);
+                    removePieceMoves(currentPlayer.pieceToMove);
+                    currentPlayer.removePieceToMove();
                     break;
 
             }
@@ -96,7 +118,7 @@ public class GameManager {
             setError(getCurrentPlayerColor() + " won!");
             return;
         }
-        playerContext.switchPlayers();
+        turnContext.switchPlayers();
         switchTurn();
     }
 
@@ -114,6 +136,7 @@ public class GameManager {
 
     public void setPlayerVersusPlayer() {
         playerVersusComputer = false;
+        turnContext.switchPlayers();
     }
 
     public GameManager(TestFileDataGenerator testFileDataGenerator) {
@@ -124,9 +147,9 @@ public class GameManager {
 
     private void setup() {
         if (!playerVersusComputer) {
-            playerContext = new TurnContext(new Player(PlayerColor.BLACK), new Player(PlayerColor.WHITE));
+            turnContext = new TurnContext(new Player(PlayerColor.BLACK), new Player(PlayerColor.WHITE));
         } else {
-            playerContext = new TurnContext(new Player(PlayerColor.BLACK), computerPlayer);
+            turnContext = new TurnContext(new Player(PlayerColor.BLACK), computerPlayer);
         }
 
         phaseMap = new EnumMap<phaseEnum, IPhase>(phaseEnum.class);
@@ -136,18 +159,19 @@ public class GameManager {
     }
 
     public PlayerColor getCurrentPlayerColor() {
-        return this.currentPlayer;
+        return getPlayer().getColor();
     }
 
     public Player getPlayer() {
-        return playerContext.getPlayer();
+        return turnContext.getPlayer();
     }
 
     public Player getOpponent() {
-        return playerContext.getOpponent();
+        return turnContext.getOpponent();
     }
 
-    public CellState getOpponentCellState() {return playerContext.getOpponent().getPlayerColorAsCellState();}
+    public CellState getOpponentCellState() {return turnContext.getOpponent().getPlayerColorAsCellState();}
+
 
     public void resetMill(){
         this.millIsFormed = false;
@@ -204,6 +228,10 @@ public class GameManager {
 
     public boolean isOver() {
         return isGameOver;
+    }
+
+    public void addTurnContext(TurnContext turnContext) {
+        this.turnContext = turnContext;
     }
 
     public interface OnPhaseChangeListener {
@@ -292,6 +320,7 @@ public class GameManager {
         }
     }
 
+
     public interface TurnChangeListener {
         void onTurnSwitch(PlayerColor color);
     }
@@ -317,14 +346,12 @@ public class GameManager {
         announcePhaseChange();
     }
 
-
     public void resetGameManager() {
         currentPlayer = defaultPlayer;
-      
-        playerContext.getPlayer().reset();
-        playerContext.getOpponent().reset();
         announcePiecesInHandChange();
-
+        turnContext.reset();
+        turnContext.getPlayer().reset();
+        turnContext.getOpponent().reset();
         millIsFormed = false;
         isGameOver = false;
         setError("");

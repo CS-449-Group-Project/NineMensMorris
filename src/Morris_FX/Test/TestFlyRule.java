@@ -15,7 +15,7 @@ public class TestFlyRule {
 
     @BeforeEach
     private void setup() {
-        gameManager = new GameManager();
+        gameManager = GameManager.create();
         board = new Board(gameManager);
         player = gameManager.getPlayer();
         boardPane = new BoardPane(board, gameManager);

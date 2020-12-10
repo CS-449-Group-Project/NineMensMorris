@@ -2,6 +2,8 @@ package Morris_FX;
 
 import Morris_FX.Logic.*;
 import Morris_FX.Ui.BoardPane;
+import Morris_FX.Ui.PiecesInHandTextField;
+import Morris_FX.Ui.TurnTextField;
 import Utils.TestCaseGenerator;
 import Utils.TestFileDataGenerator;
 
@@ -19,8 +21,12 @@ import javafx.scene.control.Button;
 import javafx.geometry.Pos;
 import javafx.application.Platform;
 
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Observable;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -33,11 +39,12 @@ public class Morris extends Application {
     private final BoardPane boardPane;
     Scene scene1, scene2, scene3;
 
-    private TextField turnText = new TextField();
+    private TurnTextField turnText;
     private TextField phaseText = new TextField();
     private TextField errorMessage = new TextField();
     private TextField cellSelectedText = new TextField();
     private TextField playerPiecesInHand = new TextField();
+    private PiecesInHandTextField[] piecesInHandTextFields = new PiecesInHandTextField[2];
     private TestFileDataGenerator testFileData;
     private boolean isDebug;
 
@@ -46,6 +53,16 @@ public class Morris extends Application {
         isDebug = java.lang.management.ManagementFactory.
                 getRuntimeMXBean().
                 getInputArguments().toString().contains("jdwp");
+        HashMap<PlayerColor, Player> players = new HashMap<>();
+        int i = 0;
+        for (PlayerColor color: PlayerColor.values()) {
+            Player currentPlayer = new Player(color);
+            players.put(color, currentPlayer);
+            piecesInHandTextFields[i] = new PiecesInHandTextField(color);
+            currentPlayer.addPropertyChangeListener(piecesInHandTextFields[i]);
+            i++;
+        }
+
         if (isDebug) {
             testFileData = new TestFileDataGenerator(Board.GRID_SIZE);
             gameManager = new GameManager(testFileData);
@@ -56,7 +73,15 @@ public class Morris extends Application {
         gameManager.onTurnSwitch((currentPlayerColor) -> {
             turnText.setText(String.format("%s's Turn", currentPlayerColor));
         });
+        Player player1 = players.get(PlayerColor.BLACK);
+        Player player2 = players.get(PlayerColor.WHITE);
+        TurnContext turnContext = new TurnContext(player1, player2);
 
+        turnText = new TurnTextField();
+        turnContext.addPropertyChangeListener(turnText);
+        gameManager.addTurnContext(turnContext);
+
+        // these needs to be update when individual phases separated
         gameManager.onCellSelected((piece) -> {
             if (piece != null) {
                 cellSelectedText.setText(String.format("Selected %s", piece.getPosition()));
@@ -84,9 +109,6 @@ public class Morris extends Application {
         gameManager.setComputerPlayer(computerPlayer);
         boardPane.setPadding(new Insets((30), 0, 20, 35));
 
-        turnText.setMaxWidth(120);
-        turnText.setDisable(true);
-        turnText.setStyle("-fx-opacity: 1;");
         phaseText.setMaxWidth(150);
         phaseText.setDisable(true);
         phaseText.setStyle("-fx-opacity: 1;");
@@ -187,7 +209,8 @@ public class Morris extends Application {
         HBox errorBox = new HBox();
 
         infoVBox.getChildren().addAll(infoBox, errorBox);
-        infoBox.getChildren().addAll(turnText,phaseText, cellSelectedText);
+        infoBox.getChildren().addAll(piecesInHandTextFields);
+        infoBox.getChildren().addAll(turnText, phaseText, cellSelectedText);
         errorBox.getChildren().addAll(errorMessage, playerPiecesInHand);
 
         //setting the pane for game in the window
@@ -254,7 +277,3 @@ public class Morris extends Application {
     }
 
 }
-
-
-
-

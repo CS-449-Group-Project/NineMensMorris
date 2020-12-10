@@ -18,7 +18,7 @@ public class TestMillFormation {
     @BeforeEach
     private void setup()
     {
-        gameManager = new GameManager();
+        gameManager = GameManager.create();
         board = new Board(gameManager);
 
 

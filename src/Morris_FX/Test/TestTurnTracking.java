@@ -17,7 +17,7 @@ public class TestTurnTracking {
 
     @BeforeEach
     private void setup() {
-        gameManager = new GameManager();
+        gameManager = GameManager.create();
         board = new Board(gameManager);
         boardPane = new BoardPane(board, gameManager);
         board.reset();
