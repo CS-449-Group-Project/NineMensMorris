@@ -28,7 +28,6 @@ public class TestGameOver {
     public void GameManager_GivenPlayerReachesTwoPiecesOnBoard_GameIsOver() throws IOException
     {
         TestCaseGenerator testCaseObject = TestCaseGenerator.createFromFile("./test-inputs/blackWinsByPieceRemoval.td");
-
         assertEquals(testCaseObject.getExpectedGridSize(), Board.GRID_SIZE);
 
         for (CellPosition recordedPos: testCaseObject) {
@@ -48,8 +47,8 @@ public class TestGameOver {
         for (CellPosition recordedPos: testCaseObject) {
             gameManager.performMove(board.getCell(recordedPos));
         }
-
         assertTrue(gameManager.isOver());
+
     }
 
 

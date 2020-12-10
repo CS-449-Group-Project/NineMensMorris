@@ -20,29 +20,36 @@ public class TestFlyRule {
     private void setup() {
         gameManager = new GameManager();
         board = new Board(gameManager);
+
         boardPane = new BoardPane(board, gameManager);
         board.reset();
+        // piece movement happens when no pieces in hand
+        while (gameManager.getPlayer().hasPiecesInHand()) {
+            gameManager.getPlayer().removePiecesFromHand();
+            gameManager.getOpponent().removePiecesFromHand();
+        }
+
     }
 
     @Test
     public void GameManager_GivenPlayerReachesThreePieces_FlyRuleImplemented() throws IOException
     {
+
         TestCaseGenerator testCaseObject = TestCaseGenerator.createFromFile("./test-inputs/flyRuleForWhite.td");
-
         assertEquals(testCaseObject.getExpectedGridSize(), Board.GRID_SIZE);
-
+      
         for (CellPosition recordedPos: testCaseObject) {
             gameManager.performMove(board.getCell(recordedPos));
         }
 
-        assertEquals(PlayerColor.WHITE, gameManager.getActivePlayer().getColor());
-        assertEquals(Player.Phase.FLY_RULE, gameManager.getActivePlayer().getGamePhase());
+        assertEquals(PlayerColor.WHITE, gameManager.getPlayer().getColor());
+        assertEquals(Player.Phase.FLY_RULE, gameManager.getPlayer().getGamePhase());
     }
 
     @Test
     public void GameManager_GivenPlayerIsInFlyRulePhase_PlayerCanMovePieceAnywhere()
     {
-        gameManager.getActivePlayer().setGamePhase(Player.Phase.FLY_RULE);
+        gameManager.getPlayer().setGamePhase(Player.Phase.FLY_RULE);
 
         CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
         CellPane coordinate66 = board.getCell(new CellPosition(6, 6));

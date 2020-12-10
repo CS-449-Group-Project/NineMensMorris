@@ -201,7 +201,7 @@ public class CellPane extends Pane {
 
     public boolean isOccupied() { return this.isBlack() || this.isWhite(); }
 
-    //this checks if a piece can be moved. Checks the cell you're picking the marble up from
+    //this checks if a piece can be moved. Checks the cell you're picking the piece up from
     //if the cell above is empty, the move counter increases. checks up, down, left, right
     //if no valid moves, returns false and says no possible moves
     public boolean canChoose(){
@@ -227,8 +227,8 @@ public class CellPane extends Pane {
         }
     }
 
-    //check if you can pick up a marble from a cell
-    //first check if you're picking up a marble from a cell that has the same playState as the player (ex BLACK == BLACK)
+    //check if you can pick up a piece from a cell
+    //first check if you're picking up a piece from a cell that has the same playState as the player (ex BLACK == BLACK)
     //AND call moveCheck to see if there are available moves to make
     public boolean canPickup(Player currentPlayer){
         if(this.cellState == currentPlayer.getPlayerColorAsCellState() && canChoose()){

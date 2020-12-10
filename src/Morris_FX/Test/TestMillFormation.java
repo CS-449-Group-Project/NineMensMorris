@@ -3,11 +3,8 @@ package Morris_FX.Test;
 import Morris_FX.Logic.*;
 import Morris_FX.Ui.BoardPane;
 import Morris_FX.Ui.CellPane;
-import Utils.TestCaseGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,17 +23,11 @@ public class TestMillFormation {
         board.reset();
     }
 
-    // private method never used within test file. okay to remove? -atp
-
-    /*private CellPane createCellPane(CellPosition pos, CellState state) {
-        CellPane pane = new CellPane(pos);
-        if (state != null) pane.setState(state);
-        return pane;
-    }*/
-
     @Test
     public void GameManager_GivenAllPlayersHaveOnlyMillsFormed_AnOpponentsPieceCanBeRemoved() throws IOException
     {
+      // test method should be updated -atp
+      
         /*CellPosition[] positions = {
                 new CellPosition(0,0),//black's
                 new CellPosition(5,5),
@@ -72,8 +63,8 @@ public class TestMillFormation {
     @Test
     public void GameManager_GivenMillIsFormedDuringPlacementPhase_PlayerCanRemovePiece() throws IOException
     {
-        TestCaseGenerator testCaseObject = TestCaseGenerator.createFromFile("./test-inputs/blackFormsMillDuringPlacementPhase.td");
 
+        TestCaseGenerator testCaseObject = TestCaseGenerator.createFromFile("./test-inputs/blackFormsMillDuringPlacementPhase.td");
         assertEquals(testCaseObject.getExpectedGridSize(), Board.GRID_SIZE);
 
         for (CellPosition recordedPos: testCaseObject) {
