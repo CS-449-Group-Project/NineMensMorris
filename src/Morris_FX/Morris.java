@@ -188,6 +188,9 @@ public class Morris extends Application {
 
         Button gameMenu = new Button("Menu");
         gameMenu.setLayoutX(110);
+        gameMenu.setOnAction(e -> {
+            primaryStage.setScene(scene2);
+        });
         Button reset = new Button("Play again");
 
         // https://stackoverflow.com/a/28754689
