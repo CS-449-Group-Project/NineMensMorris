@@ -20,7 +20,6 @@ public class TurnTextField extends TextField implements PropertyChangeListener {
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         String propertyName = evt.getPropertyName();
-        System.out.println(propertyName);
         if ("player".equals(propertyName)) {
             Player player = (Player)evt.getNewValue();
             setText(player.getColor() + "'s turn.");

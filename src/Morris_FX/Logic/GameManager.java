@@ -117,6 +117,8 @@ public class GameManager {
 
     public void setComputerPlayer(ComputerPlayer computerPlayer) {
         this.computerPlayer = computerPlayer;
+        turnContext.addPropertyChangeListener(computerPlayer);
+
     }
 
     public boolean isComputerPlayerTurn() {

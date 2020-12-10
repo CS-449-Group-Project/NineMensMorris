@@ -14,6 +14,8 @@ public class PiecePlacementPhase implements IPhase {
         if (cell.isOccupied()) {
             gameManager.setError("Select empty space.");
             return false;
+        } else if (cell.isVoid()) {
+            return false;
         }
         return true;
     }

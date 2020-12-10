@@ -70,13 +70,7 @@ public class Morris extends Application {
             gameManager = new GameManager();
         }
 
-        Player player1 = players.get(PlayerColor.BLACK);
-        Player player2 = players.get(PlayerColor.WHITE);
-        TurnContext turnContext = new TurnContext(player1, player2);
 
-        turnText = new TurnTextField();
-        turnContext.addPropertyChangeListener(turnText);
-        gameManager.addTurnContext(turnContext);
 
         // these needs to be update when individual phases separated
         gameManager.onCellSelected((piece) -> {
@@ -101,9 +95,20 @@ public class Morris extends Application {
         });
 
         board = new Board(gameManager, true);
+
+        Player player1 = players.get(PlayerColor.BLACK);
+        ComputerPlayer player2 = new ComputerPlayer(PlayerColor.WHITE, board, gameManager);
+        // gameManager.setComputerPlayer(computerPlayer);
+        // Player player2 = players.get(PlayerColor.WHITE);
+        TurnContext turnContext = new TurnContext(player1, player2);
+
+        turnText = new TurnTextField();
+        turnContext.addPropertyChangeListener(player2);
+        turnContext.addPropertyChangeListener(turnText);
+        gameManager.addTurnContext(turnContext);
+
+
         boardPane = new BoardPane(board, gameManager);
-        ComputerPlayer computerPlayer = new ComputerPlayer(PlayerColor.WHITE, board, gameManager);
-        gameManager.setComputerPlayer(computerPlayer);
         boardPane.setPadding(new Insets((30), 0, 20, 35));
 
         phaseText.setMaxWidth(150);
