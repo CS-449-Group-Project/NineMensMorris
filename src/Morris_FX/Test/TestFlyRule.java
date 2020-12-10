@@ -20,7 +20,7 @@ public class TestFlyRule {
         player = gameManager.getPlayer();
         boardPane = new BoardPane(board, gameManager);
         board.reset();
-        player.reset();
+        gameManager.resetGameManager();
 
         // piece movement happens when no pieces in hand
         while (gameManager.getPlayer().hasPiecesInHand()) {

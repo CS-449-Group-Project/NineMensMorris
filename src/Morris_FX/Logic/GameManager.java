@@ -90,13 +90,6 @@ public class GameManager {
                     if (currentPlayer.hasPieceToMove()) {
                         return;
                     }
-                    setCellSelect(null);
-                    cellPane.setState(currentPlayer.getPlayerColorAsCellState());
-                    removeMoves(cellPane);
-                    currentPlayer.pieceToMove.setState(CellState.EMPTY);
-                    addMoves(currentPlayer.pieceToMove);
-                    removePieceMoves(currentPlayer.pieceToMove);
-                    currentPlayer.removePieceToMove();
                     break;
 
             }

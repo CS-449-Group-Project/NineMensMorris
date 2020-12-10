@@ -70,9 +70,6 @@ public class Morris extends Application {
             gameManager = new GameManager();
         }
 
-        gameManager.onTurnSwitch((currentPlayerColor) -> {
-            turnText.setText(String.format("%s's Turn", currentPlayerColor));
-        });
         Player player1 = players.get(PlayerColor.BLACK);
         Player player2 = players.get(PlayerColor.WHITE);
         TurnContext turnContext = new TurnContext(player1, player2);

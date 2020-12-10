@@ -8,6 +8,7 @@ public class TurnContext extends ObservableObject {
     public TurnContext(Player defaultPlayer, Player defaultOpponent) {
         this.defaultPlayer = defaultPlayer;
         this.defaultOpponent = defaultOpponent;
+        setPlayerOpponent(defaultPlayer, defaultOpponent);
     }
 
     private void setPlayerOpponent(Player player, Player opponent) {
