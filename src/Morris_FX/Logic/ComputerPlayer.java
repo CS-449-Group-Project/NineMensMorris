@@ -23,6 +23,18 @@ public class ComputerPlayer extends Player implements PropertyChangeListener  {
             System.out.println(cell.getPosition());
             gameManager.performMove(cell);
         }
+
+        if (gameManager.isMillFormed()) {
+            cell = getCellForComputerTurn();
+            System.out.println(cell.getPosition());
+            gameManager.performMove(cell);
+        }
+
+        /*if (getGamePhase() == Phase.MILL_FORMED) {
+            cell = getCellForComputerTurn();
+            System.out.println(cell.getPosition());
+            gameManager.performMove(cell);
+        }*/
     }
 
     private CellPane getCellForComputerTurn() {
