@@ -15,6 +15,7 @@ public class PiecesInHandTextField extends TextField implements PropertyChangeLi
         setMaxWidth(275/2);
         setDisable(true);
         setStyle("-fx-opacity: 1;");
+        setId("box");
     }
 
 
