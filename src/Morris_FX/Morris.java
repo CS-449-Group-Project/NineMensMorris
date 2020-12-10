@@ -97,13 +97,29 @@ public class Morris extends Application {
         board = new Board(gameManager, true);
 
         Player player1 = players.get(PlayerColor.BLACK);
-        ComputerPlayer player2 = new ComputerPlayer(PlayerColor.WHITE, board, gameManager);
+
+
         // gameManager.setComputerPlayer(computerPlayer);
         // Player player2 = players.get(PlayerColor.WHITE);
-        TurnContext turnContext = new TurnContext(player1, player2);
+        gameManager.setPlayerVersusComputer();
+
+        Player player2;
+        ComputerPlayer computerOpponent;
+        TurnContext turnContext;
+
+        if (gameManager.getPlayerVersusComputer()) {
+            computerOpponent = new ComputerPlayer(PlayerColor.WHITE, board, gameManager);
+            turnContext = new TurnContext(player1, computerOpponent);
+            turnContext.addPropertyChangeListener(computerOpponent);
+        } else {
+            player2 = new Player(PlayerColor.WHITE);
+            turnContext = new TurnContext(player1, player2);
+        }
+
+
 
         turnText = new TurnTextField();
-        turnContext.addPropertyChangeListener(player2);
+
         turnContext.addPropertyChangeListener(turnText);
         gameManager.addTurnContext(turnContext);
 

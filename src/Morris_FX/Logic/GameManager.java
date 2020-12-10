@@ -129,9 +129,12 @@ public class GameManager {
         playerVersusComputer = true;
     }
 
+    public boolean getPlayerVersusComputer() {
+        return playerVersusComputer;
+    }
+
     public void setPlayerVersusPlayer() {
         playerVersusComputer = false;
-        turnContext.switchPlayers();
     }
 
     public GameManager(TestFileDataGenerator testFileDataGenerator) {
