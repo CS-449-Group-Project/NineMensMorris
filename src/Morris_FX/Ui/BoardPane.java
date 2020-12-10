@@ -1,6 +1,7 @@
 package Morris_FX.Ui;
 
 import Morris_FX.Logic.*;
+import Morris_FX.Morris;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 
@@ -23,19 +24,50 @@ public class BoardPane extends GridPane {
         this.setupGrid();
     }
 
-    private void setupBackgroundImage() {
-        FileInputStream backgroundImage;
+    public void setupBackgroundImage() {
+        FileInputStream wood;
+        FileInputStream jade;
+        FileInputStream marble;
         try{ // "D:/UMKC_Stuff/Projects/NMM_ChooseMe/NineMensMorris/images/Morris_Board_Wood.png" -atp
-            backgroundImage = new FileInputStream("./images/Morris_Board_Wood.png");
-            Image image = new Image(backgroundImage,550,550,false,true);
+            if(Morris.currentBoard == Morris.BoardOption.WOOD) {
+                wood = new FileInputStream("./images/Morris_Board_Wood.png");
 
-            BackgroundImage emptyBoard = new BackgroundImage(image,
-                    BackgroundRepeat.NO_REPEAT,
-                    BackgroundRepeat.NO_REPEAT,
-                    BackgroundPosition.DEFAULT,
-                    BackgroundSize.DEFAULT);
+                Image image = new Image(wood, 550, 550, false, true);
 
-            this.setBackground(new Background(emptyBoard));
+                BackgroundImage emptyBoard = new BackgroundImage(image,
+                        BackgroundRepeat.NO_REPEAT,
+                        BackgroundRepeat.NO_REPEAT,
+                        BackgroundPosition.DEFAULT,
+                        BackgroundSize.DEFAULT);
+
+                this.setBackground(new Background(emptyBoard));
+            }
+            if(Morris.currentBoard == Morris.BoardOption.JADE) {
+                jade = new FileInputStream("./images/Morris_Board_Jade.png");
+
+                Image image = new Image(jade, 550, 550, false, true);
+
+                BackgroundImage emptyBoard = new BackgroundImage(image,
+                        BackgroundRepeat.NO_REPEAT,
+                        BackgroundRepeat.NO_REPEAT,
+                        BackgroundPosition.DEFAULT,
+                        BackgroundSize.DEFAULT);
+
+                this.setBackground(new Background(emptyBoard));
+            }
+            if(Morris.currentBoard == Morris.BoardOption.MARBLE) {
+                marble = new FileInputStream("./images/Morris_Board_Marble.png");
+
+                Image image = new Image(marble, 550, 550, false, true);
+
+                BackgroundImage emptyBoard = new BackgroundImage(image,
+                        BackgroundRepeat.NO_REPEAT,
+                        BackgroundRepeat.NO_REPEAT,
+                        BackgroundPosition.DEFAULT,
+                        BackgroundSize.DEFAULT);
+
+                this.setBackground(new Background(emptyBoard));
+            }
         }
         catch (FileNotFoundException e){
             e.printStackTrace();

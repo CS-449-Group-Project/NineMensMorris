@@ -1,7 +1,8 @@
+package Morris_FX.Test;
 
 import Morris_FX.Logic.*;
 import Morris_FX.Ui.BoardPane;
-import Morris_FX.Ui.CellPane;
+import Morris_FX.Ui.CellPane; // Okay to remove this import? -atp
 import Utils.TestCaseGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,6 @@ public class TestGameOver {
     private Board board;
     private GameManager gameManager;
     private BoardPane boardPane;
-    private Player player;
 
     @BeforeEach
     private void setup() {
@@ -24,114 +24,38 @@ public class TestGameOver {
         board.reset();
     }
 
-    // Class_GivenScenario_Expectation()
-
     @Test
-    public void GameManager_GivenPlayerReachesTwoPiecesOnBoard_GameIsOver() {
-        // game over can only happen when no marbles are in hand
-        while (gameManager.getPlayer().hasPiecesInHand()) {
-            gameManager.getPlayer().removePiecesFromHand();
-            gameManager.getOpponent().removePiecesFromHand();
-        }
-        gameManager.getPlayer().setGamePhase(Player.Phase.PIECE_MOVEMENT);
-        gameManager.getOpponent().setGamePhase(Player.Phase.PIECE_MOVEMENT);
-
-        for(int i = 0; i < 3;i++) {
-            gameManager.getPlayer().increaseBoardPieces();
-            gameManager.getOpponent().increaseBoardPieces();
-        }
-
-        // black cells
-        CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
-        CellPane coordinate03 = board.getCell(new CellPosition(0, 3));
-        CellPane coordinate66 = board.getCell(new CellPosition(6, 6));
-
-        // white cells
-        CellPane coordinate22 = board.getCell(new CellPosition(2, 2));
-        CellPane coordinate44 = board.getCell(new CellPosition(4, 4));
-        CellPane coordinate55 = board.getCell(new CellPosition(5, 5));
-
-        // cell which creates mill for black
-        CellPane coordinate06 = board.getCell(new CellPosition(0, 6));
-
-        coordinate00.setState(CellState.BLACK);
-        coordinate03.setState(CellState.BLACK);
-        coordinate66.setState(CellState.BLACK);
-
-        coordinate22.setState(CellState.WHITE);
-        coordinate44.setState(CellState.WHITE);
-        coordinate55.setState(CellState.WHITE);
-
-        gameManager.performMove(coordinate66); // black picks up piece
-        gameManager.performMove(coordinate06); // black flies to this location to form mill
-        gameManager.performMove(coordinate22); // black remove this white piece
-
-        assertEquals(Player.Phase.GAME_OVER, gameManager.getPlayer().getGamePhase());
-    }
-
-    @Test
-    public void GameManager_GivenPlayerHasNoValidMoves_GameIsOver()
+    public void GameManager_GivenPlayerReachesTwoPiecesOnBoard_GameIsOver() throws IOException
     {
-        // validMovesCounter behaves funny, so I had to simulate a full opener -atp
+        TestCaseGenerator testCaseObject = TestCaseGenerator.createFromFile("./test-inputs/blackWinsByPieceRemoval.td");
+        assertEquals(testCaseObject.getExpectedGridSize(), Board.GRID_SIZE);
 
-        // black cells (all corner cells)
-        CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
-        CellPane coordinate60 = board.getCell(new CellPosition(6, 0));
-        CellPane coordinate06 = board.getCell(new CellPosition(0, 6));
-        CellPane coordinate66 = board.getCell(new CellPosition(6, 6));
-        CellPane coordinate11 = board.getCell(new CellPosition(1, 1));
-        CellPane coordinate15 = board.getCell(new CellPosition(1, 5));
-        CellPane coordinate51 = board.getCell(new CellPosition(5, 1));
-        CellPane coordinate55 = board.getCell(new CellPosition(5, 5));
-        CellPane coordinate22 = board.getCell(new CellPosition(2, 2)); // piece to be removed
+        for (CellPosition recordedPos: testCaseObject) {
+            gameManager.performMove(board.getCell(recordedPos));
+        }
 
-        // white cells (all middle cells)
-        CellPane coordinate30 = board.getCell(new CellPosition(3, 0));
-        CellPane coordinate03 = board.getCell(new CellPosition(0, 3));
-        CellPane coordinate36 = board.getCell(new CellPosition(3, 6));
-        CellPane coordinate63 = board.getCell(new CellPosition(6, 3));
-        CellPane coordinate13 = board.getCell(new CellPosition(1, 3));
-        CellPane coordinate31 = board.getCell(new CellPosition(3, 1));
-        CellPane coordinate53 = board.getCell(new CellPosition(5, 3));
-        CellPane coordinate35 = board.getCell(new CellPosition(3, 5));
-        CellPane coordinate32 = board.getCell(new CellPosition(3, 2)); // white forms mill here (30, 31, 32)
+        assertTrue(gameManager.isOver());
+    }
 
-        gameManager.performMove(coordinate00);
-        gameManager.performMove(coordinate30);
+    @Test
+    public void GameManager_GivenPlayerHasNoValidMoves_GameIsOver() throws IOException
+    {
+        TestCaseGenerator testCaseObject = TestCaseGenerator.createFromFile("./test-inputs/whiteWinsByNoValidMovesRemaining.td");
 
-        gameManager.performMove(coordinate60);
-        gameManager.performMove(coordinate03);
+        assertEquals(testCaseObject.getExpectedGridSize(), Board.GRID_SIZE);
 
-        gameManager.performMove(coordinate06);
-        gameManager.performMove(coordinate36);
+        for (CellPosition recordedPos: testCaseObject) {
+            gameManager.performMove(board.getCell(recordedPos));
+        }
+        assertTrue(gameManager.isOver());
 
-        gameManager.performMove(coordinate66);
-        gameManager.performMove(coordinate63);
-
-        gameManager.performMove(coordinate11);
-        gameManager.performMove(coordinate13);
-
-        gameManager.performMove(coordinate15);
-        gameManager.performMove(coordinate31);
-
-        gameManager.performMove(coordinate51);
-        gameManager.performMove(coordinate53);
-
-        gameManager.performMove(coordinate55);
-        gameManager.performMove(coordinate35);
-
-        gameManager.performMove(coordinate22); // black's last move
-
-        gameManager.performMove(coordinate32); // white forms mill
-        gameManager.performMove(coordinate22); // white removes black's only movable piece
-
-        assertEquals(Player.Phase.GAME_OVER, gameManager.getPlayer().getGamePhase());
     }
 
 
 
     @Test
-    public void gameOverDoesNotOccurWithValidMovesLeft() throws IOException {
+    public void gameOverDoesNotOccurWithValidMovesLeft() throws IOException
+    {
         TestCaseGenerator testCaseObject = TestCaseGenerator.createFromFile("./test-inputs/gameOverInMiddleOfGame.td");
 
         // make sure you are testing the same board

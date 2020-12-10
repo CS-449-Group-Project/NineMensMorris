@@ -3,8 +3,11 @@ package Morris_FX.Test;
 import Morris_FX.Logic.*;
 import Morris_FX.Ui.BoardPane;
 import Morris_FX.Ui.CellPane;
+import Utils.TestCaseGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,28 +16,22 @@ public class TestMillFormation {
     private Board board;
     private GameManager gameManager;
     private BoardPane boardPane;
-    private Player player;
 
     @BeforeEach
     private void setup()
     {
         gameManager = GameManager.create();
         board = new Board(gameManager);
-
-
         boardPane = new BoardPane(board, gameManager);
         board.reset();
-        player = gameManager.getPlayer();
     }
 
-    private CellPane createCellPane(CellPosition pos, CellState state) {
-        CellPane pane = new CellPane(pos);
-        if (state != null) pane.setState(state);
-        return pane;
-    }
     @Test
-    public void GameManager_GivenAllPlayersHaveOnlyMillsFormed_AnOpponentsPieceCanBeRemoved() {
-        CellPosition[] positions = {
+    public void GameManager_GivenAllPlayersHaveOnlyMillsFormed_AnOpponentsPieceCanBeRemoved() throws IOException
+    {
+      // test method should be updated -atp
+      
+        /*CellPosition[] positions = {
                 new CellPosition(0,0),//black's
                 new CellPosition(5,5),
                 new CellPosition(0,3),
@@ -50,71 +47,47 @@ public class TestMillFormation {
         };
         for (CellPosition pos: positions) {
             gameManager.performMove(board.getCell(pos));
+        }*/
+
+        TestCaseGenerator testCaseObject = TestCaseGenerator.createFromFile("./test-inputs/allPiecesInMillsMimic.td");
+
+        assertEquals(testCaseObject.getExpectedGridSize(), Board.GRID_SIZE);
+
+        for (CellPosition recordedPos: testCaseObject) {
+            gameManager.performMove(board.getCell(recordedPos));
         }
 
         assertTrue(gameManager.isMillFormed());
 
-        assertEquals(PlayerColor.WHITE, gameManager.getCurrentPlayerColor());
-        assertTrue(board.validateCellSelection(board.getCell(positions[0])));
+        /*assertEquals(PlayerColor.WHITE, gameManager.getCurrentPlayerColor());
+        assertTrue(board.validateCellSelection(board.getCell(positions[0])));*/
     }
 
-    // Class_GivenScenario_Expectation()
-
     @Test
-    public void GameManager_GivenMillIsFormedDuringPlacementPhase_PieceIsRemoved()
+    public void GameManager_GivenMillIsFormedDuringPlacementPhase_PlayerCanRemovePiece() throws IOException
     {
-        // black cell coordinates
-        gameManager.getPlayer().setGamePhase(Player.Phase.PIECE_PLACEMENT);
 
-        CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
-        CellPane coordinate30 = board.getCell(new CellPosition(3, 0));
-        CellPane coordinate60 = board.getCell(new CellPosition(6, 0));
+        TestCaseGenerator testCaseObject = TestCaseGenerator.createFromFile("./test-inputs/blackFormsMillDuringPlacementPhase.td");
+        assertEquals(testCaseObject.getExpectedGridSize(), Board.GRID_SIZE);
 
-        // white cell coordinates
-        gameManager.getOpponent().setGamePhase(Player.Phase.PIECE_PLACEMENT);
-        CellPane coordinate03 = board.getCell(new CellPosition(0, 3));
-        CellPane coordinate06 = board.getCell(new CellPosition(0, 6));
-
-        gameManager.performMove(coordinate00);
-
-        gameManager.performMove(coordinate03);
-        gameManager.performMove(coordinate30);
-        gameManager.performMove(coordinate06);
-        gameManager.performMove(coordinate60); // black forms mill
+        for (CellPosition recordedPos: testCaseObject) {
+            gameManager.performMove(board.getCell(recordedPos));
+        }
 
         assertTrue(gameManager.isMillFormed());
     }
 
 
     @Test
-    public void GameManager_GivenMillIsFormedDuringMovementPhase_PieceIsRemoved()
+    public void GameManager_GivenMillIsFormedDuringMovementPhase_PlayerCanRemovePiece() throws IOException
     {
-        player.setGamePhase(Player.Phase.PIECE_MOVEMENT);
+        TestCaseGenerator testCaseObject = TestCaseGenerator.createFromFile("./test-inputs/blackFormsMillDuringMovementPhase.td");
 
-        // black cell coordinates
-        CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
-        CellPane coordinate30 = board.getCell(new CellPosition(3, 0));
-        CellPane coordinate63 = board.getCell(new CellPosition(6, 3));
+        assertEquals(testCaseObject.getExpectedGridSize(), Board.GRID_SIZE);
 
-        // white cell coordinates
-        CellPane coordinate03 = board.getCell(new CellPosition(0, 3));
-        CellPane coordinate06 = board.getCell(new CellPosition(0, 6));
-        CellPane coordinate34 = board.getCell(new CellPosition(3, 4));
-
-        // cell which will form mill for black
-        CellPane coordinate60 = board.getCell(new CellPosition(6, 0));
-
-        // set up game scenario
-        coordinate00.setState(CellState.BLACK);
-        coordinate30.setState(CellState.BLACK);
-        coordinate63.setState(CellState.BLACK);
-        coordinate03.setState(CellState.WHITE);
-        coordinate06.setState(CellState.WHITE);
-        coordinate34.setState(CellState.WHITE);
-
-        // black moves piece to form mill
-        gameManager.performMove(coordinate63);
-        gameManager.performMove(coordinate60);
+        for (CellPosition recordedPos: testCaseObject) {
+            gameManager.performMove(board.getCell(recordedPos));
+        }
 
         assertTrue(gameManager.isMillFormed());
     }

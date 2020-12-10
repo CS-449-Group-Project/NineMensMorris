@@ -1,0 +1,76 @@
+.root {
+
+}
+
+#firstPane{
+    -fx-background-color: transparent;
+}
+
+#secondPane{
+    -fx-background-color: transparent;
+}
+
+
+.button {
+    -fx-background-color: Transparent;
+    -fx-font-family: "Abadi";
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #a3b4bf;
+    -fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);
+}
+
+#X {
+        -fx-font-family: "Abadi";
+        -fx-font-size: 12px;
+        -fx-font-weight: bold;
+}
+
+#minimize {
+        -fx-font-family: "Abadi";
+        -fx-font-size: 16px;
+        -fx-font-weight: bold;
+}
+
+#topBar {
+    -fx-background-color:  #32404a;
+}
+
+#firstTitle {
+     -fx-background-color:  #3C4E59;
+}
+
+#firstMenu {
+     -fx-background-color:  #2F4959;
+}
+
+#gameWindow {
+    -fx-background-color:  #2F4959;
+}
+
+.label{
+    -fx-text-fill: #a3b4bf;
+    -fx-font-family: "Abadi";
+    -fx-font-size: 70px;
+    -fx-word-wrap: normal;
+
+}
+
+.button:hover {
+    -fx-background-color: #3a5c70;
+        -fx-text-fill: #8F9DA6;
+}
+
+
+#box {
+    -fx-background-color: #3a5c70;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #a3b4bf;
+}
+
+#toggle {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #a3b4bf;
+}
