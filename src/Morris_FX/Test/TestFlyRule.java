@@ -34,16 +34,57 @@ public class TestFlyRule {
     @Test
     public void GameManager_GivenPlayerReachesThreePieces_FlyRuleImplemented() throws IOException
     {
+        gameManager.getPlayer().setGamePhase(Player.Phase.PIECE_MOVEMENT);
+        gameManager.getOpponent().setGamePhase(Player.Phase.PIECE_MOVEMENT);
+        // black cells
+        CellPane coordinate00 = board.getCell(new CellPosition(0, 0));
+        CellPane coordinate30 = board.getCell(new CellPosition(3, 0));
+        CellPane coordinate03 = board.getCell(new CellPosition(0, 3));
+        CellPane coordinate36 = board.getCell(new CellPosition(3, 6));
 
-        TestCaseGenerator testCaseObject = TestCaseGenerator.createFromFile("./test-inputs/flyRuleForWhite.td");
+        // white cells
+        CellPane coordinate11 = board.getCell(new CellPosition(1, 1));
+        CellPane coordinate22 = board.getCell(new CellPosition(2, 2));
+        CellPane coordinate44 = board.getCell(new CellPosition(4, 4));
+        CellPane coordinate55 = board.getCell(new CellPosition(5, 5));
+
+        // black moves here to form mill
+        CellPane coordinate06 = board.getCell(new CellPosition(0, 6));
+
+        coordinate00.setState(CellState.BLACK);
+        coordinate30.setState(CellState.BLACK);
+        coordinate03.setState(CellState.BLACK);
+        coordinate36.setState(CellState.BLACK);
+
+        coordinate11.setState(CellState.WHITE);
+        coordinate22.setState(CellState.WHITE);
+        coordinate44.setState(CellState.WHITE);
+        coordinate55.setState(CellState.WHITE);
+
+        // hard code board piece population
+
+        while(gameManager.getPlayer().getBoardPieces() < 4)
+        {
+            gameManager.getPlayer().increaseBoardPieces();
+            gameManager.getOpponent().increaseBoardPieces();
+        }
+        gameManager.performMove(coordinate36); // piece to move
+        gameManager.performMove(coordinate06); // black forms mill
+        gameManager.performMove(coordinate11); // black removes this white piece
+
+        assertEquals(PlayerColor.WHITE, gameManager.getPlayer().getColor());
+        assertEquals(Player.Phase.FLY_RULE, gameManager.getPlayer().getGamePhase());
+
+
+/*        TestCaseGenerator testCaseObject = TestCaseGenerator.createFromFile("D:/UMKC_Stuff/Projects/NMM_ChooseMe/NineMensMorris/test-inputs/flyRuleForWhite.td");
         assertEquals(testCaseObject.getExpectedGridSize(), Board.GRID_SIZE);
-      
+
         for (CellPosition recordedPos: testCaseObject) {
             gameManager.performMove(board.getCell(recordedPos));
         }
 
         assertEquals(PlayerColor.WHITE, gameManager.getPlayer().getColor());
-        assertEquals(Player.Phase.FLY_RULE, gameManager.getPlayer().getGamePhase());
+        assertEquals(Player.Phase.FLY_RULE, gameManager.getPlayer().getGamePhase());*/
     }
 
     @Test
