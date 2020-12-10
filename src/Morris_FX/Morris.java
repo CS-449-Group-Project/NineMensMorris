@@ -32,6 +32,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class Morris extends Application {
 
+    public enum BoardOption {MARBLE, JADE, WOOD};
+    public static BoardOption currentBoard = BoardOption.WOOD;
     private final GameManager gameManager;
     private final Board board;
     private final BoardPane boardPane;
@@ -238,7 +240,7 @@ public class Morris extends Application {
         menu.setOnAction(e -> primaryStage.setScene(scene2));
         scene3 = new Scene(gameWindow, 550, 675);
         scene3.getStylesheets().add(Morris.class.getResource("StageDesign.css").toExternalForm());
-        scene2 = SceneBuilder.createMenuScene(primaryStage, scene3);
+        scene2 = SceneBuilder.createMenuScene(primaryStage, scene3, boardPane);
         scene1 = SceneBuilder.createFirstScene(primaryStage, scene2, scene3);
 
         primaryStage.setScene(scene1);

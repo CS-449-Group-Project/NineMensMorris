@@ -1,16 +1,19 @@
 package Morris_FX;
 
+import Morris_FX.Ui.BoardPane;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.beans.value.*;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -113,13 +116,50 @@ public class SceneBuilder {
     }
 
 
-    public static Scene createMenuScene(Stage primaryStage, Scene gameScene) throws FileNotFoundException {
+    public static Scene createMenuScene(Stage primaryStage, Scene gameScene, BoardPane boardPane) throws FileNotFoundException {
         Image gear = new Image(new FileInputStream("./images/gear_Icon.png"), 45,45,false,true);
         ImageView gearIcon = new ImageView(gear);
         Image one = new Image(new FileInputStream("./images/1P_Icon.png"), 50,50,false,true);
         ImageView onePlayerIcon = new ImageView(one);
         Image two = new Image(new FileInputStream("./images/2P_Icon.png"), 50,50,false,true);
         ImageView twoPlayerIcon = new ImageView(two);
+
+        ToggleGroup board = new ToggleGroup();
+        RadioButton wood = new RadioButton("Wooden Board");
+        wood.setId("toggle");
+        wood.setLayoutX(30);
+        wood.setLayoutY(75);
+        RadioButton jade = new RadioButton("Jade Board");
+        jade.setId("toggle");
+        jade.setLayoutX(30);
+        jade.setLayoutY(125);
+        RadioButton marble = new RadioButton("Marble board");
+        marble.setId("toggle");
+        marble.setLayoutX(30);
+        marble.setLayoutY(175);
+        wood.setToggleGroup(board);
+        wood.setSelected(true);
+        jade.setToggleGroup(board);
+        marble.setToggleGroup(board);
+
+        board.selectedToggleProperty().addListener(new ChangeListener<Toggle>(){
+            public void changed(ObservableValue<? extends Toggle> ov,
+                                Toggle old_toggle, Toggle new_toggle) {
+                if (board.getSelectedToggle() != null) {
+                    if (board.getSelectedToggle() == wood){
+                        Morris.currentBoard = Morris.BoardOption.WOOD;
+                    }
+                    if (board.getSelectedToggle() == jade){
+                        Morris.currentBoard = Morris.BoardOption.JADE;
+                        System.out.println("JADE\n");
+                    }
+                    if (board.getSelectedToggle() == marble){
+                        Morris.currentBoard = Morris.BoardOption.MARBLE;
+                        System.out.println("MARBLE\n");
+                    }
+                }
+            }
+        });
 
         Pane second = new Pane();
         second.setId("firstPane");
@@ -131,6 +171,7 @@ public class SceneBuilder {
         twoPlayer.setLayoutX(25);
         twoPlayer.setMinSize(100,70);
         twoPlayer.setOnAction(e -> {
+            boardPane.setupBackgroundImage();
             primaryStage.setScene(gameScene);
         });
 
@@ -140,6 +181,7 @@ public class SceneBuilder {
         Ai.setLayoutX(155);
         Ai.setMinSize(100,70);
         Ai.setOnAction(e -> {
+            boardPane.setupBackgroundImage();
             primaryStage.setScene(gameScene);
         });
 
@@ -181,7 +223,7 @@ public class SceneBuilder {
         });
         topBar.getChildren().addAll( minimize, exit);
 
-        firstTitle.getChildren().addAll( Ai, twoPlayer);
+        firstTitle.getChildren().addAll(wood, jade, marble, Ai, twoPlayer);
         second.getChildren().addAll(topBar, firstTitle);
 
         Scene returnValue = new Scene(second, 550,600);
