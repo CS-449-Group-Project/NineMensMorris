@@ -9,10 +9,11 @@ import java.util.Vector;
 public class Board {
     public static final int GRID_SIZE = 7;
 
-    private final CellPane[][] grid;		
+    private final CellPane[][] grid;
+
     private final GameManager gameManager;
     private boolean enableToolTip = false;
-	
+
 
     public Board(GameManager gameManager, boolean enableToolTip) {
         this.gameManager = gameManager;
@@ -71,6 +72,8 @@ public class Board {
         return count;
     }
 
+
+
     // Checks whether the current cell click is a valid move given the phase of the game and pieces on the board
     public boolean validateCellSelection(CellPane cell) {
         gameManager.setError("");
@@ -92,12 +95,11 @@ public class Board {
                 gameManager.setError(cell.getPosition() + " is in a mill.");
             } else {
                 gameManager.setError("Select a " + opponentCellState + " piece.");
-														
+
             }
             return false;
         }
 
- 
         switch (currentPlayer.currentPhase) {
             case PIECE_PLACEMENT: {
                 PiecePlacementPhase piecePlacementPhase = (PiecePlacementPhase) gameManager.phaseMap.get(GameManager.phaseEnum.PIECE_PLACEMENT);
@@ -111,7 +113,7 @@ public class Board {
                 if (pieceMovementPhase.validateCellSelection(cell, currentPlayer, currentPlayerCellState, opponentCellState)) {
                     return true;
                 }
-                gameManager.setError("Select an EMPTY adjacent space.");																		
+                gameManager.setError("Select an EMPTY adjacent space.");
                 break;
             }
 
@@ -121,18 +123,17 @@ public class Board {
                 if (flyRulePhase.validateCellSelection(cell, currentPlayer, currentPlayerCellState, opponentCellState)) {
                     return true;
                 }
-                gameManager.setError("Select an EMPTY spot.");						  
+                gameManager.setError("Select an EMPTY spot.");
                 break;
 
             }
 
             default:
-              gameManager.setError(currentPlayer.currentPhase + " is not a valid phase.");
-              break;
+                gameManager.setError(currentPlayer.currentPhase + " is not a valid phase.");
+                break;
         }
         return false;
     }
-
 
     public void reset() {
         // This assumes that invalid moves are marked as CellState.VOID already
@@ -145,7 +146,6 @@ public class Board {
             }
         }
     }
-
 
     private void createGrid() {
 
@@ -163,13 +163,12 @@ public class Board {
                     cellPane = new CellPane(pos);
                 }
 
-											  
+
                 grid[i][j] = cellPane;
             }
         }
         linkCells();
     }
-
 
     public void linkCells(){
         for (int i = 0; i < GRID_SIZE; i++) {
@@ -203,6 +202,8 @@ public class Board {
         } else if (y == midpoint) {
             return true;
         }
+
+
         return x == y || (x + y == max);
     }
 
@@ -226,6 +227,7 @@ public class Board {
         return rowMoves;
     }
 
+    // I copied this from my NMM implementation with some modifications
     public Vector<CellPosition> getAdjacentSpots(CellPosition from) {
         int x = from.getColumn(),y=from.getRow();
 
@@ -233,8 +235,9 @@ public class Board {
         int max = midpoint * 2;
         Vector<CellPosition> validMoves = new Vector<>(4);
 
+        // midpoint values have 3 or 4 valid moves
         if (x == midpoint) {
-
+            // this difference between each step in vertical is midpoint - y
             int xStepSize = Math.abs(midpoint - y);
             int leftAdjacentX = x - xStepSize;
             int rightAdjacentX = x + xStepSize;
@@ -246,22 +249,23 @@ public class Board {
             }
 
 
-
+            // starts at either : y = 0 or y = 4
             int offsetY = y < midpoint ? 0 : (midpoint + 1);
 
 
+            // this normalizes it so they speak the same language
             int refY = y < midpoint ? y : y - (midpoint + 1);
 
 
             for(int i = Math.max(0, refY - 1); i <= Math.min(refY + 1, midpoint - 1); i++) {
                 if(refY != i) {
-
+                    // offset is reapplied to make it valid again
                     validMoves.add(new CellPosition(x, i + offsetY));
                 }
             }
 
         } else if (y == midpoint) {
-
+            // this difference between each step in horizontal is midpoint - x
             int yStepSize = Math.abs(midpoint - x);
             int upAdjacentY = y - yStepSize;
             int downAdjacentY = y + yStepSize;
@@ -271,23 +275,24 @@ public class Board {
             if (downAdjacentY <= max) { // down
                 validMoves.add(new CellPosition(x, downAdjacentY));
             }
-
+            // starts at either : x = 0 or x = 4
             int offsetX = x < midpoint ? 0 : (midpoint + 1);
 
+            // this normalizes it so they speak the same language
             int refX = x < midpoint ? x : x - (midpoint + 1);
 
             for(int i = Math.max(0, refX - 1); i <= Math.min(refX + 1,midpoint - 1); i++) {
                 if(refX != i) {
-
+                    // offset is reapplied to make it valid again
                     validMoves.add(new CellPosition(i + offsetX, y));
                 }
             }
         } else {
-
+            // a corner only has two valid positions which are located
+            // at the midpoints
             validMoves.add(new CellPosition(x, midpoint));
             validMoves.add(new CellPosition(midpoint, y));
         }
         return validMoves;
     }
-
 }

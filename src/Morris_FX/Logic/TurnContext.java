@@ -1,17 +1,24 @@
 package Morris_FX.Logic;
 
-public class TurnContext {
+public class TurnContext extends ObservableObject {
+    private Player defaultPlayer;
+    private Player defaultOpponent;
     private Player player;
     private Player opponent;
     public TurnContext(Player defaultPlayer, Player defaultOpponent) {
-        player = defaultPlayer;
-        opponent = defaultOpponent;
+        this.defaultPlayer = defaultPlayer;
+        this.defaultOpponent = defaultOpponent;
+        setPlayerOpponent(defaultPlayer, defaultOpponent);
+    }
+
+    private void setPlayerOpponent(Player player, Player opponent) {
+        this.player = player;
+        this.opponent = opponent;
+        firePropertyChange("player", player);
     }
 
     public void switchPlayers() {
-        Player currentPlayer = opponent;
-        opponent = player;
-        player = currentPlayer;
+        setPlayerOpponent(opponent, player);
     }
 
     public Player getPlayer() {
@@ -20,5 +27,9 @@ public class TurnContext {
 
     public Player getOpponent() {
         return opponent;
+    }
+
+    public void reset() {
+        setPlayerOpponent(defaultPlayer, defaultOpponent);
     }
 }

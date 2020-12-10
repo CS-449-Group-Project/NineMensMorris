@@ -1,16 +1,22 @@
 package Morris_FX;
 
-import Morris_FX.Logic.Board;
-import Morris_FX.Logic.CellPosition;
-import Morris_FX.Logic.GameManager;
+import Morris_FX.Logic.*;
 import Morris_FX.Ui.BoardPane;
+import Morris_FX.Ui.PiecesInHandTextField;
+import Morris_FX.Ui.TurnTextField;
 import Utils.TestCaseGenerator;
 import Utils.TestFileDataGenerator;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -22,15 +28,24 @@ import javafx.geometry.Pos;
 import javafx.application.Platform;
 import javafx.stage.StageStyle;
 
+import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Observable;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
 public class Morris extends Application {
+    Player player2;
+    ComputerPlayer computerOpponent;
+    TurnContext turnContext;
+    Player player1;
 
     public enum BoardOption {MARBLE, JADE, WOOD};
     public static BoardOption currentBoard = BoardOption.WOOD;
@@ -39,11 +54,12 @@ public class Morris extends Application {
     private final BoardPane boardPane;
     Scene scene1, scene2, scene3;
 
-    private TextField turnText = new TextField();
+    private TurnTextField turnText;
     private TextField phaseText = new TextField();
     private TextField errorMessage = new TextField();
     private TextField cellSelectedText = new TextField();
     private TextField playerPiecesInHand = new TextField();
+    private PiecesInHandTextField[] piecesInHandTextFields = new PiecesInHandTextField[2];
     private TestFileDataGenerator testFileData;
     private boolean isDebug;
 
@@ -52,6 +68,16 @@ public class Morris extends Application {
         isDebug = java.lang.management.ManagementFactory.
                 getRuntimeMXBean().
                 getInputArguments().toString().contains("jdwp");
+        HashMap<PlayerColor, Player> players = new HashMap<>();
+        int i = 0;
+        for (PlayerColor color: PlayerColor.values()) {
+            Player currentPlayer = new Player(color);
+            players.put(color, currentPlayer);
+            piecesInHandTextFields[i] = new PiecesInHandTextField(color);
+            currentPlayer.addPropertyChangeListener(piecesInHandTextFields[i]);
+            i++;
+        }
+
         if (isDebug) {
             testFileData = new TestFileDataGenerator(Board.GRID_SIZE);
             gameManager = new GameManager(testFileData);
@@ -59,10 +85,9 @@ public class Morris extends Application {
             gameManager = new GameManager();
         }
 
-        gameManager.onTurnSwitch((currentPlayerColor) -> {
-            turnText.setText(String.format("%s's Turn", currentPlayerColor));
-        });
 
+
+        // these needs to be update when individual phases separated
         gameManager.onCellSelected((piece) -> {
             if (piece != null) {
                 cellSelectedText.setText(String.format("Selected %s", piece.getPosition()));
@@ -85,12 +110,22 @@ public class Morris extends Application {
         });
 
         board = new Board(gameManager, true);
+
+        //gameManager.setComputerPlayer(computerPlayer);
+        // Player player2 = players.get(PlayerColor.WHITE);
+        //gameManager.setPlayerVersusComputer();
+
+        player1 = players.get(PlayerColor.BLACK);
+        player2 = players.get(PlayerColor.WHITE);
+        computerOpponent = new ComputerPlayer(PlayerColor.WHITE, board, gameManager);
+
+
+        turnText = new TurnTextField();
+
+
         boardPane = new BoardPane(board, gameManager);
         boardPane.setPadding(new Insets((30), 0, 20, 35));
 
-        turnText.setMaxWidth(120);
-        turnText.setDisable(true);
-        turnText.setStyle("-fx-opacity: 1;");
         phaseText.setMaxWidth(150);
         phaseText.setDisable(true);
         phaseText.setStyle("-fx-opacity: 1;");
@@ -112,11 +147,50 @@ public class Morris extends Application {
     @Override
     public void start(Stage primaryStage) throws FileNotFoundException {
 
+        TurnContext turnContextHuman = new TurnContext(player1, player2);
+        TurnContext turnContextComputer = new TurnContext(player1, computerOpponent);
         primaryStage.initStyle(StageStyle.TRANSPARENT);
         primaryStage.setTitle("Nine Mens Morris");
 
-        Button menu = new Button("Menu");
-        menu.setLayoutX(110);
+        Image gear = new Image(new FileInputStream("./images/gear_Icon.png"), 35,35,false,true);
+        ImageView gearIcon = new ImageView(gear);
+        Image one = new Image(new FileInputStream("./images/1P_Icon.png"), 35,35,false,true);
+        ImageView onePlayerIcon = new ImageView(one);
+        Image two = new Image(new FileInputStream("./images/2P_Icon.png"), 37,37,false,true);
+        ImageView twoPlayerIcon = new ImageView(two);
+        Image marbles = new Image(new FileInputStream("./images/2Marbles.png"), 200,200,false, true);
+        ImageView twoMarbles = new ImageView(marbles);
+
+
+        Button twoPlayer = new Button("    TWO\n PLAYERS");
+        twoPlayer.setId("twoPlayer");
+        twoPlayer.setGraphic(twoPlayerIcon);
+        twoPlayer.setLayoutY(365);
+        twoPlayer.setLayoutX(25);
+        twoPlayer.setMinSize(100,70);
+        twoPlayer.setOnAction(e -> {
+            gameManager.addTurnContext(turnContextHuman);
+            primaryStage.setScene(scene3);
+
+        });
+
+        Button Ai = new Button("SINGLE \nPLAYER");
+        Ai.setGraphic(onePlayerIcon);
+        Ai.setLayoutY(365);
+        Ai.setLayoutX(155);
+        Ai.setMinSize(100,70);
+        Ai.setOnAction(e -> {
+            gameManager.setPlayerVersusComputer();
+            gameManager.addTurnContext(turnContextComputer);
+            turnContextComputer.addPropertyChangeListener(computerOpponent);
+            primaryStage.setScene(scene3);
+        });
+
+        Button gameMenu = new Button("Menu");
+        gameMenu.setLayoutX(110);
+        gameMenu.setOnAction(e -> {
+            primaryStage.setScene(scene2);
+        });
         Button reset = new Button("Play again");
 
         // https://stackoverflow.com/a/28754689
@@ -193,16 +267,35 @@ public class Morris extends Application {
         playerPiecesInHand.setId("box");
 
         infoVBox.getChildren().addAll(infoBox, errorBox);
-        infoBox.getChildren().addAll(turnText,phaseText, cellSelectedText);
+        infoBox.getChildren().addAll(piecesInHandTextFields);
+        infoBox.getChildren().addAll(turnText, phaseText, cellSelectedText);
         errorBox.getChildren().addAll(errorMessage, playerPiecesInHand);
 
         Pane topBar = new Pane();
+        Pane gameTopBar = new Pane();
         topBar.setId("topBar");
+        gameTopBar.setId("topBar");
         topBar.setMinSize(550, 30);
+        gameTopBar.setMinSize(550, 30);
+        gameTopBar.setOnMousePressed(pressEvent -> {
+            gameTopBar.setOnMouseDragged(dragEvent -> {
+                primaryStage.setX(dragEvent.getScreenX() - pressEvent.getSceneX());
+                primaryStage.setY(dragEvent.getScreenY() - pressEvent.getSceneY());
+            });
+        });
 
         if (isDebug) {
             topBar.getChildren().addAll(testGenerate, loadTestState);
         }
+
+        Button menu = new Button();
+        menu.setGraphic(gearIcon);
+        menu.setLayoutY(365);
+        menu.setLayoutX(275);
+        menu.setMinSize(100,70);
+        menu.setOnAction(e -> {
+            primaryStage.setScene(scene2);
+        });
 
         Button exit = new Button("X");
         exit.setId("X");
@@ -226,22 +319,58 @@ public class Morris extends Application {
         minimize.setOnAction(e -> {
             ((Stage)((Button)e.getSource()).getScene().getWindow()).setIconified(true);
         });
-        topBar.getChildren().addAll( menu, reset, minimize, exit);
+        topBar.getChildren().addAll( minimize, exit);
+        gameTopBar.getChildren().addAll( gameMenu, reset, minimize, exit);
 
         //setting the pane for game in the window
         BorderPane gameWindow = new BorderPane();
         gameWindow.setId("gameWindow");
-        gameWindow.setTop(topBar);
+        gameWindow.setTop(gameTopBar);
         gameWindow.setCenter(boardPane);
         gameWindow.setBottom(infoVBox);
 
-        //Scene 1
+
+//SCENE 1
+
+
+        twoMarbles.setLayoutX(325);
+        twoMarbles.setLayoutY(170);
+
+        Pane first = new Pane();
+        first.setId("firstPane");
+
+
+        Pane firstTitle = new Pane();
+        firstTitle.setMinSize(550, 500);
+        firstTitle.setLayoutY(30);
+        firstTitle.setId("firstTitle");
+
+
+
+        Label title = new Label(" NINE\n MENS\n MORRIS");
+        title.setMaxSize(350,500);
+        title.setLayoutY(35);
+        title.setLayoutX(20);
+
+        firstTitle.getChildren().addAll(title, Ai, twoPlayer, menu);
+        first.getChildren().addAll(topBar, firstTitle, twoMarbles);
+
+        scene1 = new Scene(first, 550,600);
+        scene1.setFill(Color.TRANSPARENT);
+        scene1.getStylesheets().add(Morris.class.getResource("StageDesign.css").toExternalForm());
+
+        minimize.setLayoutX(490);
+        minimize.setOnAction(e -> {
+            ((Stage)((Button)e.getSource()).getScene().getWindow()).setIconified(true);
+        });
+        topBar.getChildren().addAll( menu, reset, minimize, exit);
+
         reset.setOnAction(e -> reset());
-        menu.setOnAction(e -> primaryStage.setScene(scene2));
+        //menu.setOnAction(e -> primaryStage.setScene(scene2));
         scene3 = new Scene(gameWindow, 550, 675);
         scene3.getStylesheets().add(Morris.class.getResource("StageDesign.css").toExternalForm());
-        scene2 = SceneBuilder.createMenuScene(primaryStage, scene3, boardPane);
-        scene1 = SceneBuilder.createFirstScene(primaryStage, scene2, scene3);
+        scene2 = SceneBuilder.createMenuScene(primaryStage, scene3, boardPane, gameManager);
+
 
         primaryStage.setScene(scene1);
         primaryStage.show();
@@ -255,7 +384,3 @@ public class Morris extends Application {
     }
 
 }
-
-
-
-

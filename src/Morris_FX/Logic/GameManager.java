@@ -1,24 +1,27 @@
 package Morris_FX.Logic;
 
 import Morris_FX.Ui.CellPane;
+import Morris_FX.Ui.TurnTextField;
 import Utils.TestFileDataGenerator;
 
 import java.util.EnumMap;
-import java.util.Map;
-
+import java.beans.PropertyChangeListener;
 import java.util.Vector;
 
 public class GameManager {
     private TestFileDataGenerator testFileDataGenerator;
     public Vector<CellPosition> allPlacedPieces = new Vector<>(50);
     public Vector<String> piecePlacementComments = new Vector<>(50);
-    private TurnContext playerContext;
+    // delet this
+    private TurnContext turnContext;
     // change from millIsFormed to isMill?
     private boolean millIsFormed = false;
     private boolean isGameOver = false;
     private PlayerColor defaultPlayer = PlayerColor.BLACK;
     private PlayerColor currentPlayer;
     public EnumMap<phaseEnum, IPhase> phaseMap;
+    private boolean playerVersusComputer;
+    private ComputerPlayer computerPlayer;
 
     public enum phaseEnum {
         PIECE_PLACEMENT,
@@ -29,15 +32,27 @@ public class GameManager {
     }
 
 
-
     public GameManager() {
         this.currentPlayer = defaultPlayer;
         setup();
     }
 
+    public static GameManager create() {
+        GameManager gameManager = new GameManager();
+        TurnContext context = new TurnContext(new Player(PlayerColor.BLACK), new Player(PlayerColor.WHITE));
+        gameManager.addTurnContext(context);
+        return gameManager;
+    }
+
+    // for PIECE_PLACEMENT phase this method sets the state of the clicked cell equal to the player color; "Places current
+    // player piece on the board"
+    // for PIECE_MOVEMENT phase this method sets the pieceToMove variable of the current player to the clicked cell if they
+    // dont have one to move already; "Selects a piece"
+    // if they do have a piece to move already then it sets the state of the clicked cell to the player color, sets the
+    // previously occupied cell to empty, and set pieceToMove to null in the current player object; "Places pieceToMove in new position"
     public void performMove(CellPane cellPane) {
-        Player currentPlayer = playerContext.getPlayer();
-        Player inactivePlayer = playerContext.getOpponent();
+        Player currentPlayer = turnContext.getPlayer();
+        Player inactivePlayer = turnContext.getOpponent();
 
         boolean isTesting = testFileDataGenerator != null;
         if (isTesting) {
@@ -96,11 +111,31 @@ public class GameManager {
             setError(getCurrentPlayerColor() + " won!");
             return;
         }
-        playerContext.switchPlayers();
+        turnContext.switchPlayers();
         switchTurn();
     }
 
+    public void setComputerPlayer(ComputerPlayer computerPlayer) {
+        this.computerPlayer = computerPlayer;
+        turnContext.addPropertyChangeListener(computerPlayer);
 
+    }
+
+    public boolean isComputerPlayerTurn() {
+        return (getPlayer() instanceof ComputerPlayer);
+    }
+
+    public void setPlayerVersusComputer() {
+        playerVersusComputer = true;
+    }
+
+    public boolean getPlayerVersusComputer() {
+        return playerVersusComputer;
+    }
+
+    public void setPlayerVersusPlayer() {
+        playerVersusComputer = false;
+    }
 
     public GameManager(TestFileDataGenerator testFileDataGenerator) {
         this.currentPlayer = defaultPlayer;
@@ -109,27 +144,32 @@ public class GameManager {
     }
 
     private void setup() {
-        playerContext = new TurnContext(new Player(PlayerColor.BLACK), new Player(PlayerColor.WHITE));
+        if (!playerVersusComputer) {
+            turnContext = new TurnContext(new Player(PlayerColor.BLACK), new Player(PlayerColor.WHITE));
+        } else {
+            turnContext = new TurnContext(new Player(PlayerColor.BLACK), computerPlayer);
+        }
+
         phaseMap = new EnumMap<phaseEnum, IPhase>(phaseEnum.class);
         phaseMap.put(phaseEnum.PIECE_PLACEMENT, new PiecePlacementPhase(this));
         phaseMap.put(phaseEnum.PIECE_MOVEMENT, new PieceMovementPhase(this));
         phaseMap.put(phaseEnum.FLY_RULE, new FlyRulePhase(this));
-        playerContext = new TurnContext(new Player(PlayerColor.BLACK), new Player(PlayerColor.WHITE));
     }
 
     public PlayerColor getCurrentPlayerColor() {
-        return this.currentPlayer;
+        return getPlayer().getColor();
     }
 
     public Player getPlayer() {
-        return playerContext.getPlayer();
+        return turnContext.getPlayer();
     }
 
     public Player getOpponent() {
-        return playerContext.getOpponent();
+        return turnContext.getOpponent();
     }
 
-    public CellState getOpponentCellState() {return playerContext.getOpponent().getPlayerColorAsCellState();}
+    public CellState getOpponentCellState() {return turnContext.getOpponent().getPlayerColorAsCellState();}
+
 
     public void resetMill(){
         this.millIsFormed = false;
@@ -186,6 +226,10 @@ public class GameManager {
 
     public boolean isOver() {
         return isGameOver;
+    }
+
+    public void addTurnContext(TurnContext turnContext) {
+        this.turnContext = turnContext;
     }
 
     public interface OnPhaseChangeListener {
@@ -274,6 +318,7 @@ public class GameManager {
         }
     }
 
+
     public interface TurnChangeListener {
         void onTurnSwitch(PlayerColor color);
     }
@@ -284,10 +329,10 @@ public class GameManager {
         this.turnChangeListener = turnChangeListener;
         // so the new listener instantly gets notified of the current player
         // turn
-        turnChanged();
+        announceTurnChanged();
     }
 
-    private void turnChanged() {
+    private void announceTurnChanged() {
         if (turnChangeListener != null) {
             turnChangeListener.onTurnSwitch(getCurrentPlayerColor());
         }
@@ -295,22 +340,20 @@ public class GameManager {
 
     public void switchTurn() {
         currentPlayer = currentPlayer.complement();
-        turnChanged();
+        announceTurnChanged();
         announcePhaseChange();
     }
 
-
     public void resetGameManager() {
         currentPlayer = defaultPlayer;
-      
-        playerContext.getPlayer().reset();
-        playerContext.getOpponent().reset();
         announcePiecesInHandChange();
-
+        turnContext.reset();
+        turnContext.getPlayer().reset();
+        turnContext.getOpponent().reset();
         millIsFormed = false;
         isGameOver = false;
         setError("");
-        turnChanged();
+        announceTurnChanged();
         announcePhaseChange();
         allPlacedPieces.clear();
         if (testFileDataGenerator != null) {
