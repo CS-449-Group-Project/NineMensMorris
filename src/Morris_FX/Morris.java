@@ -20,8 +20,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.geometry.Pos;
 import javafx.application.Platform;
+import javafx.stage.StageStyle;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,6 +32,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class Morris extends Application {
 
+    public enum BoardOption {MARBLE, JADE, WOOD};
+    public static BoardOption currentBoard = BoardOption.WOOD;
     private final GameManager gameManager;
     private final Board board;
     private final BoardPane boardPane;
@@ -106,12 +110,13 @@ public class Morris extends Application {
     public static void main(String[] args) { launch(args); }
 
     @Override
-    public void start(Stage primaryStage)  {
+    public void start(Stage primaryStage) throws FileNotFoundException {
 
+        primaryStage.initStyle(StageStyle.TRANSPARENT);
         primaryStage.setTitle("Nine Mens Morris");
 
         Button menu = new Button("Menu");
-        Button exit = new Button("Exit");
+        menu.setLayoutX(110);
         Button reset = new Button("Play again");
 
         // https://stackoverflow.com/a/28754689
@@ -172,72 +177,71 @@ public class Morris extends Application {
             });
         }
 
-        //set exit action for the exit button
-        exit.setOnAction(e -> Platform.exit());
 
         //creating a box for scene3 (game scene) to include the 3 above buttons
-        HBox choices = new HBox();
-        choices.getChildren().addAll(menu, reset, exit);
 
-        if (isDebug) {
-            choices.getChildren().addAll(testGenerate, loadTestState);
-        }
         VBox infoVBox = new VBox();
+        infoVBox.setId("box");
         HBox infoBox = new HBox();
+        infoBox.setId("box");
         HBox errorBox = new HBox();
+        errorBox.setId("box");
+        turnText.setId("box");
+        phaseText.setId("box");
+        cellSelectedText.setId("box");
+        errorMessage.setId("box");
+        playerPiecesInHand.setId("box");
 
         infoVBox.getChildren().addAll(infoBox, errorBox);
         infoBox.getChildren().addAll(turnText,phaseText, cellSelectedText);
         errorBox.getChildren().addAll(errorMessage, playerPiecesInHand);
 
+        Pane topBar = new Pane();
+        topBar.setId("topBar");
+        topBar.setMinSize(550, 30);
+
+        if (isDebug) {
+            topBar.getChildren().addAll(testGenerate, loadTestState);
+        }
+
+        Button exit = new Button("X");
+        exit.setId("X");
+        exit.setMinSize(25, 25);
+        //exit.setLayoutY(15);
+        exit.setLayoutX(520);
+        exit.setOnAction(e -> Platform.exit());
+
+        topBar.setOnMousePressed(pressEvent -> {
+            topBar.setOnMouseDragged(dragEvent -> {
+                primaryStage.setX(dragEvent.getScreenX() - pressEvent.getSceneX());
+                primaryStage.setY(dragEvent.getScreenY() - pressEvent.getSceneY());
+            });
+        });
+
+        Button minimize = new Button("-");
+        minimize.setId("minimize");
+        minimize.setMinSize(25,30);
+
+        minimize.setLayoutX(490);
+        minimize.setOnAction(e -> {
+            ((Stage)((Button)e.getSource()).getScene().getWindow()).setIconified(true);
+        });
+        topBar.getChildren().addAll( menu, reset, minimize, exit);
+
         //setting the pane for game in the window
         BorderPane gameWindow = new BorderPane();
-        gameWindow.setTop(infoVBox);
+        gameWindow.setId("gameWindow");
+        gameWindow.setTop(topBar);
         gameWindow.setCenter(boardPane);
-        gameWindow.setBottom(choices);
+        gameWindow.setBottom(infoVBox);
 
         //Scene 1
-        GridPane first = new GridPane();
-        first.setAlignment(Pos.CENTER);
-        first.setHgap(10);
-        first.setVgap(10);
-        first.setPadding(new Insets((25), 25, 25, 25));
-
-        Text welcome = new Text ("Welcome");
-        Button enter = new Button("Enter");
-        enter.setOnAction(e -> primaryStage.setScene(scene2));
-
-        welcome.setFont(Font.font("Tacoma", FontWeight.NORMAL, 20));
-        first.add(welcome, 0, 0, 2, 1);
-        first.add(enter, 1, 1);
-
-        scene1 = new Scene(first, 300, 275);
-
-        //Scene 2
-        GridPane second = new GridPane();
-        second.setAlignment(Pos.CENTER);
-        second.setHgap(10);
-        second.setVgap(10);
-        second.setPadding(new Insets((25), 25, 25, 25));
-
-        Text menuLabel = new Text("Menu");
-        Button play = new Button("Play");
-        play.setOnAction(e -> {
-            reset();
-            primaryStage.setScene(scene3);
-        });
-        menuLabel.setFont(Font.font("Tacoma", FontWeight.NORMAL, 20));
-        second.add(menuLabel, 0, 0, 2, 1);
-        second.add(play, 1, 1);
-        scene2 = new Scene(second, 300, 275);
-
-
-
-        //scene 3
-        // Label label3 = new Label("Game");
         reset.setOnAction(e -> reset());
         menu.setOnAction(e -> primaryStage.setScene(scene2));
         scene3 = new Scene(gameWindow, 550, 675);
+        scene3.getStylesheets().add(Morris.class.getResource("StageDesign.css").toExternalForm());
+        scene2 = SceneBuilder.createMenuScene(primaryStage, scene3, boardPane);
+        scene1 = SceneBuilder.createFirstScene(primaryStage, scene2, scene3);
 
         primaryStage.setScene(scene1);
         primaryStage.show();
