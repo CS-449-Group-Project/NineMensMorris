@@ -117,7 +117,6 @@ public class SceneBuilder {
         return returnValue;
     }
 
-
     public static Scene createMenuScene(Stage primaryStage, Scene gameScene, BoardPane boardPane, GameManager gameManager) throws FileNotFoundException {
         Image gear = new Image(new FileInputStream("./images/gear_Icon.png"), 45,45,false,true);
         ImageView gearIcon = new ImageView(gear);
@@ -227,6 +226,7 @@ public class SceneBuilder {
         topBar.getChildren().addAll( minimize, exit);
 
         firstTitle.getChildren().addAll(wood, jade, marble, twoPlayer);
+        //firstTitle.getChildren().addAll(wood, jade, marble, Ai, twoPlayer);
         second.getChildren().addAll(topBar, firstTitle);
 
         Scene returnValue = new Scene(second, 550,600);

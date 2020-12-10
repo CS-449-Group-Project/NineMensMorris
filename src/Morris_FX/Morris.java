@@ -359,6 +359,11 @@ public class Morris extends Application {
         scene1.setFill(Color.TRANSPARENT);
         scene1.getStylesheets().add(Morris.class.getResource("StageDesign.css").toExternalForm());
 
+        minimize.setLayoutX(490);
+        minimize.setOnAction(e -> {
+            ((Stage)((Button)e.getSource()).getScene().getWindow()).setIconified(true);
+        });
+        topBar.getChildren().addAll( menu, reset, minimize, exit);
 
         reset.setOnAction(e -> reset());
         //menu.setOnAction(e -> primaryStage.setScene(scene2));
