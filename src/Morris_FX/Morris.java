@@ -285,6 +285,15 @@ public class Morris extends Application {
             topBar.getChildren().addAll(testGenerate, loadTestState);
         }
 
+        Button menu = new Button();
+        menu.setGraphic(gearIcon);
+        menu.setLayoutY(365);
+        menu.setLayoutX(275);
+        menu.setMinSize(100,70);
+        menu.setOnAction(e -> {
+            primaryStage.setScene(scene2);
+        });
+
         Button exit = new Button("X");
         exit.setId("X");
         exit.setMinSize(25, 25);
@@ -328,16 +337,6 @@ public class Morris extends Application {
         first.setId("firstPane");
 
 
-
-//        Button menu = new Button();
-//        menu.setGraphic(gearIcon);
-//        menu.setLayoutY(365);
-//        menu.setLayoutX(275);
-//        menu.setMinSize(100,70);
-//        menu.setOnAction(e -> {
-//            primaryStage.setScene(scene2);
-//        });
-
         Pane firstTitle = new Pane();
         firstTitle.setMinSize(550, 500);
         firstTitle.setLayoutY(30);
@@ -350,7 +349,7 @@ public class Morris extends Application {
         title.setLayoutY(35);
         title.setLayoutX(20);
 
-        firstTitle.getChildren().addAll(title, Ai, twoPlayer);
+        firstTitle.getChildren().addAll(title, Ai, twoPlayer, menu);
         first.getChildren().addAll(topBar, firstTitle, twoMarbles);
 
         scene1 = new Scene(first, 550,600);
@@ -363,10 +362,6 @@ public class Morris extends Application {
         scene3 = new Scene(gameWindow, 550, 675);
         scene3.getStylesheets().add(Morris.class.getResource("StageDesign.css").toExternalForm());
         scene2 = SceneBuilder.createMenuScene(primaryStage, scene3, boardPane, gameManager);
-
-
-
-
 
 
         primaryStage.setScene(scene1);

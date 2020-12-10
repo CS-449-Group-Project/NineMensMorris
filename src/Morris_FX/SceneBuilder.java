@@ -166,7 +166,7 @@ public class SceneBuilder {
         Pane second = new Pane();
         second.setId("firstPane");
 
-        Button twoPlayer = new Button("    TWO\n PLAYERS");
+        Button twoPlayer = new Button("    PLAY");
         twoPlayer.setId("twoPlayer");
         twoPlayer.setGraphic(twoPlayerIcon);
         twoPlayer.setLayoutY(365);
@@ -177,16 +177,16 @@ public class SceneBuilder {
             primaryStage.setScene(gameScene);
         });
 
-        Button Ai = new Button("SINGLE \nPLAYER");
-        Ai.setGraphic(onePlayerIcon);
-        Ai.setLayoutY(365);
-        Ai.setLayoutX(155);
-        Ai.setMinSize(100,70);
-        Ai.setOnAction(e -> {
-            boardPane.setupBackgroundImage();
-            gameManager.setPlayerVersusComputer();
-            primaryStage.setScene(gameScene);
-        });
+//        Button Ai = new Button("SINGLE \nPLAYER");
+//        Ai.setGraphic(onePlayerIcon);
+//        Ai.setLayoutY(365);
+//        Ai.setLayoutX(155);
+//        Ai.setMinSize(100,70);
+//        Ai.setOnAction(e -> {
+//            boardPane.setupBackgroundImage();
+//            gameManager.setPlayerVersusComputer();
+//            primaryStage.setScene(gameScene);
+//        });
 
         Pane firstTitle = new Pane();
         firstTitle.setMinSize(550, 500);
@@ -226,7 +226,7 @@ public class SceneBuilder {
         });
         topBar.getChildren().addAll( minimize, exit);
 
-        firstTitle.getChildren().addAll(wood, jade, marble, Ai, twoPlayer);
+        firstTitle.getChildren().addAll(wood, jade, marble, twoPlayer);
         second.getChildren().addAll(topBar, firstTitle);
 
         Scene returnValue = new Scene(second, 550,600);
