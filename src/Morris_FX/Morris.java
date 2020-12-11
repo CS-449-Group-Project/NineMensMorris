@@ -196,6 +196,7 @@ public class Morris extends Application {
         // https://stackoverflow.com/a/28754689
         Button testGenerate = new Button("Save State.");
         Button loadTestState = new Button("Load save state.");
+        loadTestState.setLayoutX(150);
         if (isDebug) {
             testGenerate.setOnAction(e -> {
                 FileChooser fileChooser = new FileChooser();
@@ -265,6 +266,7 @@ public class Morris extends Application {
         cellSelectedText.setId("box");
         errorMessage.setId("box");
         playerPiecesInHand.setId("box");
+        //piecesInHandTextFields.setId("box");
 
         infoVBox.getChildren().addAll(infoBox, errorBox);
         infoBox.getChildren().addAll(piecesInHandTextFields);
@@ -303,6 +305,11 @@ public class Morris extends Application {
         //exit.setLayoutY(15);
         exit.setLayoutX(520);
         exit.setOnAction(e -> Platform.exit());
+        Button gameExit = new Button("X");
+        gameExit.setId("X");
+        gameExit.setMinSize(25, 25);
+        gameExit.setLayoutX(520);
+        gameExit.setOnAction(e -> Platform.exit());
 
         topBar.setOnMousePressed(pressEvent -> {
             topBar.setOnMouseDragged(dragEvent -> {
@@ -319,8 +326,14 @@ public class Morris extends Application {
         minimize.setOnAction(e -> {
             ((Stage)((Button)e.getSource()).getScene().getWindow()).setIconified(true);
         });
-        topBar.getChildren().addAll( minimize, exit);
-        gameTopBar.getChildren().addAll( gameMenu, reset, minimize, exit);
+        Button gameMinimize = new Button("-");
+        gameMinimize.setId("minimize");
+        gameMinimize.setMinSize(25,30);
+
+        gameMinimize.setLayoutX(490);
+        gameMinimize.setOnAction(e -> {
+            ((Stage)((Button)e.getSource()).getScene().getWindow()).setIconified(true);
+        });
 
         //setting the pane for game in the window
         BorderPane gameWindow = new BorderPane();
@@ -346,24 +359,20 @@ public class Morris extends Application {
         firstTitle.setId("firstTitle");
 
 
-
         Label title = new Label(" NINE\n MENS\n MORRIS");
         title.setMaxSize(350,500);
         title.setLayoutY(35);
         title.setLayoutX(20);
 
-        firstTitle.getChildren().addAll(title, Ai, twoPlayer, menu);
+        firstTitle.getChildren().addAll(title, Ai, twoPlayer);
         first.getChildren().addAll(topBar, firstTitle, twoMarbles);
+        gameTopBar.getChildren().addAll( gameMenu, reset, gameMinimize, gameExit);
+        topBar.getChildren().addAll( minimize, exit);
 
         scene1 = new Scene(first, 550,600);
         scene1.setFill(Color.TRANSPARENT);
         scene1.getStylesheets().add(Morris.class.getResource("StageDesign.css").toExternalForm());
 
-        minimize.setLayoutX(490);
-        minimize.setOnAction(e -> {
-            ((Stage)((Button)e.getSource()).getScene().getWindow()).setIconified(true);
-        });
-        topBar.getChildren().addAll( menu, reset, minimize, exit);
 
         reset.setOnAction(e -> reset());
         //menu.setOnAction(e -> primaryStage.setScene(scene2));
