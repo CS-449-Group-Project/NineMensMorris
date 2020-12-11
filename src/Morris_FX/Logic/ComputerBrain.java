@@ -57,22 +57,31 @@ public class ComputerBrain {
         CellState playerCellState = player.getPlayerColorAsCellState();
         CellState opponentCellState = playerCellState.complement();
         Vector<CellPane> playerPieces = board.getAllCellsWithState(playerCellState);
+
+        if (board.doesStateHaveNonMillPiece(playerCellState)) {
+            Vector<CellPane> potentialplayerMills = board.getPotentialMillCells(playerCellState);
+            if (potentialplayerMills.size() > 0) {
+                return board.findAllNonMillPiece(playerCellState);
+            }
+        }
+
+
         for (CellPane playerPiece: playerPieces) {
             int fewestFreeSpots = Integer.MAX_VALUE;
             int emptySpots = 0;
             if (MillChecker.partOfPotentialMill(playerPiece, playerCellState)) {
                 // discourage selecting something in a potential mill
-                emptySpots = 200;
+                emptySpots = 100;
             }
 
             if (MillChecker.millFormed(playerPiece, opponentCellState)) {
                 // discourage choices that block opponent mills
                 emptySpots = 100;
             }
-
             // one with fewest open spots is the one that should be selected
             emptySpots += board.getEmptyAdjacentSpots(playerPiece.getPosition()).size();
 
+            System.out.println(emptySpots + " " + playerPiece.getPosition());
             if (emptySpots < fewestFreeSpots) {
                 fewestFreeSpots = emptySpots;
                 bestMoves.clear();
@@ -82,6 +91,7 @@ public class ComputerBrain {
                 bestMoves.add(playerPiece);
             }
         }
+
 
         return bestMoves;
     }
