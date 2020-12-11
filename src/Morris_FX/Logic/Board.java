@@ -2,9 +2,9 @@ package Morris_FX.Logic;
 
 
 import Morris_FX.Ui.CellPane;
+import javafx.util.Pair;
 
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 public class Board {
     public static final int GRID_SIZE = 7;
@@ -51,12 +51,24 @@ public class Board {
     public boolean doesStateHaveNonMillPiece(CellState state) {
         Vector<CellPane> allPiecePlacements = getAllCellsWithState(state);
         for (CellPane cell : allPiecePlacements) {
-            if (!gameManager.millFormed(cell)) {
+            if (!MillChecker.millFormed(cell)) {
                 return true;
             }
         }
         return false;
     }
+
+    public Vector<CellPane> findAllNonMillPiece(CellState state) {
+        Vector<CellPane> allPiecePlacements = getAllCellsWithState(state);
+        Vector<CellPane> nonMills = new Vector<>();
+        for (CellPane cell : allPiecePlacements) {
+            if (!MillChecker.millFormed(cell)) {
+                nonMills.add(cell);
+            }
+        }
+        return nonMills;
+    }
+
 
     public int getValidMoveCount(CellState state) {
         int count = 0;
@@ -73,7 +85,6 @@ public class Board {
     }
 
 
-
     // Checks whether the current cell click is a valid move given the phase of the game and pieces on the board
     public boolean validateCellSelection(CellPane cell) {
         gameManager.setError("");
@@ -85,9 +96,9 @@ public class Board {
         if (gameManager.isOver()) {
             return false;
         }
-        if(gameManager.isMillFormed()){
+        if(gameManager.getPlayer().isMillFormed()){
             if (cell.matches(opponentCellState)) {
-                if (!gameManager.millFormed(cell)) {
+                if (!MillChecker.millFormed(cell)) {
                     return true;
                 } else if (!doesStateHaveNonMillPiece(opponentCellState)) {
                     return true;
@@ -295,4 +306,160 @@ public class Board {
         }
         return validMoves;
     }
+
+    public Vector<CellPane> getVacantMillCells(CellPane pane) {
+        // first check if missing CellPositions are all empty
+        Vector<CellPane> allVacant = new Vector<>();
+        CellPosition panePos = pane.getPosition();
+        Vector<CellPosition> horizontalPos = findMissingHorizontalMillCoordsFor(panePos);
+        Vector<CellPane> vacantHorizontal = new Vector<>();
+        for (CellPosition pos: horizontalPos) {
+            CellPane paneOfFocus = getCell(pos);
+            if (paneOfFocus.isEmpty()) {
+                vacantHorizontal.add(paneOfFocus);
+            }
+        }
+        if (vacantHorizontal.size() == horizontalPos.size()) {
+            allVacant.addAll(vacantHorizontal);
+        }
+
+        CellPosition flippedPos = panePos.flip();
+        Vector<CellPosition> verticalPos = findMissingHorizontalMillCoordsFor(flippedPos);
+        Vector<CellPane> vacantVertical = new Vector<>();
+
+        for (CellPosition pos: verticalPos) {
+            CellPane paneOfFocus = getCell(pos.flip());
+            if (paneOfFocus.isEmpty()) {
+                vacantVertical.add(paneOfFocus);
+            }
+        }
+
+        if (vacantVertical.size() == verticalPos.size()) {
+            allVacant.addAll(vacantVertical);
+        }
+        return allVacant;
+    }
+
+    public Vector<CellPosition> findMissingHorizontalMillCoordsFor(CellPosition pos) {
+        int x = pos.getColumn(), y = pos.getRow();
+        Vector<CellPosition> millCellPositions = new Vector<>();
+        if (y == 3) {
+            List<Integer> validRowMoves = getValidRowMoves(y);
+            boolean belowMiddle = x < 3;
+            for (Integer row : validRowMoves) {
+                boolean rowBelowMiddle = (row < 3);
+                if (row == x) {
+                    continue;
+                }
+                if (rowBelowMiddle == belowMiddle) {
+                    millCellPositions.add(new CellPosition(x, y));
+                }
+            }
+        } else {
+            List<Integer> validRowMoves = getValidRowMoves(y);
+            for (Integer row : validRowMoves) {
+                if (row == x) {
+                    continue;
+                }
+                millCellPositions.add(new CellPosition(x, y));
+            }
+        }
+
+        return millCellPositions;
+    }
+
+    public Vector<CellPane> getPotentialMillCells(CellState color) {
+        Vector<CellPane> potentialMillSpots = new Vector<>();
+        for (CellPane cell: getAllValidEmptyCells()) {
+            if (MillChecker.millFormed(cell, color))   {
+                potentialMillSpots.add(cell);
+            }
+        }
+        return potentialMillSpots;
+    }
+
+
+    public Pair<CellPane, Integer> firstPieceOnShortestPath(CellPane source, CellPane target) {
+        return firstPieceOnShortestPath(source, target, new HashMap<>());
+    }
+
+    private Pair<CellPane, Integer> firstPieceOnShortestPath(CellPane source, CellPane target, HashMap<CellPane, Pair<CellPane, Integer>> visited) {
+        if (source == target) {
+            return new Pair<>(null, 0);
+        }
+
+        int lowestDistance = Integer.MAX_VALUE;
+        CellPane bestChoice = null;
+        for (CellPane pane : source.adjacentCells) {
+            Pair<CellPane, Integer> childPair;
+
+            // what we want
+             if (pane == target) {
+                bestChoice = pane;
+                lowestDistance = 1;
+                break;
+            } else if (visited.containsKey(pane)) {
+                 // been visited, get cached value and make decision
+                childPair = visited.get(pane);
+            } else if (pane.isEmpty()) {
+                // empty can explore
+                visited.put(pane, null);
+                childPair = firstPieceOnShortestPath(pane, target, visited);
+                visited.put(pane, childPair); // update with true value
+            } else { //  not empty, ignore those
+                continue;
+            }
+
+            // check prevents parent cells or bad cells
+            // from being considered
+            if (childPair != null) {
+                int distance = childPair.getValue();
+                if (distance < lowestDistance) {
+                    lowestDistance = distance;
+                    bestChoice = pane;
+                }
+            }
+        }
+
+        // could not find a good path
+        if (lowestDistance == Integer.MAX_VALUE) {
+            return null;
+        }
+
+        return new Pair<>(bestChoice, lowestDistance + 1);
+    }
+
+    public Vector<CellPosition> getEmptyAdjacentSpots(CellPosition from) {
+        Vector<CellPosition> emptySpots = new Vector<>();
+        for(CellPosition pos: getAdjacentSpots(from)) {
+            if (getCell(pos).isEmpty()) {
+                emptySpots.add(pos);
+            }
+        }
+        return emptySpots;
+    }
+
+    public ArrayList<CellPane> getAllValidCells() {
+        ArrayList<CellPane> validCells = new ArrayList<>(GRID_SIZE);
+        for (int i = 0; i < GRID_SIZE; i++) {
+            for(int j = 0; j < GRID_SIZE; j++) {
+                CellPosition pos = new CellPosition(i,j);
+                if (isValidCellSpot(pos)) {
+                    validCells.add(getCell(pos));
+                }
+            }
+        }
+        return validCells;
+    }
+
+    public ArrayList<CellPane> getAllValidEmptyCells() {
+        ArrayList<CellPane> validEmptyCells = new ArrayList<>(GRID_SIZE);
+        for (CellPane cell : getAllValidCells()) {
+            if (cell.isEmpty()) {
+                validEmptyCells.add(cell);
+            }
+        }
+        return validEmptyCells;
+    }
+
 }

@@ -59,7 +59,7 @@ public class GameManager {
             testFileDataGenerator.addPosition(cellPane.getPosition());
         }
 
-        if (isMillFormed()) {
+        if (currentPlayer.isMillFormed()) {
             removePieceMoves(cellPane);
             addMoves(cellPane);
             cellPane.setState(CellState.EMPTY);
@@ -69,7 +69,7 @@ public class GameManager {
                     inactivePlayer.setGamePhase(Player.Phase.FLY_RULE);
                 }
             }
-            resetMill();
+            currentPlayer.resetMillFormed();
         } else {
             switch (currentPlayer.currentPhase) {
                 case PIECE_PLACEMENT:
@@ -80,6 +80,7 @@ public class GameManager {
                     PieceMovementPhase pieceMovementPhase = (PieceMovementPhase) phaseMap.get(GameManager.phaseEnum.PIECE_MOVEMENT);
                     pieceMovementPhase.performMove(cellPane, currentPlayer);
                     if (currentPlayer.hasPieceToMove()) {
+                        turnContext.reannounceCurrentPlayer();
                         return;
                     }
                     break;
@@ -88,12 +89,16 @@ public class GameManager {
                     FlyRulePhase flyRulePhase = (FlyRulePhase) phaseMap.get(phaseEnum.FLY_RULE);
                     flyRulePhase.performMove(cellPane, currentPlayer);
                     if (currentPlayer.hasPieceToMove()) {
+                        turnContext.reannounceCurrentPlayer();
                         return;
                     }
                     break;
 
             }
-            if(millFormed(cellPane)){
+            if(MillChecker.millFormed(cellPane)){
+                currentPlayer.setMillFormed();
+                announcePhaseChange();
+                turnContext.reannounceCurrentPlayer();
                 return;
             }
         }
@@ -171,59 +176,6 @@ public class GameManager {
     public CellState getOpponentCellState() {return turnContext.getOpponent().getPlayerColorAsCellState();}
 
 
-    public void resetMill(){
-        this.millIsFormed = false;
-    }
-
-    public void setMillIsFormedToTrue() {
-        this.millIsFormed = true;
-        announcePhaseChange();
-    }
-
-    // change from isMillFormed to millIsFormed()?
-    public boolean isMillFormed() {
-        return this.millIsFormed;
-    }
-
-    public boolean millFormed (CellPane cell){
-        CellPane recursiveCell = cell;
-        int vertical = 1;
-        int horizontal = 1;
-
-        //check vertical first, check up pointer until either the reference is null or the playstate is not the 'color' of the given cell
-        while(recursiveCell.up != null && recursiveCell.up.cellState == cell.cellState) {
-            recursiveCell = recursiveCell.up;
-            vertical++;
-        }
-        recursiveCell = cell;
-        while(recursiveCell.down != null && recursiveCell.down.cellState == cell.cellState) {
-            recursiveCell = recursiveCell.down;
-            vertical++;
-        }
-        if (vertical == 3) {
-            setMillIsFormedToTrue();
-            return true;
-        }
-        recursiveCell = cell;
-
-        //now check horizontal
-        while(recursiveCell.left != null && recursiveCell.left.cellState == cell.cellState) {
-            recursiveCell = recursiveCell.left;
-            horizontal++;
-        }
-        recursiveCell = cell;
-        while(recursiveCell.right != null && recursiveCell.right.cellState == cell.cellState) {
-            recursiveCell = recursiveCell.right;
-            horizontal++;
-        }
-        if (horizontal == 3) {
-            setMillIsFormedToTrue();
-            return true;
-        }
-
-        return false;
-    }
-
     public boolean isOver() {
         return isGameOver;
     }
@@ -244,12 +196,11 @@ public class GameManager {
 
     public void announcePhaseChange() {
         if (phaseListener != null) {
-            if (isMillFormed()) {
+            if (getPlayer().isMillFormed()) {
                 phaseListener.onPhaseChange(Player.Phase.MILL_FORMED);
             } else {
                 phaseListener.onPhaseChange(getPlayer().getGamePhase());
             }
-
         }
     }
 

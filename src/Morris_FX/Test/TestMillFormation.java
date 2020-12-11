@@ -57,7 +57,7 @@ public class TestMillFormation {
             gameManager.performMove(board.getCell(recordedPos));
         }
 
-        assertTrue(gameManager.isMillFormed());
+        assertTrue(gameManager.getPlayer().isMillFormed());
 
         /*assertEquals(PlayerColor.WHITE, gameManager.getCurrentPlayerColor());
         assertTrue(board.validateCellSelection(board.getCell(positions[0])));*/
@@ -74,7 +74,7 @@ public class TestMillFormation {
             gameManager.performMove(board.getCell(recordedPos));
         }
 
-        assertTrue(gameManager.isMillFormed());
+        assertTrue(gameManager.getPlayer().isMillFormed());
     }
 
 
@@ -89,7 +89,7 @@ public class TestMillFormation {
             gameManager.performMove(board.getCell(recordedPos));
         }
 
-        assertTrue(gameManager.isMillFormed());
+        assertTrue(gameManager.getPlayer().isMillFormed());
     }
 
 }

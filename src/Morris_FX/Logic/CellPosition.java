@@ -43,4 +43,8 @@ public class CellPosition {
         char character = (char)(column + 0x41);
         return String.format("%c%d", character, (Board.GRID_SIZE - row));
     }
+
+    public CellPosition flip() {
+        return new CellPosition(row, column);
+    }
 }

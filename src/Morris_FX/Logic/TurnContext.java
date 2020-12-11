@@ -17,6 +17,10 @@ public class TurnContext extends ObservableObject {
         firePropertyChange("player", player);
     }
 
+    public void reannounceCurrentPlayer() {
+        firePropertyChange("player", player);
+    }
+
     public void switchPlayers() {
         setPlayerOpponent(opponent, player);
     }

@@ -4,59 +4,69 @@ import Morris_FX.Ui.CellPane;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Vector;
 
 public class ComputerPlayer extends Player implements PropertyChangeListener  {
-    private Board board;
-    private GameManager gameManager;
-    private int x, y;
+    private final Board board;
+    private final GameManager gameManager;
 
     public void onComputerTurn() {
+        Phase phase = getGamePhase();
+        Vector<CellPane> bestMoves = null;
+        if (!millFormed) {
+            switch(phase) {
+                case PIECE_PLACEMENT:
+                    bestMoves = ComputerBrain.getOptimalPiecePlacement(board, this);
+                    break;
+                case PIECE_MOVEMENT: {
+                    if (pieceToMove == null) {
+                        bestMoves = ComputerBrain.getOptimalPieceSelection(board, this);
+                    } else {
+                        bestMoves = ComputerBrain.getOptimalPieceMovement(board, this);
+                    }
+                    break;
+                }
+                case FLY_RULE: {
+                    if (pieceToMove == null) {
+                        bestMoves = ComputerBrain.getOptimalPieceFlySelection(board, this);
+                    } else {
+                        bestMoves = ComputerBrain.getOptimalPieceFlyMovement(board, this);
+                    }
+                    break;
+                }
+                default:
+                    bestMoves = null;
+                    break;
 
-        // always performMove at least once
-        CellPane cell = getCellForComputerTurn();
-        System.out.println(cell.getPosition());
-        gameManager.performMove(cell);
-
-        // performMove again if not Piece Placement phase
-        if (getGamePhase() != Phase.PIECE_PLACEMENT) {
-            cell = getCellForComputerTurn();
-            System.out.println(cell.getPosition());
-            gameManager.performMove(cell);
+            }
+        } else {
+            bestMoves = ComputerBrain.getOptimalPieceToRemove(board, this);
         }
 
-        if (gameManager.isMillFormed()) {
-            cell = getCellForComputerTurn();
-            System.out.println(cell.getPosition());
+        if (bestMoves == null || bestMoves.size() == 0) {
+            CellPane cell = getCellForComputerTurn();
+            System.out.println(phase + " => (Random)" + cell.getPosition());
             gameManager.performMove(cell);
+        } else {
+            int choice = (int) (Math.random() * bestMoves.size());
+            CellPane bestChoice = bestMoves.get(choice);
+            System.out.println(phase + " => " + bestChoice.getPosition());
+            gameManager.performMove(bestChoice);
         }
-
-        /*if (getGamePhase() == Phase.MILL_FORMED) {
-            cell = getCellForComputerTurn();
-            System.out.println(cell.getPosition());
-            gameManager.performMove(cell);
-        }*/
     }
 
     private CellPane getCellForComputerTurn() {
         // This position should have some logic to determine it
         CellPane cellPane;
+        int x,y;
         do {
             // generate random x and y
-            x = (int) (Math.random() * board.GRID_SIZE);
-            y = (int) (Math.random() * board.GRID_SIZE);
+            x = (int) (Math.random() * Board.GRID_SIZE);
+            y = (int) (Math.random() * Board.GRID_SIZE);
             cellPane = board.getCell(new CellPosition(x, y));
         } while (!board.validateCellSelection(cellPane));
 
         return cellPane;
-    }
-
-    public int[] getCoordinates() {
-        int[] coordinates = new int[2];
-
-        coordinates[0] = x;
-        coordinates[1] = y;
-
-        return coordinates;
     }
 
     public ComputerPlayer(PlayerColor color, Board board, GameManager gameManager) {

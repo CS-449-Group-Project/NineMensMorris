@@ -7,6 +7,7 @@ public class Player extends ObservableObject {
   private static final int NO_PIECES = 0;
 
   protected int piecesInHand;
+  protected boolean millFormed = false;
   private int boardPieces;
   private int removedPieces = 0;
   private final PlayerColor color;
@@ -23,6 +24,17 @@ public class Player extends ObservableObject {
 
   public int getTotalPieces() {
     return piecesInHand + boardPieces;
+  }
+
+  public boolean isMillFormed() {
+    return millFormed;
+  }
+  public void setMillFormed() {
+    millFormed = true;
+  }
+
+  public void resetMillFormed() {
+    millFormed = false;
   }
 
   public enum Phase {
@@ -118,5 +130,6 @@ public class Player extends ObservableObject {
     boardPieces = NO_PIECES;
     this.setGamePhase(Phase.PIECE_PLACEMENT);
     this.removePieceToMove();
+    millFormed = false;
   }
 }
